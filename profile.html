@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROFILE</title>
+    <link rel="stylesheet" href="css/styles1.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="images/group-40.svg" alt="logo" class="logo">
+            </div>
+        </div>
+        <div class="main-content" style="padding-left: 0px">
+            <div class="field">
+                <h1>PROFILE&nbsp;</h1>
+                <div class="profile-container">
+                    <img src="images/user.svg" alt="Profile Picture" class="profile-picture">
+                </div>
+            </div>
+            <div class="form-container">
+                <form id="profileForm">
+                    <div class="form-field">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" disabled>
+                    </div>
+                    <div class="form-field">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name">
+                    </div>
+                    <div class="form-field">
+                        <label for="sector">Sector</label>
+                        <input type="text" id="sector" name="sector">
+                    </div>
+                </form>
+            </div>
+            <div class="form-container-1">
+                <form id="updateProfileForm">
+                    <div class="form-field">
+                        <label for="organization">Organization Name</label>
+                        <input type="text" id="organization" name="organization">
+                    </div>
+                    <div class="form-field">
+                        <label for="designation">Designation</label>
+                        <input type="text" id="designation" name="designation">
+                    </div>
+                    <button type="submit" class="group-6" id="saveButton">
+                        <div class="rectangle-15"></div>
+                        <div class="submit">Save&nbsp;</div>
+                        <div class="ellipse-2"></div>
+                        <img class="vector-1" src="images/vector-10.svg" alt="vector" />
+                    </button>
+                    <button type="button" class="group-7" onclick="dashboard()" >
+                        <div class="rectangle-15"></div>
+                        <div class="submit1">Exit&nbsp;</div>
+                        <div class="ellipse-2"></div>
+                        <img class="vector-1" src="images/vector-10.svg" alt="vector" />
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="js/profile-placeholder.js"></script>
+    <script>
+
+        function dashboard() { 
+            window.location.href = "dashboard.html";
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const updateProfileForm = document.getElementById('updateProfileForm');
+            const saveButton = document.getElementById('saveButton');
+
+            saveButton.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent form submission
+
+                // Retrieve updated profile data from the form
+                const updatedProfileData = {
+                    email: document.getElementById('email').value,
+                    name: document.getElementById('name').value,
+                    sector: document.getElementById('sector').value,
+                    organization: document.getElementById('organization').value,
+                    designation: document.getElementById('designation').value
+                };
+
+                // Send updated profile data to the main process
+                window.electron.send('update-profile', updatedProfileData);
+            });
+
+            // Listen for profile update confirmation
+            window.electron.receive('profile-update', (data) => {
+                if (data.success) {
+                    alert('Profile updated successfully');
+                    // Reload the page to reflect the changes
+                    window.location.reload();
+                } else {
+                    alert('Failed to update profile');
+                }
+            });
+        });
+
+        // Fetch the profile data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const email = sessionStorage.getItem('userEmail');
+            if (email) {
+                window.electron.send('get-profile', email);
+                window.electron.receive('profile-data', (response) => {
+                    if (response.success && response.data) {
+                        document.getElementById('email').value = response.data.email;
+                        document.getElementById('name').value = response.data.name;
+                        document.getElementById('sector').value = response.data.sector;
+                        document.getElementById('organization').value = response.data.organization;
+                        document.getElementById('designation').value = response.data.designation;
+                    } else {
+                        console.error('Failed to load profile data');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

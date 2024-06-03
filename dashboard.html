@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="images/user.svg" alt="User" class="profile-picture" id="profile-picture">
+            <div class="logo">
+                <img src="images/group-40.svg" alt="logo" class="logo">
+            </div>            			 
+        </div>
+        <div class="navbar">
+            <div class="nav-links">
+                <button class="nav-button" id="new-assessment">New assessment</button>
+                <button class="nav-button" id="my-assessments">My assessments</button>
+            </div>            
+        </div>
+        <div class="content">
+            <h2>Assessment Name<span class="required">*</span></h2>
+            <input type="text" id="assessment-name" class="input-field">
+            <button id="start-button" class="start-button">Start</button>
+            <div class="disclaimer">
+                <h3>Disclaimer</h3>
+                <p>
+                    Please start the assessment only if you can finish it completely. Gather all details of your company and modus operandi before attending assessment for optimum results. Don’t close the window during the test or all unsaved progress will be lost. All details regarding time of the test and answers will be collected for smooth functioning and optimum results.
+                </p>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('profile-picture').addEventListener('click', function() {
+            window.location.href = 'profile.html';
+        });
+
+        document.getElementById('new-assessment').addEventListener('click', function() {
+            alert('New assessment button clicked');
+        });
+
+        document.getElementById('my-assessments').addEventListener('click', function() {
+            alert('My assessments button clicked');
+        });
+
+        document.getElementById('start-button').addEventListener('click', function() {
+            const assessmentName = document.getElementById('assessment-name').value;
+            if (assessmentName.trim() === '') {
+                alert('Please enter the assessment name.');
+            } else {
+                alert('Assessment started: ' + assessmentName);
+            }
+        });
+    </script>
+</body>
+</html>
