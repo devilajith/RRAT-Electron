@@ -1,0 +1,67 @@
+{
+    "domain1": [
+        { "question": "Is the sky blue?", "hint": "Look outside on a clear day." },
+        { "question": "Do cats bark?", "hint": "Think about common animal sounds." },
+        { "question": "Is 2+2=4?", "hint": "Basic math." }
+    ],
+    "domain2": [
+        { "question": "Is water wet?", "hint": "Think about the nature of water." },
+        { "question": "Is fire cold?", "hint": "Think about the temperature of fire." },
+        { "question": "Do birds fly?", "hint": "Consider the abilities of most birds." }
+    ],
+    "domain3": [
+        { "question": "Is the Earth round?", "hint": "Consider the shape of the Earth." },
+        { "question": "Is chocolate sweet?", "hint": "Think about the taste of chocolate." },
+        { "question": "Do fish fly?", "hint": "Think about where fish live." }
+    ],
+    "domain4": [
+        { "question": "Is grass green?", "hint": "Consider the color of grass." },
+        { "question": "Do humans have wings?", "hint": "Think about human anatomy." },
+        { "question": "Is the moon made of cheese?", "hint": "Think about the composition of the moon." }
+    ],
+    "domain5": [
+        { "question": "Is the ocean salty?", "hint": "Consider the taste of ocean water." },
+        { "question": "Can elephants fly?", "hint": "Think about the abilities of elephants." },
+        { "question": "Is 10 greater than 5?", "hint": "Basic comparison." }
+    ],
+    "domain6": [
+        { "question": "Do cows moo?", "hint": "Think about common animal sounds." },
+        { "question": "Is ice hot?", "hint": "Consider the temperature of ice." },
+        { "question": "Do planes fly?", "hint": "Think about the function of planes." }
+    ],
+    "domain7": [
+        { "question": "Is the sun hot?", "hint": "Think about the temperature of the sun." },
+        { "question": "Do fish swim?", "hint": "Consider the abilities of fish." },
+        { "question": "Is the grass green?", "hint": "Think about the color of grass." }
+    ],
+    "domain8": [
+        { "question": "Is snow cold?", "hint": "Think about the temperature of snow." },
+        { "question": "Do cars fly?", "hint": "Consider the common abilities of cars." },
+        { "question": "Is sugar sweet?", "hint": "Think about the taste of sugar." }
+    ],
+    "domain9": [
+        { "question": "Is the Earth a planet?", "hint": "Consider the classification of Earth." },
+        { "question": "Do dogs meow?", "hint": "Think about common animal sounds." },
+        { "question": "Is water wet?", "hint": "Consider the properties of water." }
+    ],
+    "domain10": [
+        { "question": "Is fire hot?", "hint": "Think about the temperature of fire." },
+        { "question": "Do birds have wings?", "hint": "Consider the anatomy of birds." },
+        { "question": "Is ice cold?", "hint": "Think about the temperature of ice." }
+    ],
+    "domain11": [
+        { "question": "Is honey sweet?", "hint": "Consider the taste of honey." },
+        { "question": "Do humans have tails?", "hint": "Think about human anatomy." },
+        { "question": "Is the sky blue?", "hint": "Look outside on a clear day." }
+    ],
+    "domain12": [
+        { "question": "Is chocolate bitter?", "hint": "Think about the taste of chocolate." },
+        { "question": "Do fish walk?", "hint": "Consider the abilities of fish." },
+        { "question": "Is snow white?", "hint": "Think about the color of snow." }
+    ],
+    "domain13": [
+        { "question": "Is milk white?", "hint": "Consider the color of milk." },
+        { "question": "Do cows bark?", "hint": "Think about common animal sounds." },
+        { "question": "Is the sun a star?", "hint": "Consider the classification of the sun." }
+    ]
+}
