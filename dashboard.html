@@ -33,6 +33,7 @@
         </div>
     </div>
     <script>
+        function quiz(){window.location.href="quiz.html"}
         document.getElementById('profile-picture').addEventListener('click', function() {
             window.location.href = 'profile.html';
         });
@@ -50,7 +51,7 @@
             if (assessmentName.trim() === '') {
                 alert('Please enter the assessment name.');
             } else {
-                alert('Assessment started: ' + assessmentName);
+                quiz()
             }
         });
     </script>
