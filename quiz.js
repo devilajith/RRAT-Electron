@@ -1,21 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     let quizData = {};
-    let currentDomain = 'domain1';
-    let currentQuestionIndex = 0;
-    let domains = [];
-
-    const questionElement = document.getElementById('question');
-    const yesRadio = document.getElementById('yes-radio');
-    const noRadio = document.getElementById('no-radio');
-    const hintButton = document.getElementById('hint-btn');
-    const hintPopup = document.getElementById('hint-popup');
-    const hintText = document.getElementById('hint-text');
-    const closeHint = document.querySelector('.close');
-    const prevButton = document.getElementById('prev-btn');
-    const nextButton = document.getElementById('next-btn');
-    const pauseButton = document.getElementById('pause-btn');
-    const resumeButton = document.getElementById('resume-btn');
-    const pauseOverlay = document.getElementById('pause-overlay');
+    const quizContainer = document.getElementById('quiz-container');
     const domainButtons = document.querySelectorAll('.sidebar button');
 
     function loadQuizData() {
@@ -23,126 +8,145 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(data => {
                 quizData = data;
-                domains = Object.keys(quizData);
-                loadQuestion();
+                displayAllQuestions();
                 addDomainButtonListeners();
-                highlightCurrentDomain();
+                observeQuestions();
             })
             .catch(error => console.error('Error loading quiz data:', error));
     }
 
-    function loadQuestion() {
-        const currentQuestion = quizData[currentDomain][currentQuestionIndex];
-        if (!currentQuestion) {
-            console.error('No question found for current domain and index.');
-            return;
-        }
-        questionElement.innerText = currentQuestion.question;
-        hintPopup.style.display = 'none';
-        yesRadio.checked = false;
-        noRadio.checked = false;
-        highlightCurrentDomain();
-        console.log('Loaded question:', currentQuestion.question); // Debug log
-    }
+    function displayAllQuestions() {
+        quizContainer.innerHTML = ''; // Clear previous content
+        Object.keys(quizData).forEach(domain => {
+            // Create a div for the explanation
+            const explanationDiv = document.createElement('div');
+            explanationDiv.classList.add('explanation-container');
+            explanationDiv.id = `${domain}-explanation`;
 
-    function showHint() {
-        const currentQuestion = quizData[currentDomain][currentQuestionIndex];
-        hintText.innerText = currentQuestion.hint;
-        const rect = hintButton.getBoundingClientRect();
-        hintPopup.style.top = `${rect.bottom + window.scrollY}px`;
-        hintPopup.style.left = `${rect.left + window.scrollX}px`;
-        hintPopup.style.display = 'block';
-    }
+            // Add some placeholder explanation text (you can customize this)
+            const explanationText = document.createElement('p');
+            explanationText.classList.add('explanation-text');
+            explanationText.innerText = `This is the explanation for ${domain}.`; // Customize as needed
+            explanationDiv.appendChild(explanationText);
 
-    function prevQuestion() {
-        if (currentQuestionIndex > 0) {
-            currentQuestionIndex--;
-            loadQuestion();
-            console.log('Moved to previous question in the same domain.'); // Debug log
-        } else {
-            console.log('Reached the first question of the current domain.');
-            goToPrevDomain();
-        }
-    }
+            // Append the explanation div to the quiz container
+            quizContainer.appendChild(explanationDiv);
 
-    function nextQuestion() {
-        const selectedAnswer = document.querySelector('input[name="answer"]:checked');
-        if (selectedAnswer) {
-            quizData[currentDomain][currentQuestionIndex].answered = selectedAnswer.value;
-            console.log('Answered question:', selectedAnswer.value); // Debug log
-            if (currentQuestionIndex < quizData[currentDomain].length - 1) {
-                currentQuestionIndex++;
-                loadQuestion();
-                console.log('Moved to next question in the same domain.'); // Debug log
-            } else {
-                console.log('Reached the last question of the current domain.');
-                goToNextDomain();
-            }
-        } else {
-            alert('Please select an answer.');
-        }
-    }
+            // Append the questions
+            quizData[domain].forEach((questionData, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.classList.add('question-container');
+                questionDiv.id = `${domain}-question-${index}`;
 
-    function goToNextDomain() {
-        const domainIndex = domains.indexOf(currentDomain);
-        if (domainIndex < domains.length - 1) {
-            currentDomain = domains[domainIndex + 1];
-            currentQuestionIndex = 0;
-            console.log('Switched to next domain:', currentDomain); // Debug log
-            loadQuestion();
-        } else {
-            console.log('You have completed all the domains!');
-        }
-    }
+                const questionRow = document.createElement('div');
+                questionRow.classList.add('question-row');
 
-    function goToPrevDomain() {
-        const domainIndex = domains.indexOf(currentDomain);
-        if (domainIndex > 0) {
-            currentDomain = domains[domainIndex - 1];
-            currentQuestionIndex = quizData[currentDomain].length - 1;
-            console.log('Switched to previous domain:', currentDomain); // Debug log
-            loadQuestion();
-        } else {
-            console.log('You are already on the first domain!');
-        }
-    }
+                const questionText = document.createElement('h2');
+                questionText.classList.add('question-text');
+                questionText.innerText = questionData.Question; // Update to match the JSON structure
+                questionRow.appendChild(questionText);
 
-    function switchDomain(domain) {
-        currentDomain = domain;
-        currentQuestionIndex = 0;
-        loadQuestion();
-    }
+                questionDiv.appendChild(questionRow);
 
-    function addDomainButtonListeners() {
-        domainButtons.forEach((button) => {
-            button.addEventListener('click', () => switchDomain(button.id.replace('-btn', '')));
+                const answerButtonsDiv = document.createElement('div');
+                answerButtonsDiv.classList.add('answer-buttons');
+
+                const yesLabel = document.createElement('label');
+                yesLabel.innerHTML = `<input type="radio" name="answer-${domain}-${index}" value="yes"> Yes`;
+                answerButtonsDiv.appendChild(yesLabel);
+
+                const noLabel = document.createElement('label');
+                noLabel.innerHTML = `<input type="radio" name="answer-${domain}-${index}" value="no"> No`;
+                answerButtonsDiv.appendChild(noLabel);
+
+                // Append the answer buttons div after the question text
+                questionDiv.appendChild(answerButtonsDiv);
+
+                // Add hint button and collapsible content
+                const hintButton = document.createElement('button');
+                hintButton.classList.add('collapsible');
+                hintButton.innerText = 'Show Hint';
+
+                const hintContent = document.createElement('div');
+                hintContent.classList.add('collapsible-content');
+                hintContent.innerText = questionData['Assessment Help']; // Update to match the JSON structure
+
+                hintButton.addEventListener('click', () => {
+                    hintButton.classList.toggle('active');
+                    if (hintContent.style.display === 'block') {
+                        hintContent.style.display = 'none';
+                    } else {
+                        hintContent.style.display = 'block';
+                    }
+                });
+
+                // Append the hint button and content after the answer buttons
+                questionDiv.appendChild(hintButton);
+                questionDiv.appendChild(hintContent);
+
+                questionDiv.addEventListener('click', () => {
+                    highlightCurrentDomainButton(domain);
+                });
+
+                quizContainer.appendChild(questionDiv);
+            });
         });
     }
 
-    function pauseQuiz() {
-        pauseOverlay.style.display = 'flex';
+    function addDomainButtonListeners() {
+        domainButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const domain = button.id.replace('-btn', '').replace(/-/g, ' ');
+                scrollToDomain(domain);
+                highlightCurrentDomainButton(domain);
+            });
+        });
     }
 
-    function resumeQuiz() {
-        pauseOverlay.style.display = 'none';
+    function scrollToDomain(domain) {
+        const firstQuestionElement = document.getElementById(`${domain}-question-0`);
+        if (firstQuestionElement) {
+            firstQuestionElement.scrollIntoView({ behavior: 'smooth' });
+        }
     }
 
-    function highlightCurrentDomain() {
-        domainButtons.forEach((button) => {
-            if (button.id.replace('-btn', '') === currentDomain) {
+    function highlightCurrentDomainButton(domain) {
+        domainButtons.forEach(button => {
+            if (button.id.replace('-btn', '').replace(/-/g, ' ') === domain) {
                 button.classList.add('active');
+                button.scrollIntoView({ behavior: 'smooth', block: 'center' });
             } else {
                 button.classList.remove('active');
             }
         });
     }
 
-    prevButton.addEventListener('click', prevQuestion);
-    nextButton.addEventListener('click', nextQuestion);
-    hintButton.addEventListener('click', showHint);
-    closeHint.addEventListener('click', () => hintPopup.style.display = 'none');
-    pauseButton.addEventListener('click', pauseQuiz);
-    resumeButton.addEventListener('click', resumeQuiz);
+    function observeQuestions() {
+        const options = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.5
+        };
+
+        const callback = (entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const domain = entry.target.id.split('-')[0];
+                    highlightCurrentDomainButton(domain);
+                }
+            });
+        };
+
+        const observer = new IntersectionObserver(callback, options);
+
+        document.querySelectorAll('.question-container').forEach(question => {
+            observer.observe(question);
+        });
+    }
 
     loadQuizData();
+});
+document.getElementById("logo").addEventListener("click", function() {
+    
+    window.location.href = "dashboard.html"; 
 });
