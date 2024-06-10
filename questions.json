@@ -7,13 +7,13 @@
           "id": 1,
           "question": "Do you maintain a detailed and regularly updated inventory of all hardware, software, and data assets?",
           "Assessment Help": "Ensure that the asset inventory includes all devices, applications, and data repositories, along with their locations, owners, and security classifications. The inventory should be updated whenever new assets are added or removed.",
-          "Recommendation": "Implement an automated asset management system to continuously track and update the inventory. Regularly audit the inventory to ensure accuracy and completeness."
+          "Recommendation": "Implement an asset management system to continuously track and update the inventory. Regularly audit the inventory to ensure accuracy and completeness."
         },
         {
           "id": 2,
           "question": "Are regular vulnerability assessments and timely patch management practices in place?",
           "Assessment Help": "Confirm that vulnerability scans are conducted at least quarterly and that a documented process exists for prioritizing and applying patches and updates. Monitor for new vulnerabilities and update systems promptly.",
-          "Recommendation": "Establish a dedicated team responsible for vulnerability management and patching. Use automated tools to streamline the scanning and patching processes, and maintain a detailed log of all activities."
+          "Recommendation": "Vulnerability management and patching process exists for prioritizing and applying patches and updates. Monitor for new vulnerabilities and update systems promptly. Use automated tools to streamline the scanning and patching processes, and maintain a detailed log of all activities."
         },
         {
           "id": 3,
