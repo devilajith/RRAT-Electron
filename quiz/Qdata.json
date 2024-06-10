@@ -1,0 +1,406 @@
+{
+  "domains": [
+    {
+      "name": "Asset Management",
+      "questions": [
+        {
+          "id": 1,
+          "question": "Do you maintain a detailed and regularly updated inventory of all hardware, software, and data assets?",
+          "Assessment Help": "Ensure that the asset inventory includes all devices, applications, and data repositories, along with their locations, owners, and security classifications. The inventory should be updated whenever new assets are added or removed.",
+          "Recommendation": "Implement an automated asset management system to continuously track and update the inventory. Regularly audit the inventory to ensure accuracy and completeness."
+        },
+        {
+          "id": 2,
+          "question": "Are regular vulnerability assessments and timely patch management practices in place?",
+          "Assessment Help": "Confirm that vulnerability scans are conducted at least quarterly and that a documented process exists for prioritizing and applying patches and updates. Monitor for new vulnerabilities and update systems promptly.",
+          "Recommendation": "Establish a dedicated team responsible for vulnerability management and patching. Use automated tools to streamline the scanning and patching processes, and maintain a detailed log of all activities."
+        },
+        {
+          "id": 3,
+          "question": "Is sensitive data encrypted both at rest and in transit?",
+          "Assessment Help": "Verify that encryption protocols are applied to all sensitive data, ensuring compliance with industry standards. Regularly review encryption policies and update them as needed.",
+          "Recommendation": "Adopt industry-standard encryption technologies and ensure that encryption keys are managed securely. Conduct regular audits to verify encryption compliance."
+        },
+        {
+          "id": 4,
+          "question": "Are all operating systems, applications and browser plugins regularly updated?",
+          "Assessment Help": "Confirm that systems and applications are updated with the latest patches and security updates.",
+          "Recommendation": "Implement an automated update management system to ensure timely installation of patches. Establish a schedule for regular updates and conduct periodic reviews to ensure compliance."
+        },
+        {
+          "id": 5,
+          "question": "Does your organization employ mechanisms to detect rogue hardware and software on the network?",
+          "Assessment Help": "Ensure that the organization has implemented mechanisms to detect rogue hardware and software, such as network scanning tools, endpoint detection and response (EDR) solutions, or intrusion detection systems (IDS). Verify that these mechanisms continuously monitor the network for unauthorized devices or software installations.",
+          "Recommendation": "Deploy comprehensive network monitoring solutions and conduct regular network scans. Establish policies for immediate investigation and response to detected rogue devices or software."
+        },
+        {
+          "id": 6,
+          "question": "Does the organization utilize standard baseline images to maintain control over hardware and software configurations?",
+          "Assessment Help": "Ensure that standard baseline images are created and used for all hardware and software configurations to maintain consistency and security. Regularly update these baseline images to include the latest security patches and configuration settings.",
+          "Recommendation": "Develop and maintain standard baseline images for all hardware and software configurations. Regularly update and audit these images to ensure they include the latest security patches and best practices."
+        },
+        {
+          "id": 7,
+          "question": "Are documented and approved secure configurations utilized to manage the organization’s hardware and software assets?",
+          "Assessment Help": "Verify that all hardware and software assets are managed using documented and approved secure configurations. Ensure these configurations are regularly reviewed and updated to align with security best practices and organizational policies.",
+          "Recommendation": "Implement and enforce documented and approved secure configurations for all hardware and software assets. Regularly review and update these configurations to maintain security compliance."
+        },
+        {
+          "id": 8,
+          "question": "Does the organization adhere to security hardening guides to manage system configurations?",
+          "Assessment Help": "Confirm that system configurations are managed using security hardening guides to minimize vulnerabilities and enhance security. Regularly review and update these guides to reflect the latest security threats and best practices.",
+          "Recommendation": "Adopt security hardening guides for managing system configurations. Ensure these guides are regularly updated and followed to enhance the security posture of the organization."
+        },        
+        {
+          "id": 9,
+          "question": "Does the organization maintain a Blocklist of known malicious software and an Allowlist of approved software, organized by publisher, to restrict unauthorized software from running on organizational systems?",
+          "Assessment Help": "Verify that the organization maintains a Blocklist of known bad software and an Allowlist of approved software organized by software publisher. Ensure that only approved software is allowed to run on organizational systems to prevent unauthorized and potentially harmful software.",
+          "Recommendation": "Maintain and regularly update a Blocklist and Allowlist of software. Implement mechanisms to enforce these lists, allowing only approved software to run on organizational systems."
+        }
+      ]
+    },
+    {
+      "name": "User Training and Awareness",
+      "questions": [
+        {
+          "id": 1,
+          "question": "Are employees trained at least annually on recognizing phishing attempts, safe browsing practices, and proper incident reporting procedures?",
+          "Assessment Help": "Verify that the training program includes practical exercises, such as simulated phishing campaigns, and that employees' understanding is assessed through quizzes or tests.",
+          "Recommendation": "Develop an engaging and interactive training program with regular updates to cover the latest threats. Use metrics from simulated phishing campaigns to identify areas for improvement and provide targeted training."
+        },
+        {
+          "id": 2,
+          "question": "Has your organization conducted phishing simulation tests to assess employee’s susceptibility to phishing attacks and evaluate the effectiveness of security awareness training?",
+          "Assessment Help": "Implement phishing simulation tests to gauge employees' responses to simulated phishing emails. Evaluate the click rates, reporting rates, and susceptibility of employees to identify potential vulnerabilities and areas for improvement in security awareness training. Additionally, analyse the effectiveness of existing security controls in detecting and mitigating phishing attempts based on the results of the simulation tests.",
+          "Recommendation": "Regularly conduct phishing simulations and analyze the results to tailor training programs. Reward employees who demonstrate good security practices and provide additional support to those who need improvement."
+        },
+        {
+          "id": 3,
+          "question": "Does your organization provide role-based security training to employees?",
+          "Assessment Help": "Verify that the organization offers role-based security training tailored to employees' specific roles and responsibilities. Ensure that the training covers relevant security topics and best practices applicable to each role, such as data handling procedures, access control policies, and incident response protocols.",
+          "Recommendation": "Create specialized training modules for different roles within the organization. Update training content regularly to reflect changes in technology and security policies."
+        }
+      ]
+    },
+    {
+      "name": "Email Security",
+      "questions": [
+        {
+          "id": 1,
+          "question": "Do you employ advanced email filtering solutions to detect and block malicious attachments and links?",
+          "Assessment Help": "Ensure that your email security system incorporates advanced features such as sandboxing for attachment analysis and URL filtering to detect and block malicious attachments and links effectively. Regularly review and update the filtering rules to adapt to evolving threats and enhance protection against email-based threats.",
+          "Recommendation": "Adopt a multi-layered email security approach, including spam filters, anti-malware, and sandboxing technologies. Regularly update and fine-tune email security policies to address new threats."
+        },
+        {
+          "id": 2,
+          "question": "Are DMARC, DKIM, and SPF configurations implemented for enhanced email security?",
+          "Assessment Help": "Confirm that DMARC, DKIM, and SPF configurations are implemented within your email security infrastructure to bolster email authenticity and mitigate the risk of spoofing and phishing attacks. Regularly monitor and update these configurations to maintain optimal email security posture and ensure alignment with industry best practices.",
+          "Recommendation": "Ensure proper implementation and regular monitoring of DMARC, DKIM, and SPF records. Use reporting tools to track email authentication issues and address them promptly."
+        }
+      ]
+    },
+    {
+      "name": "Backup and Recovery",
+      "questions": [
+        {
+          "id": 1,
+          "question": "Are backups performed regularly, encrypted, and stored offline or in a manner that isolates them from potential ransomware attacks?",
+          "Assessment Help": "Ensure backups are scheduled at intervals that align with your data criticality (e.g., daily for critical data) and that recovery procedures are tested periodically. Store backups in immutable or air-gapped locations.",
+          "Recommendation": "Implement a comprehensive backup strategy with regular testing of recovery procedures. Use encryption and store backups in secure, isolated environments to prevent unauthorized access."
+        },
+        {
+          "id": 2,
+          "question": "Does your organization store data backups in multiple locations to ensure redundancy and protection against data loss?",
+          "Assessment Help": "Verify that data backups are stored in multiple, geographically diverse locations to provide redundancy and safeguard against data loss due to disasters, hardware failures, or ransomware attacks.",
+          "Recommendation": "Establish a policy for geographically dispersed backup storage. Regularly test the redundancy and recovery processes to ensure data integrity and availability."
+        },
+        {
+          "id": 3,
+          "question": "Does your organization conduct regular data backup simulation tests to ensure the reliability and effectiveness of your backup and recovery processes?",
+          "Assessment Help": "Ensure that regular data backup simulation tests are performed to verify the reliability and effectiveness of backup and recovery processes. These tests should simulate ransomware attacks, and accidental deletions.",
+          "Recommendation": "Schedule frequent backup simulations and disaster recovery drills. Document lessons learned and improve backup strategies based on the outcomes of these tests."
+        },
+        {
+          "id": 4,
+          "question": "Does your organization have a comprehensive system in place for both log management and data backup at least 30 days, covering both all the systems and network logs?",
+          "Assessment Help": "Verify that the organization has implemented a centralized system capable of managing logs from both system and network devices while also ensuring data backup. Ensure that the log management system aggregates logs in real-time, performs regular backups, and retains logs for an appropriate retention period as per regulatory requirements and organizational policies.",
+          "Recommendation": "Deploy a centralized log management system that integrates with backup solutions. Regularly audit log retention and backup policies to ensure compliance and data integrity."
+        },  
+        {
+          "id": 5,
+          "question": "Has the organization implemented redundant and resilient systems and data to ensure business continuity and disaster recovery capabilities?",
+          "Assessment Help": "Ensure that redundant and resilient systems and data are implemented across the organization to enhance reliability and disaster recovery capabilities. Regularly test these systems to confirm their effectiveness in maintaining business continuity during disruptions.",
+          "Recommendation": "Implement redundant and resilient systems and data throughout the organization. Conduct regular tests and updates to ensure these systems are effective in maintaining business continuity during disruptions."
+        }
+
+      ]
+    },
+    {
+      "name": "Incident Response Plan",
+      "questions": [
+        {
+          "id": 1,
+          "question": "Is there a documented and regularly tested incident response plan specific to ransomware attacks?",
+          "Assessment Help": "Review the incident response plan to ensure it includes detailed procedures tailored to ransomware attacks. Verify that the plan outlines roles and responsibilities, communication protocols, containment strategies, and recovery procedures. Confirm that the plan is regularly tested and updated based on lessons learned from past incidents and evolving ransomware threats.",
+          "Recommendation": "Develop a detailed incident response plan focused on ransomware. Conduct regular drills and update the plan based on new threats and lessons learned from previous incidents."
+        },
+        {
+          "id": 2,
+          "question": "Are tabletop exercises conducted regularly to test the incident response plan's efficacy in handling ransomware attacks?",
+          "Assessment Help": "Assess the frequency and comprehensiveness of tabletop exercises conducted to test the incident response plan. Ensure these exercises simulate realistic ransomware attack scenarios and involve key stakeholders. Evaluate the effectiveness of the exercises in identifying weaknesses in the plan, improving coordination among team members, and enhancing the organization’s overall preparedness for ransomware incidents.",
+          "Recommendation": "Organize regular tabletop exercises involving key personnel. Use realistic scenarios to test and refine the incident response plan, ensuring all team members are well-prepared."
+        },
+        {
+          "id": 3,
+          "question": "Is there an Incident Response Policy in place to define procedures for detecting, reporting, and responding to security incidents, including roles and responsibilities, communication protocols, and escalation procedures?",
+          "Assessment Help": "Evaluate the Incident Response Policy to confirm that it delineates incident detection mechanisms, reporting channels, response protocols, containment strategies, stakeholder communication plans, post-incident analysis procedures, and continuous improvement measures to effectively manage security incidents and minimize their impact.",
+          "Recommendation": "Establish a comprehensive Incident Response Policy with clear procedures and roles. Regularly review and update the policy to adapt to new threats and organizational changes."
+        },
+        {
+          "id": 4,
+          "question": "Does your organization have a process in place for reporting cyber security incidents to stakeholders?",
+          "Assessment Help": "Verify that the organization has established a clear process for reporting cyber security incidents to stakeholders, including senior management, board members, regulatory authorities, and affected parties. Ensure that the reporting process includes predefined communication channels, escalation procedures, and notification timelines based on the severity and impact of the incident.",
+          "Recommendation": "Develop a structured process for incident reporting. Ensure timely and clear communication to all relevant stakeholders, with predefined escalation procedures."
+        },
+        {
+          "id": 5,
+          "question": "Does your organization have a comprehensive disaster recovery plan in place to ensure business continuity in the event of a major disruption or disaster?",
+          "Assessment Help": "Verify that the organization has developed a detailed disaster recovery plan that outlines procedures for restoring critical systems and data following a disaster. Ensure that the plan includes predefined roles and responsibilities, communication protocols, escalation procedures, and recovery objectives.",
+          "Recommendation": "Create and maintain a detailed disaster recovery plan. Conduct regular tests to ensure all team members are familiar with their roles and the procedures are effective."
+        }
+      ]
+    },
+    {
+      "name": "Network Management",
+      "questions": [
+        {
+          "id": 1,
+          "question": "Is your network segmented to restrict communication between different departments and critical systems?",
+          "Assessment Help": "Check that network segments are defined based on business functions and data sensitivity. Implement access controls and monitoring to ensure that only authorized traffic is allowed between segments.",
+          "Recommendation": "Implement network segmentation to enhance security. Regularly review and update access controls and monitor traffic between segments to detect and prevent unauthorized access."
+        },
+        {
+          "id": 2,
+          "question": "Do you have a Security Information and Event Management (SIEM) system or any Monitoring Mechanisms in place for continuous monitoring and alerting of suspicious activities?",
+          "Assessment Help": "Confirm that the SIEM system is configured to collect and analyze logs from all critical systems. Ensure that alerts are reviewed and acted upon promptly.",
+          "Recommendation": "Deploy a robust SIEM system and configure it to monitor all critical systems. Ensure alerts are promptly investigated and addressed."
+        },
+        {
+          "id": 3,
+          "question": "Is there a Network Security Policy in place to outline measures for securing the organization's network infrastructure, including configuration standards, access controls, and monitoring procedures?",
+          "Assessment Help": "Evaluate the Network Security Policy to ensure it encompasses network segmentation, firewall configurations, intrusion detection/prevention measures, network traffic monitoring, and incident response procedures to safeguard against unauthorized access and cyber threats.",
+          "Recommendation": "Develop a comprehensive Network Security Policy and ensure it is regularly reviewed and updated. Train employees on policy requirements and enforce compliance."
+        },
+        {
+          "id": 4,
+          "question": "Do you secure all wireless networks with strong encryption and access controls?",
+          "Assessment Help": "Ensure wireless networks use strong encryption protocols (e.g., WPA3) and are protected with complex passwords. Implement network segmentation and regularly update wireless security settings.",
+          "Recommendation": "Adopt WPA3 encryption for all wireless networks and enforce strong password policies. Regularly audit wireless network configurations and update security settings."
+        },
+        {
+          "id": 5,
+          "question": "Has the company set up a baseline for network traffic that is used to spot unusual activity?",
+          "Assessment Help": "Verify that the company has established a baseline for normal network traffic patterns. This baseline should include typical bandwidth usage, common communication protocols, and regular access times. Ensure that network monitoring tools are in place to continuously compare current network activity against this baseline. Evaluate the effectiveness of these tools in identifying deviations or anomalies that could indicate potential security threats. Regularly update the baseline to reflect changes in network usage and ensure accurate detection of unusual activity.",
+          "Recommendation": "Establish and regularly update a baseline for network traffic. Use advanced monitoring tools to detect and respond to anomalies promptly."
+        },
+        {
+          "id": 6,
+          "question": "Does your organization implement measures to restrict network access to only authorized devices?",
+          "Assessment Help": "Verify that the organization has implemented controls to restrict network access only to authorized devices. This may include the use of network access control (NAC) solutions, MAC address filtering, or device certificates. Ensure that only devices that meet predefined security standards and compliance requirements are allowed to connect to the network. Regularly review and update the list of authorized devices and ensure that unauthorized devices are promptly identified and prevented from accessing the network. Additionally, monitor network access logs to detect any unauthorized attempts to connect and take appropriate action to mitigate risks.",
+          "Recommendation": "Implement Network Access Control (NAC) solutions to ensure only authorized devices connect to the network. Regularly audit connected devices and monitor network access logs."
+        }
+      ]
+    },
+    {
+      "name": "Multi Factor Authentication (MFA)",
+      "questions": [
+        {
+          "id": 1,
+          "question": "Is Multi-Factor Authentication (MFA) enabled for accessing all critical systems?",
+          "Assessment Help": "Confirm that MFA is enforced for accessing critical systems to add an extra layer of security. Regularly review MFA configurations for critical systems and update them as necessary to enhance protection against unauthorized access.",
+          "Recommendation": "Enforce MFA for all critical systems and regularly review configurations. Educate users on the importance of MFA and ensure compliance."
+        },
+        {
+          "id": 2,
+          "question": "Is Multi-Factor Authentication (MFA) enforced for remote access to systems?",
+          "Assessment Help": "Verify that MFA is implemented for remote access to systems to mitigate the risk of unauthorized entry from external sources. Regularly review and update MFA configurations for remote access to ensure robust security measures are in place.",
+          "Recommendation": "Implement MFA for all remote access and regularly review security settings. Ensure remote users are aware of and comply with MFA requirements."
+        },
+        {
+          "id": 3,
+          "question": "Is Multi-Factor Authentication (MFA) enabled for privileged accounts?",
+          "Assessment Help": "Ensure that MFA is enabled for privileged accounts to prevent unauthorized access and protect sensitive data from potential breaches. Regularly review MFA configurations for privileged accounts and update them as necessary to maintain stringent security standards.",
+          "Recommendation": "Mandate MFA for all privileged accounts and regularly review access policies. Conduct periodic audits to ensure compliance and security."
+        },
+        {
+          "id": 4,
+          "question": "Does your organization enforce Multi-Factor Authentication (MFA) for all users?",
+          "Assessment Help": "Verify that Multi-Factor Authentication (MFA) is implemented for all user accounts across the organization's systems and applications. Ensure that MFA is enabled for accessing both internal and external resources, including email accounts, VPNs, and cloud-based services.",
+          "Recommendation": "Implement MFA across all user accounts and resources. Regularly update and test MFA configurations to ensure effective security."
+        }
+      ]
+    },
+    {
+      "name": "Third Party Risk Management",
+      "questions": [
+        {
+          "id": 1,
+          "question": "Do you assess the cybersecurity practices of third-party vendors and partners?",
+          "Assessment Help": "Ensure that third-party risk assessments include evaluating the vendors' security controls and incident response capabilities. Include contractual obligations for cybersecurity practices and regular audits.",
+          "Recommendation": "Conduct thorough cybersecurity assessments for all third-party vendors. Establish contractual obligations for security practices and perform regular audits."
+        },
+        {
+          "id": 2,
+          "question": "Has your organization established a Vendor Management Policy to govern the selection, onboarding, and ongoing oversight of third-party vendors, ensuring they meet security and compliance standards?",
+          "Assessment Help": "Review the Vendor Management Policy to ensure it outlines vendor selection criteria, contractual requirements, security assessments, monitoring processes, and procedures for addressing vendor non-compliance or security incidents to mitigate risks associated with third-party relationships.",
+          "Recommendation": "Develop a comprehensive Vendor Management Policy. Regularly review and update the policy to ensure third-party compliance with security and regulatory standards."
+        }
+      ]
+    },
+    {
+      "name": "Security Infrastructure",
+      "questions": [
+        {
+          "id": 1,
+          "question": "Are firewalls configured to block unauthorized access on your network?",
+          "Assessment Help": "Verify that your firewalls are properly configured to prevent unauthorized access to your network, ensuring that only legitimate traffic is allowed. Regularly review firewall rules and configurations to maintain effective security posture and promptly address any potential vulnerabilities.",
+          "Recommendation": "Regularly audit firewall configurations and rules to ensure they block unauthorized access. Implement change management processes for firewall updates."
+        },
+        {
+          "id": 2,
+          "question": "Are EDR (Endpoint Detection and Response) systems deployed to monitor and respond to endpoint threats?",
+          "Assessment Help": "Confirm the deployment of EDR systems across your network to continuously monitor endpoint activities, detect suspicious behavior, and respond swiftly to potential threats. Regularly assess the effectiveness of EDR solutions in detecting and mitigating endpoint threats to enhance overall security resilience.",
+          "Recommendation": "Deploy EDR solutions across all endpoints and continuously monitor their effectiveness. Conduct regular reviews and updates to EDR configurations."
+        },
+        {
+          "id": 3,
+          "question": "Are IDS/IPS (Intrusion Detection/Prevention Systems) solutions in place to detect and prevent intrusions on your network?",
+          "Assessment Help": "Ensure the implementation of IDS/IPS solutions to actively monitor network traffic, detect malicious activities, and prevent unauthorized access or intrusions in real-time. Regularly review and update IDS/IPS configurations to adapt to evolving threats and enhance network security defences.",
+          "Recommendation": "Implement IDS/IPS solutions and regularly update their configurations. Monitor the effectiveness of these systems and adjust as needed to address new threats."
+        },
+        {
+          "id": 4,
+          "question": "Are AV/AM (Antivirus/Anti-malware) solutions installed and regularly updated to defend against malware?",
+          "Assessment Help": "Verify the installation of robust AV/AM solutions across your network to detect and remove malware infections, including viruses, spyware, and other malicious software. Regularly update AV/AM signatures and definitions to stay ahead of emerging threats and bolster malware protection capabilities.",
+          "Recommendation": "Ensure all systems have up-to-date AV/AM solutions. Regularly update signatures and conduct periodic scans to identify and mitigate malware threats."
+        },
+        {
+          "id": 5,
+          "question": "Do you employ DNS filtering or web-based content filters to restrict access to malicious or inappropriate websites?",
+          "Assessment Help": "Ensure that DNS filtering and web-based content filtering solutions are implemented to block access to known malicious domains, phishing sites, and inappropriate content. Regularly update the filtering rules and lists based on threat intelligence and organizational policies. Monitor filtering logs to detect and respond to any attempts to access restricted sites, and analyze patterns to improve the effectiveness of these security measures.",
+          "Recommendation": "Implement DNS and web content filters to block access to malicious websites. Regularly review and update filtering rules based on threat intelligence."
+        },
+        {
+          "id": 6,
+          "question": "Do you have protections in place to block malicious advertisements?",
+          "Assessment Help": "Implement ad-blocking software and web filters to prevent exposure to malicious ads. Educate users on the risks associated with clicking on ads, especially on unfamiliar websites.",
+          "Recommendation": "Deploy ad-blocking solutions and educate users on the dangers of malicious ads. Regularly update ad-blocking software to keep pace with new threats."
+        },
+        {
+          "id": 7,
+          "question": "Does your organization utilize a DMZ or separate hosting infrastructure to prevent ransomware from spreading through exploited web applications?",
+          "Assessment Help": "Assess whether a DMZ (Demilitarized Zone) or separate hosting infrastructure is implemented to isolate web applications from the internal network. Verify that the DMZ is properly configured to limit access and contain potential threats, reducing the risk of ransomware spreading if a web application is compromised.",
+          "Recommendation": "Implement a DMZ to isolate web applications from internal networks. Regularly review and update DMZ configurations to enhance security."
+        }
+      ]
+    },
+    {
+      "name": "Security Policy",
+      "questions": [
+        {
+          "id": 1,
+          "question": "Is there a Password Policy established to enforce strong password requirements and regular password changes?",
+          "Assessment Help": "Assess the Password Policy to verify that it includes guidelines for creating strong passwords, requirements for regular password changes, measures for password storage and protection, and mechanisms for enforcing password complexity.",
+          "Recommendation": "Develop and enforce a Password Policy that includes strong password requirements and regular changes. Educate users on the importance of password security."
+        },
+        {
+          "id": 2,
+          "question": "Does your organization have a Removable Media Policy to govern the use of external storage devices and mitigate the risk of data leakage or malware infection?",
+          "Assessment Help": "Evaluate the Removable Media Policy to ensure it outlines acceptable use guidelines, encryption requirements, malware scanning procedures, and authorization protocols for using external storage devices within the organization's network.",
+          "Recommendation": "Implement a Removable Media Policy that restricts and monitors the use of external storage devices. Ensure all removable media are encrypted and scanned for malware."
+        },
+        {
+          "id": 3,
+          "question": "Has your organization implemented an Acceptable Use Policy to define acceptable behavior and guidelines for the use of company resources, including internet usage and communication channels?",
+          "Assessment Help": "Review the Acceptable Use Policy to confirm that it delineates acceptable and prohibited activities, guidelines for internet and email usage, data privacy and confidentiality requirements, and consequences for policy violations.",
+          "Recommendation": "Establish an Acceptable Use Policy and communicate it to all employees. Regularly review and update the policy to reflect current security practices."
+        }
+      ]
+    },
+    {
+      "name": "Access Control",
+      "questions": [
+        {
+          "id": 1,
+          "question": "Does your organization have an Access Control Policy in place to regulate access to sensitive resources and data?",
+          "Assessment Help": "Review the Access Control Policy to ensure it includes defined access levels, user authentication mechanisms, role-based access controls, and regular audits to monitor access permissions and enforce security protocols effectively have an Access Control Policy in place to regulate access to sensitive resources and data?",
+          "Recommendation": "Implement an Access Control Policy that defines access levels and authentication mechanisms. Conduct regular audits to ensure compliance and address any access issues."
+        },
+        {
+          "id": 2,
+          "question": "Are access controls in place to enforce the principle of least privilege and are they reviewed regularly?",
+          "Assessment Help": "Verify that access control policies restrict users to only the resources necessary for their roles. Conduct regular audits to identify and revoke unnecessary access rights.",
+          "Recommendation": "Enforce the principle of least privilege by restricting access to only necessary resources. Regularly review and update access controls based on user roles and responsibilities."
+        },
+        {
+          "id": 3,
+          "question": "Do you have measures in place to detect and prevent insider threats?",
+          "Assessment Help": "Implement monitoring tools to track suspicious activities, enforce strict access controls, and conduct regular audits. Provide training on recognizing and reporting suspicious behaviour.",
+          "Recommendation": "Deploy monitoring tools to detect insider threats and conduct regular audits. Educate employees on recognizing and reporting suspicious activities."
+        },
+        {
+          "id": 4,
+          "question": "Does your organization implement execution prevention mechanisms to block unauthorized or malicious software from running on your systems?",
+          "Assessment Help": "Verify that execution prevention measures, such as application whitelisting, script blocking, and software restriction policies, are in place to prevent unauthorized or malicious software from executing. Ensure that these mechanisms are configured to allow only approved applications and scripts to run. Regularly review and update the list of approved software to include necessary updates and new applications while removing outdated or unauthorized ones. Assess the effectiveness of these measures through periodic testing and monitoring to identify and address any potential gaps in execution prevention.",
+          "Recommendation": "Implement execution prevention measures such as application whitelisting and script blocking. Regularly update and review the list of approved applications to ensure security."
+        }
+      ]
+    },
+    {
+      "name": "Remote Desktop Protocol (RDP) Protection",
+      "questions": [
+        {
+          "id": 1,
+          "question": "Do you restrict and monitor the use of RDP across your network?",
+          "Assessment Help": "Ensure RDP is disabled on systems where it is not needed. Regularly review and update policies to restrict RDP access only to authorized users and systems, minimizing potential entry points for unauthorized access.",
+          "Recommendation": "Disable RDP on unnecessary systems and restrict access to authorized users. Regularly review RDP policies and monitor usage to detect and prevent unauthorized access."
+        },
+        {
+          "id": 2,
+          "question": "Do you monitor the use of RDP across your network?",
+          "Assessment Help": "For necessary RDP usage, implement strong authentication mechanisms and use VPNs for secure access. Regularly monitor RDP logs for unusual or suspicious activity, and configure alerts to detect and respond to potential security incidents involving RDP access.",
+          "Recommendation": "Implement strong authentication for RDP and use VPNs for secure access. Monitor RDP logs regularly and set up alerts for suspicious activities."
+        },
+        {
+          "id": 3,
+          "question": "Does your organization have a Remote Access Policy to regulate remote connections to the corporate network, including requirements for authentication, encryption, and access controls?",
+          "Assessment Help": "Assess the Remote Access Policy to verify that it defines authorized remote access methods, authentication mechanisms (such as VPNs or multi-factor authentication), encryption standards, and access control measures to protect sensitive data during remote sessions.",
+          "Recommendation": "Develop a Remote Access Policy that includes secure authentication, encryption, and access controls. Regularly review and update the policy to address new security challenges."
+        }
+      ]
+    },
+    {
+      "name": "Risk Assessment",
+      "questions": [
+        {
+          "id": 1,
+          "question": "Has your organization conducted a comprehensive risk assessment to identify and prioritize potential threats and vulnerabilities?",
+          "Assessment Help": "Perform a comprehensive risk assessment to identify and prioritize potential threats and vulnerabilities based on their likelihood and potential impact on business operations. Consider internal and external threats, including natural disasters, cyber attacks, human error, and supply chain risks. Develop risk mitigation strategies and allocate resources based on the assessment findings to strengthen the organization's security posture.",
+          "Recommendation": "Conduct comprehensive risk assessments regularly to identify and prioritize threats. Develop and implement mitigation strategies to address identified risks."
+        },
+        {
+          "id": 2,
+          "question": "Does your organization regularly review and update risk assessments to address emerging threats and changes in the business environment?",
+          "Assessment Help": "Regularly review and update risk assessments to reflect changes in the threat landscape, technology infrastructure, regulatory requirements, and business objectives. Conduct periodic risk assessments or vulnerability scans to identify new risks and vulnerabilities and adjust risk mitigation strategies accordingly. Ensure that risk assessment processes are integrated into the organization's governance framework and decision-making processes to effectively manage cybersecurity risks.",
+          "Recommendation": "Establish a schedule for regular risk assessment reviews and updates. Ensure the risk assessment process is integrated into governance and decision-making frameworks."
+        },
+        {
+          "id": 3,
+          "question": "Has your organization established risk tolerance levels to guide decision-making and resource allocation for managing cybersecurity risks?",
+          "Assessment Help": "Define risk tolerance levels based on business objectives, regulatory requirements, and industry best practices to guide decision-making and resource allocation for managing cybersecurity risks. Establish clear criteria for assessing risk severity, likelihood, and potential impact on business operations. Align risk tolerance levels with organizational goals and risk appetite to ensure consistent risk management practices across the organization.",
+          "Recommendation": "Define and document risk tolerance levels to guide decision-making. Align risk management strategies with organizational goals and regularly review risk tolerance levels."
+        }
+      ]
+    }
+  ]
+}
