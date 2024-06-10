@@ -215,4 +215,24 @@ document.addEventListener('DOMContentLoaded', () => {
     ipcRenderer.on('save-quiz-data-reply', (event, message) => {
         alert(message);
     });
+
+    // Add event listeners to adjust container height when switching domains
+    document.querySelectorAll('.sidebar button').forEach(button => {
+        button.addEventListener('click', () => {
+            // Hide all content sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.display = 'none';
+            });
+
+            // Show the clicked content section
+            const contentId = button.getAttribute('data-content-id');
+            document.getElementById(contentId).style.display = 'block';
+
+            // Adjust the height of the container
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.style.height = 'auto'; // Reset height to auto
+            const newHeight = quizContainer.scrollHeight; // Get the new height
+            quizContainer.style.height = `${newHeight}px`; // Set the new height
+        });
+    });
 });

@@ -14,7 +14,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100wh;
+    width: 100vw;
     height: 100vh;
     overflow: hidden;
 }
@@ -25,8 +25,10 @@ body {
     color: white;
     margin: 0;
     padding: 0;
-    width: 1280px; /* Default width */
-    height: 755px; /* Default height */
+    width: 100%;
+    max-width: 1280px;
+    height: 100%;
+    max-height: 820px;
     flex-direction: column;
 }
 
@@ -36,19 +38,16 @@ body {
     justify-content: flex-start;
     padding: 10px;
     width: 100%;
-    max-width: 1280px;
     height: 100px;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
     display: flex;
-    margin-top: 56px;
 }
 
 .header .logo {
-    width: 200px;
+    width: 221px;
     height: 90px;
-    margin-top: 0px;
-    margin-right: 0px;
 }
+
 .pause-icon {
     width: 24px;
     height: 24px;
@@ -61,16 +60,13 @@ body {
     flex-direction: column;
     background-color: #f4ecd8;
     padding: 10px;
-    width: 100%; /* Adjusted for full width */
-    max-width: 170px;
-    height: 550px;
-    position: fixed; /* Fixed positioning */
-    bottom: 0; /* Position at the bottom */
-    left: 0; /* Align to the left */
-    margin: 0; /* Reset margin */
+    width: 170px;
+    height: calc(100% - 100px); /* Adjusted to align with header height */
+    position: fixed;
+    top: 100px; /* Align with the bottom of the header */
+    left: 0;
     overflow-y: auto;
     scroll-behavior: smooth;
-    z-index: 999; /* Ensure it's above other content */
 }
 
 .sidebar button {
@@ -89,7 +85,6 @@ body {
 .sidebar button:hover {
     background-color: #e0d4b3;
     border-radius: 30px;
-
 }
 
 .sidebar button.active {
@@ -98,55 +93,59 @@ body {
     font-weight: bold;
     border-radius: 30px;
 }
+
 .sidebar::-webkit-scrollbar {
-    width: 10px; /* Adjust the width of the scrollbar */
-  }
-  
-  .sidebar::-webkit-scrollbar-track {
-    background: #194264; /* Dark blue track */
-  }
-  
-  .sidebar::-webkit-scrollbar-thumb {
-    background: #063052; /* Light blue thumb */
-    border-radius: 10px; /* Adds rounded corners to the scrollbar thumb */
-    border: 2px solid #194264; /* Adds a border to the thumb to match the track */
-    min-height: 5px; /* Minimum height for the thumb */
-    max-height: 10px;  /* Minimum height for the thumb */
-  }
-  
-  .sidebar::-webkit-scrollbar-thumb:hover {
-    background: #f4ecd8; /* Slightly darker blue on hover */
-  }
+    width: 10px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: #194264;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #063052;
+    border-radius: 10px;
+    border: 2px solid #194264;
+    min-height: 5px;
+    max-height: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: #f4ecd8;
+}
 
 #quiz-container {
-    margin-left: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    width: 1100px;
-    overflow-y: auto;
-    max-height: 545px;
+    width: calc(100% - 170px);
+    overflow-y: auto; /* Ensure vertical scrollbar is enabled */
+    margin-left: 170px;
+    padding: 20px;
+    min-height: 100vh; /* Ensure the container takes at least the full viewport height */
+    transition: height 0.3s ease; /* Smooth height transitions */
 }
+
 #quiz-container::-webkit-scrollbar {
-    width: 10px; /* Adjust the width of the scrollbar */
-  }
-  
-  #quiz-container::-webkit-scrollbar-track {
-    background: #194264; /* Dark blue track */
-  }
-  
-  #quiz-container::-webkit-scrollbar-thumb {
-    background: #f4ecd8; /* Light blue thumb */
-    border-radius: 10px; /* Adds rounded corners to the scrollbar thumb */
-    border: 2px solid #194264; /* Adds a border to the thumb to match the track */
-    min-height: 5px; /* Minimum height for the thumb */
-    max-height: 10px;  /* Minimum height for the thumb */
-  }
-  
-  #quiz-container::-webkit-scrollbar-thumb:hover {
-    background: #f4ecd8; /* Slightly darker blue on hover */
-  }
+    width: 10px;
+}
+
+#quiz-container::-webkit-scrollbar-track {
+    background: #194264;
+}
+
+#quiz-container::-webkit-scrollbar-thumb {
+    background: #f4ecd8;
+    border-radius: 10px;
+    border: 2px solid #194264;
+    min-height: 5px;
+    max-height: 10px;
+}
+
+#quiz-container::-webkit-scrollbar-thumb:hover {
+    background: #e0d4b3;
+}
 
 .question-container {
     display: flex;
@@ -154,7 +153,8 @@ body {
     align-items: flex-start;
     text-align: left;
     margin: 20px 0;
-    width: 800px;
+    width: 100%;
+    max-width: 800px;
     position: relative;
 }
 
@@ -249,35 +249,58 @@ body {
     background-color: #e0d4b3;
 }
 
-/* Responsive Styles */
-
-/* For small screens */
-@media only screen and (max-width: 600px) {
+/* Media Queries for Responsiveness */
+@media only screen and (max-width: 768px) {
     .container {
-        width: 100%;
-        max-width: none;
-        height: auto;
         flex-direction: column;
-        margin-top: 0;
+        align-items: center;
     }
 
     .header {
-        margin-top: 10px;
+        width: 100%;
+        height: auto;
+        padding: 10px;
     }
 
     .sidebar {
-        position: static;
         width: 100%;
-        max-width: none;
-        margin: 10px 0;
+        height: auto;
+        position: relative;
+        top: 0;
+        margin: 0;
+        padding: 10px;
     }
 
     #quiz-container {
         width: 100%;
-        max-height: none;
+        margin-left: 0;
+        padding: 10px;
     }
 
     .question-container {
-        width: 90%;
+        width: 100%;
+        max-width: 100%;
     }
+}
+
+@media only screen and (max-width: 480px) {
+    .header .logo {
+        width: 150px;
+        height: auto;
+    }
+
+    .question-text, .answer-buttons label {
+        font-size: 14px;
+    }
+
+    .hint-button, .collapsible, .submit-button {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+}
+
+.content-section {
+    padding: 20px;
+    margin: 0;
+    box-sizing: border-box;
 }

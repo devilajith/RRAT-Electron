@@ -5,13 +5,14 @@ const fs = require('fs');
 function createWindow() {
     const mainWindow = new BrowserWindow({
         width: 1280,
-        height: 800,
+        height: 820,
         webPreferences: {
-            preload: path.join(__dirname, 'render.js'),
+            preload: path.join(__dirname, 'quiz.js'),
             contextIsolation: false,
             enableRemoteModule: true,
             nodeIntegration: true
-        }
+        },
+        resizable:false
     });
 
     mainWindow.loadFile('quiz.html');
