@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Add hint button and collapsible content
             const hintButton = document.createElement('button');
             hintButton.classList.add('collapsible');
-            hintButton.innerText = 'Show Hint';
+            hintButton.innerText = 'Assessment Help';
 
             const hintContent = document.createElement('div');
             hintContent.classList.add('collapsible-content');
