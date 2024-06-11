@@ -3,7 +3,7 @@ const { ipcRenderer } = require('electron');
 document.addEventListener('DOMContentLoaded', () => {
     let quizData = {};
     const quizContainer = document.getElementById('quiz-container');
-    const domainButtons = document.querySelectorAll('.sidebar button');
+    const setButtonsContainer = document.getElementById('set-buttons');
     let currentDomainIndex = 0;
     let domains = [];
     let userAnswers = {}; // Object to store user answers for all domains
@@ -20,11 +20,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 domains.forEach(domain => {
                     userAnswers[domain] = {}; // Initialize user answers for each domain
                 });
+                createDomainButtons(); // Create the domain buttons dynamically
                 displayQuestionsForCurrentDomain();
-                addDomainButtonListeners();
                 highlightCurrentDomainButton(domains[0]); // Highlight the first button by default
             })
             .catch(error => console.error('Error loading quiz data:', error));
+    }
+
+    function createDomainButtons() {
+        // Clear the container before adding new buttons
+        setButtonsContainer.innerHTML = '';
+
+        domains.forEach((domain, index) => {
+            const button = document.createElement('button');
+            button.id = `${domain.replace(/\s+/g, '-')}-btn`;
+            button.innerText = domain;
+            if (index === 0) {
+                button.classList.add('active');
+            }
+            button.addEventListener('click', () => {
+                currentDomainIndex = index;
+                displayQuestionsForCurrentDomain();
+                highlightCurrentDomainButton(domain);
+            });
+            setButtonsContainer.appendChild(button);
+        });
     }
 
     function displayQuestionsForCurrentDomain() {
@@ -154,35 +174,9 @@ document.addEventListener('DOMContentLoaded', () => {
         quizContainer.appendChild(nextButton);
     }
 
-    function addDomainButtonListeners() {
-        domainButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const domain = button.id.replace('-btn', '').replace(/-/g, ' ');
-                const domainIndex = domains.indexOf(domain);
-                if (domainIndex !== -1) {
-                    currentDomainIndex = domainIndex;
-                    displayQuestionsForCurrentDomain();
-                    highlightCurrentDomainButton(domain);
-                }
-            });
-        });
-    }
-
-    function areAllQuestionsAnswered(domain) {
-        const questions = quizData[domain];
-        return questions.every((_, index) => {
-            return userAnswers[domain][index] !== undefined;
-        });
-    }
-
-    function getUnansweredDomains() {
-        return domains.filter(domain => {
-            return !areAllQuestionsAnswered(domain);
-        });
-    }
-
     function highlightCurrentDomainButton(domain) {
-        domainButtons.forEach(button => {
+        const buttons = setButtonsContainer.querySelectorAll('button');
+        buttons.forEach(button => {
             if (button.id.replace('-btn', '').replace(/-/g, ' ') === domain) {
                 button.classList.add('active');
                 button.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -200,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function saveQuizData() {
         const quizAnswers = {};
-        domains.forEach(domain => {  // domains is now within the scope
+        domains.forEach(domain => {
             quizAnswers[domain] = quizData[domain].map((questionData, index) => {
                 return {
                     question: questionData.question,
@@ -216,23 +210,11 @@ document.addEventListener('DOMContentLoaded', () => {
         alert(message);
     });
 
-    // Add event listeners to adjust container height when switching domains
-    document.querySelectorAll('.sidebar button').forEach(button => {
-        button.addEventListener('click', () => {
-            // Hide all content sections
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.style.display = 'none';
-            });
+    function areAllQuestionsAnswered(domain) {
+        return quizData[domain].every((_, index) => userAnswers[domain][index] !== undefined);
+    }
 
-            // Show the clicked content section
-            const contentId = button.getAttribute('data-content-id');
-            document.getElementById(contentId).style.display = 'block';
-
-            // Adjust the height of the container
-            const quizContainer = document.getElementById('quiz-container');
-            quizContainer.style.height = 'auto'; // Reset height to auto
-            const newHeight = quizContainer.scrollHeight; // Get the new height
-            quizContainer.style.height = `${newHeight}px`; // Set the new height
-        });
-    });
+    function getUnansweredDomains() {
+        return domains.filter(domain => !areAllQuestionsAnswered(domain));
+    }
 });
