@@ -84,23 +84,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
             questionDiv.appendChild(questionRow);
 
-            const answerButtonsDiv = document.createElement('div');
-            answerButtonsDiv.classList.add('answer-buttons');
+            // Create the toggle bar
+            const toggleContainer = document.createElement('div');
+            toggleContainer.classList.add('toggle-container');
 
-            const yesLabel = document.createElement('label');
-            yesLabel.innerHTML = `<input type="radio" name="answer-${domain}-${index}" value="yes"> Yes`;
-            answerButtonsDiv.appendChild(yesLabel);
+            const options = ['Yes', 'No', 'Partial'];
+            options.forEach(option => {
+                const button = document.createElement('div');
+                button.classList.add('toggle-button');
+                button.innerText = option;
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    toggleContainer.querySelectorAll('.toggle-button').forEach(btn => btn.classList.remove('active'));
+                    // Add active class to the clicked button
+                    button.classList.add('active');
+                    // Save the user's answer
+                    userAnswers[domain][index] = option.toLowerCase();
+                });
+                toggleContainer.appendChild(button);
+            });
 
-            const noLabel = document.createElement('label');
-            noLabel.innerHTML = `<input type="radio" name="answer-${domain}-${index}" value="no"> No`;
-            answerButtonsDiv.appendChild(noLabel);
-
-            const partialLabel = document.createElement('label');
-            partialLabel.innerHTML = `<input type="radio" name="answer-${domain}-${index}" value="partial"> Partial`;
-            answerButtonsDiv.appendChild(partialLabel);
-
-            // Append the answer buttons div after the question text
-            questionDiv.appendChild(answerButtonsDiv);
+            // Append the toggle bar after the question text
+            questionDiv.appendChild(toggleContainer);
 
             // Add hint button and collapsible content
             const hintButton = document.createElement('button');
@@ -128,19 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Restore user's previous answer if it exists
             if (userAnswers[domain][index] !== undefined) {
-                const radioButton = document.querySelector(`input[name="answer-${domain}-${index}"][value="${userAnswers[domain][index]}"]`);
-                if (radioButton) {
-                    radioButton.checked = true;
+                const previousAnswer = userAnswers[domain][index];
+                const button = Array.from(toggleContainer.querySelectorAll('.toggle-button')).find(btn => btn.innerText.toLowerCase() === previousAnswer);
+                if (button) {
+                    button.classList.add('active');
                 }
             }
-
-            // Add event listener to save user's answer
-            const radioButtons = document.getElementsByName(`answer-${domain}-${index}`);
-            radioButtons.forEach(radio => {
-                radio.addEventListener('change', () => {
-                    userAnswers[domain][index] = radio.value;
-                });
-            });
         });
 
         const nextButton = document.createElement('button');
