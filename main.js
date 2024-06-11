@@ -15,7 +15,6 @@ function createWindow() {
       enableRemoteModule: false, // Disable remote module
       nodeIntegration: true
     },
-    resizable:false
   });
 
   mainWindow.loadFile('index.html');
