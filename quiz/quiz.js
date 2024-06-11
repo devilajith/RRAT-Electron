@@ -1,32 +1,34 @@
+const { ipcRenderer } = require('electron');
+
 document.addEventListener('DOMContentLoaded', () => {
     let quizData = {};
     const quizContainer = document.getElementById('quiz-container');
     const setButtonsContainer = document.getElementById('set-buttons');
     let currentDomainIndex = 0;
     let domains = [];
-    let userAnswers = {};
+    let userAnswers = {}; // Object to store user answers for all domains
 
     function loadQuizData() {
-        window.electron.loadQuizData()
+        fetch('Qdata.json')
+            .then(response => response.json())
             .then(data => {
-                console.log('Quiz data loaded:', data);
                 quizData = data.domains.reduce((acc, domain) => {
                     acc[domain.name] = domain.questions;
                     return acc;
                 }, {});
                 domains = Object.keys(quizData);
-                console.log('Domains:', domains);
                 domains.forEach(domain => {
-                    userAnswers[domain] = {};
+                    userAnswers[domain] = {}; // Initialize user answers for each domain
                 });
-                createDomainButtons();
+                createDomainButtons(); // Create the domain buttons dynamically
                 displayQuestionsForCurrentDomain();
-                highlightCurrentDomainButton(domains[0]);
+                highlightCurrentDomainButton(domains[0]); // Highlight the first button by default
             })
             .catch(error => console.error('Error loading quiz data:', error));
     }
 
     function createDomainButtons() {
+        // Clear the container before adding new buttons
         setButtonsContainer.innerHTML = '';
 
         domains.forEach((domain, index) => {
@@ -46,24 +48,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displayQuestionsForCurrentDomain() {
-        quizContainer.innerHTML = '';
+        quizContainer.innerHTML = ''; // Clear previous content
         const domain = domains[currentDomainIndex];
 
-        console.log('Displaying questions for domain:', domain);
-
+        // Scroll to the top of the quiz container
         quizContainer.scrollTop = 0;
 
+        // Create a div for the explanation
         const explanationDiv = document.createElement('div');
         explanationDiv.classList.add('explanation-container');
         explanationDiv.id = `${domain.replace(/\s+/g, '-')}-explanation`;
 
+        // Add some placeholder explanation text (you can customize this)
         const explanationText = document.createElement('p');
         explanationText.classList.add('explanation-text');
-        explanationText.innerText = `This is the explanation for ${domain}.`;
+        explanationText.innerText = `This is the explanation for ${domain}.`; // Customize as needed
         explanationDiv.appendChild(explanationText);
 
+        // Append the explanation div to the quiz container
         quizContainer.appendChild(explanationDiv);
 
+        // Append the questions
         quizData[domain].forEach((questionData, index) => {
             const questionDiv = document.createElement('div');
             questionDiv.classList.add('question-container');
@@ -79,26 +84,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
             questionDiv.appendChild(questionRow);
 
-            const answerButtonsDiv = document.createElement('div');
-            answerButtonsDiv.classList.add('answer-buttons');
+            // Create the toggle bar
+            const toggleContainer = document.createElement('div');
+            toggleContainer.classList.add('toggle-container');
 
-            const yesLabel = document.createElement('label');
-            yesLabel.innerHTML = `<input type="radio" name="answer-${domain}-${index}" value="yes"> Yes`;
-            answerButtonsDiv.appendChild(yesLabel);
+            const options = ['Yes', 'No', 'Partial'];
+            options.forEach(option => {
+                const button = document.createElement('div');
+                button.classList.add('toggle-button');
+                button.innerText = option;
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons
+                    toggleContainer.querySelectorAll('.toggle-button').forEach(btn => btn.classList.remove('active'));
+                    // Add active class to the clicked button
+                    button.classList.add('active');
+                    // Save the user's answer
+                    userAnswers[domain][index] = option.toLowerCase();
+                });
+                toggleContainer.appendChild(button);
+            });
 
-            const noLabel = document.createElement('label');
-            noLabel.innerHTML = `<input type="radio" name="answer-${domain}-${index}" value="no"> No`;
-            answerButtonsDiv.appendChild(noLabel);
+            // Append the toggle bar after the question text
+            questionDiv.appendChild(toggleContainer);
 
-            const partialLabel = document.createElement('label');
-            partialLabel.innerHTML = `<input type="radio" name="answer-${domain}-${index}" value="partial"> Partial`;
-            answerButtonsDiv.appendChild(partialLabel);
-
-            questionDiv.appendChild(answerButtonsDiv);
-
+            // Add hint button and collapsible content
             const hintButton = document.createElement('button');
             hintButton.classList.add('collapsible');
-            hintButton.innerText = 'Show Hint';
+            hintButton.innerText = 'Assessment Help';
 
             const hintContent = document.createElement('div');
             hintContent.classList.add('collapsible-content');
@@ -113,24 +125,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
+            // Append the hint button and content after the answer buttons
             questionDiv.appendChild(hintButton);
             questionDiv.appendChild(hintContent);
 
             quizContainer.appendChild(questionDiv);
 
+            // Restore user's previous answer if it exists
             if (userAnswers[domain][index] !== undefined) {
-                const radioButton = document.querySelector(`input[name="answer-${domain}-${index}"][value="${userAnswers[domain][index]}"]`);
-                if (radioButton) {
-                    radioButton.checked = true;
+                const previousAnswer = userAnswers[domain][index];
+                const button = Array.from(toggleContainer.querySelectorAll('.toggle-button')).find(btn => btn.innerText.toLowerCase() === previousAnswer);
+                if (button) {
+                    button.classList.add('active');
                 }
             }
-
-            const radioButtons = document.getElementsByName(`answer-${domain}-${index}`);
-            radioButtons.forEach(radio => {
-                radio.addEventListener('change', () => {
-                    userAnswers[domain][index] = radio.value;
-                });
-            });
         });
 
         const nextButton = document.createElement('button');
@@ -183,8 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadQuizData();
 
     function saveQuizData() {
-        const assessmentName = localStorage.getItem('assessmentName') || 'Unnamed Assessment';
-
         const quizAnswers = {};
         domains.forEach(domain => {
             quizAnswers[domain] = quizData[domain].map((questionData, index) => {
@@ -195,22 +201,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        const dataToSave = {
-            assessmentName,
-            answers: quizAnswers
-        };
-
-        console.log('Sending quiz data to save:', JSON.stringify(dataToSave, null, 2));
-        window.electron.send('save-quiz-data', dataToSave);
+        ipcRenderer.send('save-quiz-data', quizAnswers);
     }
 
-    window.electron.receive('save-quiz-data-reply', (response) => {
-        console.log('Received reply from main process:', response.message);
-        if (response.success) {
-            alert('Quiz data saved successfully.');
-        } else {
-            alert('Failed to save quiz data.');
-        }
+    ipcRenderer.on('save-quiz-data-reply', (event, message) => {
+        alert(message);
     });
 
     function areAllQuestionsAnswered(domain) {

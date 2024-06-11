@@ -12,17 +12,17 @@
             <img src="images/user.svg" alt="User" class="profile-picture" id="profile-picture">
             <div class="logo">
                 <img src="images/group-40.svg" alt="logo" class="logo">
-            </div>
+            </div>            			 
         </div>
         <div class="navbar">
             <div class="nav-links">
                 <button class="nav-button" id="new-assessment">New assessment</button>
                 <button class="nav-button" id="my-assessments">My assessments</button>
-            </div>
+            </div>            
         </div>
         <div class="content">
             <h2>Assessment Name<span class="required">*</span></h2>
-            <input type="text" id="assessment-name" class="input-field" placeholder="Enter assessment name">
+            <input type="text" id="assessment-name" class="input-field">
             <button id="start-button" class="start-button">Start</button>
             <div class="disclaimer">
                 <h3>Disclaimer</h3>
@@ -33,6 +33,7 @@
         </div>
     </div>
     <script>
+        function quiz(){window.location.href="quiz.html"}
         document.getElementById('profile-picture').addEventListener('click', function() {
             window.location.href = 'profile.html';
         });
@@ -50,8 +51,7 @@
             if (assessmentName.trim() === '') {
                 alert('Please enter the assessment name.');
             } else {
-                localStorage.setItem('assessmentName', assessmentName); // Store the assessment name
-                window.location.href = 'quiz/quiz.html'; // navigate to quiz.html
+                quiz()
             }
         });
     </script>
