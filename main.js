@@ -13,7 +13,9 @@ function createWindow() {
       preload: path.join(__dirname, 'js/preload.js'), // Reference to preload.js
       contextIsolation: true, // Context isolation for security
       enableRemoteModule: false, // Disable remote module
-    }
+      nodeIntegration: true
+    },
+    resizable:false
   });
 
   mainWindow.loadFile('index.html');
