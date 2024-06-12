@@ -101,8 +101,8 @@ body {
     text-align: center;
     padding: 40px 20px;
     background-color: #EAF6FF;
-    width: 100%; /* Use full width */
-    height: 100%; /* Use full height */
+	width: 100%; /* Use full width */
+	height: 100%; /* Use full height */
 }
 
 h2 {
