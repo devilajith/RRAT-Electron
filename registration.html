@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Registration</title>
+    <link rel="stylesheet" href="css/styles.css"> 
+    <link rel="stylesheet" href="css/password-popup.css">
+    <style>
+        .red-star {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="images/Nciipc_Logo.png" alt="logo" class="logo">
+            </div>
+            <h1>National Critical Information Infrastructure Protection Center (NCIIPC)</h1>
+        </div>
+        <div class="main-content">
+            <div class="field">
+                <img src="images/group-40.svg" alt="rrat" class="rrat">                
+            </div>
+            <div class="form-container">
+                <h1>Register</h1>
+                <form id="registrationForm">
+                    <div class="form-field">
+                        <label for="email">Emails<span class="red-star">*</span></label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="name">Name<span class="red-star">*</span></label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="password">Password<span class="red-star">*</span></label>
+                        <input type="password" id="password" name="password" required>
+                        <div id="passwordPopup" class="password-popup">
+                            <ul>
+                                <li id="length" class="invalid">At least 8 characters</li>
+                                <li id="uppercase" class="invalid">One uppercase letter</li>
+                                <li id="lowercase" class="invalid">One lowercase letter</li>
+                                <li id="number" class="invalid">One number</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <label for="confirm-password">Confirm Password<span class="red-star">*</span></label>
+                        <input type="password" id="confirm-password" name="confirm-password" required>
+                    </div>
+            </div>
+            <div class="form-container-1">
+                    <div class="form-field">
+                        <label for="organization">Organization Name<span class="red-star">*</span></label>
+                        <input type="text" id="organization" name="organization" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="designation">Designation<span class="red-star">*</span></label>
+                        <input type="text" id="designation" name="designation" required>
+                    </div>
+                    <div class="form-field">
+                        <label for="sector">Sector<span class="red-star">*</span></label>
+                        <input type="text" id="sector" name="sector" required>
+                    </div>
+                    <button type="submit" class="group-6">
+                        <div class="rectangle-15"></div>
+                        <div class="submit">Submit</div>
+                        <div class="ellipse-2"></div>
+                        <img class="vector-1" src="images/vector-10.svg" alt="vector" />
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="js/renderer.js"></script>
+</body>
+</html>

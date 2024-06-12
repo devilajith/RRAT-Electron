@@ -17,7 +17,7 @@ function createWindow() {
     }
   });
 
-  mainWindow.loadFile('index.html');
+  mainWindow.loadFile('index.html'); // Load the new index.html
 
   mainWindow.on('closed', function () {
     mainWindow = null;
@@ -70,8 +70,8 @@ ipcMain.on('register', (event, data) => {
   stmt.finalize();
 });
 
-ipcMain.on('get-profile', (event, email) => {
-  db.get("SELECT * FROM registrations WHERE email = ?", [email], (err, row) => {
+ipcMain.on('get-profile', (event, userId) => {
+  db.get("SELECT * FROM registrations WHERE rowid = ?", [userId], (err, row) => {
     if (err) {
       console.error(err.message);
       event.reply('profile-data', { success: false });
@@ -133,4 +133,19 @@ ipcMain.on('save-quiz-data', (event, quizAnswers) => {
     console.error('Error saving quiz data:', error);
     event.reply('save-quiz-data-reply', { success: false, message: 'Failed to save quiz data.' });
   }
+});
+
+ipcMain.handle('check-user-existence', async (event, userId) => {
+  console.log('Checking user existence for userId:', userId);
+  return new Promise((resolve, reject) => {
+    db.get("SELECT COUNT(*) as count FROM registrations WHERE rowid = ?", [userId], (err, row) => {
+      if (err) {
+        console.error('Error checking user existence:', err);
+        reject(err);
+      } else {
+        console.log('User existence result:', row.count > 0);
+        resolve(row.count > 0);
+      }
+    });
+  });
 });

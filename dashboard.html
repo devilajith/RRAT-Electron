@@ -58,9 +58,9 @@
         });
 
         document.addEventListener('DOMContentLoaded', () => {
-            const email = sessionStorage.getItem('userEmail');
-            if (email) {
-                window.electron.send('get-profile', email);
+            const userId = sessionStorage.getItem('userId');
+            if (userId) {
+                window.electron.send('get-profile', userId);
                 window.electron.receive('profile-data', (response) => {
                     if (response.success && response.data) {
                         document.getElementById('user-name').textContent = response.data.name;

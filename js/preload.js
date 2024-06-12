@@ -14,5 +14,6 @@ contextBridge.exposeInMainWorld('electron', {
       ipcRenderer.on(channel, (event, ...args) => func(...args));
     }
   },
-  loadQuizData: () => ipcRenderer.invoke('load-quiz-data')
+  loadQuizData: () => ipcRenderer.invoke('load-quiz-data'),
+  checkUserExistence: (userId) => ipcRenderer.invoke('check-user-existence', userId)
 });

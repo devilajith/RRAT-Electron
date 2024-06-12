@@ -64,10 +64,10 @@
     </div>
     <script src="js/profile-placeholder.js"></script>
     <script>
-
         function dashboard() { 
             window.location.href = "dashboard.html";
         }
+        
         document.addEventListener('DOMContentLoaded', () => {
             const updateProfileForm = document.getElementById('updateProfileForm');
             const saveButton = document.getElementById('saveButton');
@@ -102,9 +102,9 @@
 
         // Fetch the profile data on page load
         document.addEventListener('DOMContentLoaded', () => {
-            const email = sessionStorage.getItem('userEmail');
-            if (email) {
-                window.electron.send('get-profile', email);
+            const userId = sessionStorage.getItem('userId');
+            if (userId) {
+                window.electron.send('get-profile', userId);
                 window.electron.receive('profile-data', (response) => {
                     if (response.success && response.data) {
                         document.getElementById('email').value = response.data.email;

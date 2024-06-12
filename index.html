@@ -3,78 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login and Registration</title>
-    <link rel="stylesheet" href="css/styles.css"> 
-    <link rel="stylesheet" href="css/password-popup.css">
+    <title>Loading Animation</title>
     <style>
-        .red-star {
-            color: red;
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+        body {
+            background-color: #194264;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+        }
+        .container {
+            background-color: #194264;
+            color: white;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .header {
+            background-color: #194264;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            width: 100%;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+        }
+        .header .logo {
+            width: 200px;
+            height: auto;
+        }
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            text-align: right;
+            margin: 0;
+            flex-grow: 1;
+        }
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            flex-grow: 1;
+            width: 100%;
+            padding: 20px;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px;
+        }
+        .loading-animation {
+            position: relative;
+            width: 60px;
+            height: 60px;
+        }
+        .loading-animation .shield {
+            width: 100%;
+            height: 100%;
+            background: url('images/shield.svg') no-repeat center center;
+            background-size: contain;
+            animation: rotate 2s linear infinite;
+        }
+        .loading-animation .lock {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 50%;
+            height: 50%;
+            background: url('images/lock.svg') no-repeat center center;
+            background-size: contain;
+            transform: translate(-50%, -50%);
+        }
+        .loading-animation .pulse {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(52, 152, 219, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 2s infinite;
+        }
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(0.9); opacity: 1; }
+            70% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
+            100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.5; }
+        }
+        /* Media Queries for responsiveness */
+        @media (max-width: 1024px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .header .logo {
+                width: 150px;
+                height: auto;
+            }
+            .main-content {
+                padding: 10px;
+            }
+            .loading-animation {
+                width: 50px;
+                height: 50px;
+            }
+        }
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.2rem;
+            }
+            .header .logo {
+                width: 100px;
+                height: auto;
+            }
+            .main-content {
+                padding: 5px;
+            }
+            .loading-animation {
+                width: 40px;
+                height: 40px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="logo">
-                <img src="images/Nciipc_Logo.png" alt="logo" class="logo">
-            </div>
-            <h1>National Critical Information Infrastructure Protection Center (NCIIPC)</h1>
+            <img src="images/Nciipc_Logo.png" alt="Header Logo" class="logo">
+            <h1>NCIIPC</h1>
         </div>
         <div class="main-content">
-            <div class="field">
-                <img src="images/group-40.svg" alt="rrat" class="rrat">                
+            <div class="logo-container">
+                <img src="images/group-40.svg" alt="Logo 1" class="logo">
             </div>
-            <div class="form-container">
-                <h1>Register</h1>
-                <form id="registrationForm">
-                    <div class="form-field">
-                        <label for="email">Emails<span class="red-star">*</span></label>
-                        <input type="email" id="email" name="email" required>
-                    </div>
-                    <div class="form-field">
-                        <label for="name">Name<span class="red-star">*</span></label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-field">
-                        <label for="password">Password<span class="red-star">*</span></label>
-                        <input type="password" id="password" name="password" required>
-                        <div id="passwordPopup" class="password-popup">
-                            <ul>
-                                <li id="length" class="invalid">At least 8 characters</li>
-                                <li id="uppercase" class="invalid">One uppercase letter</li>
-                                <li id="lowercase" class="invalid">One lowercase letter</li>
-                                <li id="number" class="invalid">One number</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="form-field">
-                        <label for="confirm-password">Confirm Password<span class="red-star">*</span></label>
-                        <input type="password" id="confirm-password" name="confirm-password" required>
-                    </div>
-            </div>
-            <div class="form-container-1">
-                    <div class="form-field">
-                        <label for="organization">Organization Name<span class="red-star">*</span></label>
-                        <input type="text" id="organization" name="organization" required>
-                    </div>
-                    <div class="form-field">
-                        <label for="designation">Designation<span class="red-star">*</span></label>
-                        <input type="text" id="designation" name="designation" required>
-                    </div>
-                    <div class="form-field">
-                        <label for="sector">Sector<span class="red-star">*</span></label>
-                        <input type="text" id="sector" name="sector" required>
-                    </div>
-                    <button type="submit" class="group-6">
-                        <div class="rectangle-15"></div>
-                        <div class="submit">Submit</div>
-                        <div class="ellipse-2"></div>
-                        <img class="vector-1" src="images/vector-10.svg" alt="vector" />
-                    </button>
-                </form>
+            <div class="loading-animation">
+                <div class="shield"></div>
+                <div class="lock"></div>
+                <div class="pulse"></div>
             </div>
         </div>
     </div>
-    <script src="js/renderer.js"></script>
+
+    <script>
+        window.onload = function() {
+            setTimeout(function() {
+                console.log('Checking user existence...');
+                window.electron.checkUserExistence(1).then(exists => {
+                    console.log('User existence check result:', exists);
+                    if (exists) {
+                        sessionStorage.setItem('userId', 1);
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        window.location.href = 'registration.html';
+                    }
+                }).catch(error => {
+                    console.error('Error checking user existence:', error);
+                });
+            }, 2000); // 2 seconds loading time
+        }
+    </script>
 </body>
 </html>
