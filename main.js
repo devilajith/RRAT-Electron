@@ -1,5 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
+const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
 
 let mainWindow;
@@ -13,8 +14,7 @@ function createWindow() {
       preload: path.join(__dirname, 'js/preload.js'), // Reference to preload.js
       contextIsolation: true, // Context isolation for security
       enableRemoteModule: false, // Disable remote module
-      nodeIntegration: true
-    },
+    }
   });
 
   mainWindow.loadFile('index.html');
@@ -95,4 +95,42 @@ ipcMain.on('update-profile', (event, updatedProfileData) => {
           event.reply('profile-update', { success: true });
       }
   });
+});
+
+ipcMain.handle('load-quiz-data', async () => {
+  const dataPath = path.join(__dirname, 'quiz/Qdata.json');
+  try {
+    const data = fs.readFileSync(dataPath, 'utf-8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading quiz data:', error);
+    throw error;
+  }
+});
+
+ipcMain.on('save-quiz-data', (event, quizAnswers) => {
+  const { assessmentName, answers } = quizAnswers;
+  const timestamp = new Date().toISOString().replace(/:/g, '-'); // Replace colon to avoid issues in filenames
+  const fileName = `${assessmentName}-${timestamp}.json`;
+  const savePath = path.join(__dirname, 'My Assessments');
+
+  // Ensure the 'My Assessments' folder exists
+  try {
+    if (!fs.existsSync(savePath)) {
+      console.log('Creating directory:', savePath);
+      fs.mkdirSync(savePath);
+    } else {
+      console.log('Directory already exists:', savePath);
+    }
+
+    const fullPath = path.join(savePath, fileName);
+    console.log('Saving file to:', fullPath);
+
+    fs.writeFileSync(fullPath, JSON.stringify(answers, null, 2));
+    console.log('Quiz data saved successfully to:', fullPath);
+    event.reply('save-quiz-data-reply', { success: true, message: 'Quiz data saved successfully.' });
+  } catch (error) {
+    console.error('Error saving quiz data:', error);
+    event.reply('save-quiz-data-reply', { success: false, message: 'Failed to save quiz data.' });
+  }
 });
