@@ -28,7 +28,7 @@
                 <h1>Register</h1>
                 <form id="registrationForm">
                     <div class="form-field">
-                        <label for="email">Emails<span class="red-star">*</span></label>
+                        <label for="email">Email<span class="red-star">*</span></label>
                         <input type="email" id="email" name="email" required>
                     </div>
                     <div class="form-field">
@@ -75,6 +75,30 @@
             </div>
         </div>
     </div>
-    <script src="js/renderer.js"></script>
+    <script>
+        document.getElementById('registrationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = {
+                email: document.getElementById('email').value,
+                name: document.getElementById('name').value,
+                password: document.getElementById('password').value,
+                organization: document.getElementById('organization').value,
+                designation: document.getElementById('designation').value,
+                sector: document.getElementById('sector').value
+            };
+
+            window.electron.send('register', formData);
+        });
+
+        window.electron.receive('registration-success', (response) => {
+            if (response.success) {
+                sessionStorage.setItem('userId', 1); // Assuming user ID 1 for simplicity
+                window.location.href = 'dashboard.html';
+            } else {
+                alert('Registration failed. Please try again.');
+            }
+        });
+    </script>
 </body>
 </html>

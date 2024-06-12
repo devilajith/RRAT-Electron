@@ -58,13 +58,13 @@ app.on('activate', function () {
 
 ipcMain.on('register', (event, data) => {
   const stmt = db.prepare("INSERT INTO registrations (email, name, password, organization, designation, sector) VALUES (?, ?, ?, ?, ?, ?)");
-  stmt.run([data.email, data.name, data.password, data.organization, data.designation, data.sector], (err) => {
+  stmt.run([data.email, data.name, data.password, data.organization, data.designation, data.sector], function(err) {
     if (err) {
       console.error(err.message);
       event.reply('registration-success', { success: false });
     } else {
       console.log("Registration successfully added to the database");
-      event.reply('registration-success', { success: true });
+      event.reply('registration-success', { success: true, userId: this.lastID });
     }
   });
   stmt.finalize();
