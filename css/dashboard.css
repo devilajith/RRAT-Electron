@@ -78,20 +78,31 @@ body {
 
 
 .profile-picture {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center;
+    margin-right: 0; /* Move to the left side */
+    padding: 0; /* Remove any padding */
+}
+
+.profile-picture .profile {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    margin-right: 10px;
-    list-style-position: outside;
-    padding-left: 0px;
-    margin: 20px;
+    margin-bottom: 5px; /* Space between picture and name */
+}
+
+.user-name {
+    color: white;
+    font-size: 14px;
+    text-align: center;
 }
 .content {
     text-align: center;
     padding: 40px 20px;
     background-color: #EAF6FF;
-	width: 100%; /* Use full width */
-	height: 100%; /* Use full height */
+    width: 100%; /* Use full width */
+    height: 100%; /* Use full height */
 }
 
 h2 {
