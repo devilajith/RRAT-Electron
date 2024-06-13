@@ -30,9 +30,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between; /* Ensure space is distributed */
-    padding: 10px;
+    padding: 20px 10px;
     width: 100%; /* Use full width */
-    height: 100px;
+    height: 120px;
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
     z-index: 1;
 }
@@ -40,14 +40,11 @@ body {
 .logo {
     display: flex;
     align-items: center;
-    margin-left: 0; /* Move to the left side */
-    padding: 0; /* Remove any padding */
+    
 }
-
 .logo .rrat {
-    width: 200px;
-    height: 90px;
-    margin-left: 0; /* Ensure no extra margin */
+    height: 70px;
+    margin-left: 20px; /* Ensure no extra margin */
 }
 
 .tabs {
