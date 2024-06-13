@@ -46,9 +46,19 @@
             const assessmentName = document.getElementById('assessment-name').value;
             if (assessmentName.trim() === '') {
                 alert('Please enter the assessment name.');
+            } else if (!/^[a-zA-Z\s]+$/.test(assessmentName)) {
+                alert('Only characters and spaces are allowed in the assessment name.');
             } else {
                 localStorage.setItem('assessmentName', assessmentName); // Store the assessment name
                 window.location.href = 'quiz/quiz.html'; // navigate to quiz.html
+            }
+        });
+
+        document.getElementById('assessment-name').addEventListener('input', function(e) {
+            const input = e.target.value;
+            const sanitizedInput = input.replace(/[^a-zA-Z\s]/g, '');
+            if (input !== sanitizedInput) {
+                e.target.value = sanitizedInput;
             }
         });
 

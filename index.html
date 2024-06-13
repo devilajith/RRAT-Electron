@@ -50,12 +50,9 @@
             justify-content: center;
             margin: 20px;
             flex-direction: row;
-            -webkit-transform-origin: center;
             transform-origin: center;
-            -webkit-animation: fadeInScale 0.5s ease-out forwards;
             animation: fadeInScale 0.5s ease-out forwards;
-            -webkit-transform: translateZ(0); /* Force GPU acceleration on WebKit */
-            transform: translateZ(0);
+            transform: translateZ(0); /* Force GPU acceleration on WebKit */
             will-change: transform, opacity;
             display: flex; /* Ensures logos are laid out inline */
             justify-content: center; /* Centers logos horizontally */
@@ -107,11 +104,6 @@
                 width: 40px;
                 height: 40px;
             }
-        }
-
-        @-webkit-keyframes fadeInScale {
-            0% { opacity: 0; -webkit-transform: scale(0.95); }
-            100% { opacity: 1; -webkit-transform: scale(1); }
         }
 
         @keyframes fadeInScale {

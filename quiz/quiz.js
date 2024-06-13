@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let userAnswers = {};
 
     function loadQuizData() {
-        window.electron.loadQuizData()
+        window.electron.invoke('load-quiz-data')
             .then(data => {
                 console.log('Quiz data loaded:', data);
                 quizData = data.domains.reduce((acc, domain) => {

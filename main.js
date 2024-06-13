@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
@@ -10,8 +10,6 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 820,
-    reresizable: false,
-    fullscreenable: false,
     webPreferences: {
       preload: path.join(__dirname, 'js/preload.js'), // Reference to preload.js
       contextIsolation: true, // Context isolation for security
@@ -137,10 +135,10 @@ ipcMain.on('save-quiz-data', (event, quizAnswers) => {
   }
 });
 
-ipcMain.handle('check-user-existence', async (event, userId) => {
-  console.log('Checking user existence for userId:', userId);
+ipcMain.handle('check-user-existence', async () => {
+  console.log('Checking user existence');
   return new Promise((resolve, reject) => {
-    db.get("SELECT COUNT(*) as count FROM registrations WHERE rowid = ?", [userId], (err, row) => {
+    db.get("SELECT COUNT(*) as count FROM registrations WHERE rowid = 1", (err, row) => {
       if (err) {
         console.error('Error checking user existence:', err);
         reject(err);
@@ -150,4 +148,61 @@ ipcMain.handle('check-user-existence', async (event, userId) => {
       }
     });
   });
+});
+
+ipcMain.handle('load-assessments', async () => {
+  const assessmentsPath = path.join(__dirname, 'My Assessments');
+  try {
+    const files = fs.readdirSync(assessmentsPath);
+    const assessments = files.map(file => {
+      const fileName = file.replace('.json', '');
+      const [name, dateTime] = fileName.split(/-(.+)/); // Split only at the first hyphen
+      const [date, time] = dateTime.split('T');
+      const formattedDate = `${date.split('-').reverse().join('/')}`;
+      const formattedTime = `${time.split('.')[0]}`;
+
+      return {
+        name,
+        date: formattedDate,
+        time: formattedTime,
+        file: file // Include file name for reference in delete/export actions
+      };
+    });
+    return assessments;
+  } catch (error) {
+    console.error('Error reading assessments:', error);
+    throw error;
+  }
+});
+
+ipcMain.handle('delete-assessment', async (event, fileName) => {
+  const assessmentsPath = path.join(__dirname, 'My Assessments', fileName);
+  try {
+    fs.unlinkSync(assessmentsPath);
+    return { success: true, message: 'Assessment deleted successfully.' };
+  } catch (error) {
+    console.error('Error deleting assessment:', error);
+    return { success: false, message: 'Failed to delete assessment.' };
+  }
+});
+
+ipcMain.handle('export-assessment', async (event, fileName) => {
+  const assessmentsPath = path.join(__dirname, 'My Assessments', fileName);
+  try {
+    const result = await dialog.showSaveDialog(mainWindow, {
+      defaultPath: path.join(app.getPath('downloads'), fileName),
+      filters: [{ name: 'JSON Files', extensions: ['json'] }]
+    });
+
+    if (result.canceled) {
+      return { success: false, message: 'Export canceled by user.' };
+    }
+
+    const exportPath = result.filePath;
+    fs.copyFileSync(assessmentsPath, exportPath);
+    return { success: true, message: 'Assessment exported successfully.' };
+  } catch (error) {
+    console.error('Error exporting assessment:', error);
+    return { success: false, message: 'Failed to export assessment.' };
+  }
 });
