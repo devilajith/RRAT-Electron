@@ -50,55 +50,22 @@
             justify-content: center;
             margin: 20px;
             flex-direction: row;
+            -webkit-transform-origin: center;
+            transform-origin: center;
+            -webkit-animation: fadeInScale 0.5s ease-out forwards;
+            animation: fadeInScale 0.5s ease-out forwards;
+            -webkit-transform: translateZ(0); /* Force GPU acceleration on WebKit */
+            transform: translateZ(0);
+            will-change: transform, opacity;
+            display: flex; /* Ensures logos are laid out inline */
+            justify-content: center; /* Centers logos horizontally */
+            align-items: center; /* Aligns logos vertically */
         }
-        .logo-container .logo{
-            margin-right: 20px;
+
+        .logo-container img {
+            margin: 0 10px; /* Adds 10px margin to both sides of each logo */
         }
-        .logo-container .logo1{
-            margin-left: 20px;
-        }
-        .loading-animation {
-            position: relative;
-            width: 60px;
-            height: 60px;
-        }
-        .loading-animation .shield {
-            width: 100%;
-            height: 100%;
-            background: url('images/shield.svg') no-repeat center center;
-            background-size: contain;
-            animation: rotate 2s linear infinite;
-        }
-        .loading-animation .lock {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 50%;
-            height: 50%;
-            background: url('images/lock.svg') no-repeat center center;
-            background-size: contain;
-            transform: translate(-50%, -50%);
-        }
-        .loading-animation .pulse {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            background: rgba(52, 152, 219, 0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: pulse 2s infinite;
-        }
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        @keyframes pulse {
-            0% { transform: translate(-50%, -50%) scale(0.9); opacity: 1; }
-            70% { transform: translate(-50%, -50%) scale(1); opacity: 0.7; }
-            100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0.5; }
-        }
+
         /* Media Queries for responsiveness */
         @media (max-width: 1024px) {
             .header h1 {
@@ -141,19 +108,28 @@
                 height: 40px;
             }
         }
+
+        @-webkit-keyframes fadeInScale {
+            0% { opacity: 0; -webkit-transform: scale(0.95); }
+            100% { opacity: 1; -webkit-transform: scale(1); }
+        }
+
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="main-content">
             <div class="logo-container">
-                <img src="images/Nciipc_Logo.png" alt="Header Logo" class="logo">
-                <img src="images/group-40.svg" alt="Logo 1" class="logo1">
-            </div>
-            <div class="loading-animation">
-                <div class="shield"></div>
-                <div class="lock"></div>
-                <div class="pulse"></div>
+                <div style="overflow: hidden;">
+                    <img src="images/Nciipc_Logo.png" alt="Header Logo" class="logo">
+                </div>
+                <div style="overflow: hidden;">
+                    <img src="images/group-40.svg" alt="Logo 1" class="logo1">
+                </div>
             </div>
         </div>
     </div>
