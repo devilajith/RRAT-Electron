@@ -1,0 +1,117 @@
+*,
+*::before,
+*::after{
+    box-sizing: border-box;
+}
+body {
+    background-color: #194264;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw; /* Use full viewport width */
+    height: 100vh; /* Use full viewport height */
+}
+.container {
+    background-color: #194264;
+    color: white;
+    margin: 0;
+    padding: 0;
+    width: 100%; /* Use full width */
+    height: 100%; /* Use full height */
+    display: flex;
+    flex-direction: column;
+}
+.header {
+    background-color: #194264;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Ensure space is distributed */
+    padding: 10px;
+    width: 100%; /* Use full width */
+    height: 100px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    margin-left: 0; /* Move to the left side */
+    padding: 0; /* Remove any padding */
+}
+
+.logo .rrat {
+    width: 200px;
+    height: 90px;
+    margin-left: 0; /* Ensure no extra margin */
+}
+
+.tabs {
+    background-color: #194264;
+    align-items: center;
+    padding: 1px 0 0 0;
+    width: 100%; /* Use full width */
+    height: 70px;
+    display: flex;
+    background-color: #194264;
+    color: #eaf6ff;
+    position: relative;
+  }
+  
+  .tab {
+    height: 100%;
+    font-size: 20px;
+    cursor: pointer;
+    text-align: center;
+    background-color: #194264;
+    border: none;
+    color: #eaf6ff;
+    font-weight: 600;
+    transition: background-color 0.3s, color 0.3s;
+    margin-bottom: 0px;
+  }
+  
+  .tab.active {
+    font-size: 20px;
+    background-color: #eaf6ff;
+    color: #194264;
+    font-weight: 600;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    margin-top: 3px;
+    margin-bottom: 0px;
+  }
+
+
+
+.profile-picture {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center;
+    margin-right: 40px; /* Move to the left side */
+    padding: 0; /* Remove any padding */
+}
+
+.profile-picture .profile {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-bottom: 5px; /* Space between picture and name */
+}
+
+.user-name {
+    color: white;
+    font-size: 14px;
+    text-align: center;
+}
+.content {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #EAF6FF;
+    width: 100%; /* Use full width */
+    height: 100%; /* Use full height */
+}

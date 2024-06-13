@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyAssessment</title>
+    <link rel="stylesheet" href="css/myassessment.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <img src="images/group-40.svg" alt="logo" class="rrat">
+            </div>
+            <div class="profile-picture">
+                <img src="images/user.svg" alt="User" class="profile" id="profile">
+                <span id="user-name"></span>
+            </div>
+        </div>
+        <div class="tabs">
+            <button class="tab" id="new-assessment">New assessment</button>
+            <button class="tab active" id="my-assessments">My assessments</button>
+        </div>      
+        <div class="content">
+        </div>
+    </div>
+    <script>
+        document.getElementById('profile').addEventListener('click', function() {
+            window.location.href = 'profile.html';
+        });
+
+        document.getElementById('new-assessment').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userId = sessionStorage.getItem('userId');
+            if (userId) {
+                window.electron.send('get-profile', userId);
+                window.electron.receive('profile-data', (response) => {
+                    if (response.success && response.data) {
+                        document.getElementById('user-name').textContent = response.data.name;
+                    } else {
+                        console.error('Failed to load profile data');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
