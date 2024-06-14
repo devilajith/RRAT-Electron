@@ -143,7 +143,7 @@ ipcMain.on('save-quiz-data', (event, quizAnswers) => {
 
     fs.writeFileSync(fullPath, JSON.stringify(answers, null, 2));
     console.log('Quiz data saved successfully to:', fullPath);
-    event.reply('save-quiz-data-reply', { success: true, message: 'Quiz data saved successfully.' });
+    event.reply('save-quiz-data-reply', { success: true, message: 'Quiz data saved successfully.', fileName: fileName });
   } catch (error) {
     console.error('Error saving quiz data:', error);
     event.reply('save-quiz-data-reply', { success: false, message: 'Failed to save quiz data.' });

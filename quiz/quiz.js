@@ -175,8 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    loadQuizData();
-
     function saveQuizData() {
         const assessmentName = localStorage.getItem('assessmentName') || 'Unnamed Assessment';
 
@@ -202,7 +200,10 @@ document.addEventListener('DOMContentLoaded', () => {
     window.electron.receive('save-quiz-data-reply', (response) => {
         console.log('Received reply from main process:', response.message);
         if (response.success) {
-            alert('Quiz data saved successfully.');
+            const fileName = response.fileName;
+            const url = new URL('../analytics.html', window.location.href);
+            url.searchParams.append('file', fileName);
+            window.location.href = url.href;
         } else {
             alert('Failed to save quiz data.');
         }
@@ -216,7 +217,5 @@ document.addEventListener('DOMContentLoaded', () => {
         return domains.filter(domain => !areAllQuestionsAnswered(domain));
     }
 
-    document.getElementById('logo').addEventListener('click', () => {
-        window.location.href = '../dashboard.html';
-    });
+    loadQuizData();
 });
