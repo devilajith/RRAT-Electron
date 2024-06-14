@@ -5,22 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Analytics and Recommendations</title>
   <link rel="stylesheet" href="css/analytics.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
   <script src="js/analytics.js" defer></script>
+  <script src="js/export.js" defer></script>
 </head>
 <body class="macbook-air">
-  <div class="header">
+  <div class="header" id="header-section">
     <img src="images/group-4-1.png" alt="Logo" class="logo" id="dashboard-logo">
   </div>
   <div class="tabs">
     <div class="tab active" id="tab-analytics">Domain overview</div>
     <div class="tab" id="tab-recommendations">Recommendations</div>
-    <button class="export-button" onclick="alert('exported')">
-      <img src="images/Group 9.svg" class="exportimg" alt="export">
-    </button>
+    <div class="export-container">
+      <button class="export-button" id="export-button">
+        <img src="images/Group 9.svg" class="exportimg" alt="export">
+      </button>
+    </div>
   </div>
   <div class="content">
     <div id="analytics-container" class="domains-container"></div>
-    <div class="overall-score">
+    <div class="overall-score" id="overall-score-section">
       <div class="circle">
         <svg class="progress-circle" width="200" height="200">
           <circle cx="100" cy="100" r="90" stroke-width="20" stroke="#e0e0e0" fill="none"></circle>
@@ -45,6 +50,9 @@
     document.getElementById('tab-recommendations').addEventListener('click', () => {
         showRecommendationsTab();
     });
+
+    // Add event listener for export button to trigger PDF export
+    document.getElementById('export-button').addEventListener('click', captureAndExportPDF);
   </script>
 </body>
 </html>

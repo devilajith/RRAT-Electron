@@ -5,9 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login and Registration</title>
     <link rel="stylesheet" href="css/styles.css"> 
-    <link rel="stylesheet" href="css/password-popup.css">
     <style>
         .red-star {
+            color: red;
+        }
+
+        .password-popup {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .password-popup ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .password-popup li {
+            margin-bottom: 5px;
+        }
+
+        .password-popup .valid {
+            color: green;
+        }
+
+        .password-popup .invalid {
             color: red;
         }
     </style>
@@ -97,6 +123,62 @@
                 window.location.href = 'dashboard.html';
             } else {
                 alert('Registration failed. Please try again.');
+            }
+        });
+
+        // Password validation
+        const passwordInput = document.getElementById('password');
+        const passwordPopup = document.getElementById('passwordPopup');
+        const lengthCriteria = document.getElementById('length');
+        const uppercaseCriteria = document.getElementById('uppercase');
+        const lowercaseCriteria = document.getElementById('lowercase');
+        const numberCriteria = document.getElementById('number');
+
+        passwordInput.addEventListener('focus', () => {
+            passwordPopup.style.display = 'block';
+        });
+
+        passwordInput.addEventListener('blur', () => {
+            passwordPopup.style.display = 'none';
+        });
+
+        passwordInput.addEventListener('input', () => {
+            const password = passwordInput.value;
+
+            // Validate length
+            if (password.length >= 8) {
+                lengthCriteria.classList.remove('invalid');
+                lengthCriteria.classList.add('valid');
+            } else {
+                lengthCriteria.classList.remove('valid');
+                lengthCriteria.classList.add('invalid');
+            }
+
+            // Validate uppercase letter
+            if (/[A-Z]/.test(password)) {
+                uppercaseCriteria.classList.remove('invalid');
+                uppercaseCriteria.classList.add('valid');
+            } else {
+                uppercaseCriteria.classList.remove('valid');
+                uppercaseCriteria.classList.add('invalid');
+            }
+
+            // Validate lowercase letter
+            if (/[a-z]/.test(password)) {
+                lowercaseCriteria.classList.remove('invalid');
+                lowercaseCriteria.classList.add('valid');
+            } else {
+                lowercaseCriteria.classList.remove('valid');
+                lowercaseCriteria.classList.add('invalid');
+            }
+
+            // Validate number
+            if (/\d/.test(password)) {
+                numberCriteria.classList.remove('invalid');
+                numberCriteria.classList.add('valid');
+            } else {
+                numberCriteria.classList.remove('valid');
+                numberCriteria.classList.add('invalid');
             }
         });
     </script>

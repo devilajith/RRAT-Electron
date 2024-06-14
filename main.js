@@ -108,9 +108,24 @@ ipcMain.handle('load-quiz-data', async () => {
   }
 });
 
+function getISTTimestamp() {
+  const now = new Date();
+  const istOffset = 5.5 * 60 * 60 * 1000; // IST offset in milliseconds (5 hours 30 minutes)
+  const istTime = new Date(now.getTime() + istOffset);
+
+  const year = istTime.getUTCFullYear();
+  const month = ('0' + (istTime.getUTCMonth() + 1)).slice(-2); // Months are zero-based
+  const day = ('0' + istTime.getUTCDate()).slice(-2);
+  const hours = ('0' + istTime.getUTCHours()).slice(-2);
+  const minutes = ('0' + istTime.getUTCMinutes()).slice(-2);
+  const seconds = ('0' + istTime.getUTCSeconds()).slice(-2);
+
+  return `${year}-${month}-${day}T${hours}-${minutes}-${seconds}`;
+}
+
 ipcMain.on('save-quiz-data', (event, quizAnswers) => {
   const { assessmentName, answers } = quizAnswers;
-  const timestamp = new Date().toISOString().replace(/:/g, '-'); // Replace colon to avoid issues in filenames
+  const timestamp = getISTTimestamp(); // Use the IST timestamp function
   const fileName = `${assessmentName}-${timestamp}.json`;
   const savePath = path.join(__dirname, 'My Assessments');
 

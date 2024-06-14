@@ -22,6 +22,7 @@
             <button class="tab active" id="my-assessments">My assessments</button>
         </div>      
         <div class="content">
+            <div id="message-container" class="message-container"></div> <!-- Message container -->
             <table class="assessment-table">
                 <thead>
                     <tr>
@@ -95,9 +96,9 @@
                         const response = await window.electron.invoke('delete-assessment', assessment.file);
                         if (response.success) {
                             row.remove();
-                            alert(response.message);
+                            showMessage(response.message, 'success');
                         } else {
-                            alert(response.message);
+                            showMessage(response.message, 'error');
                         }
                     });
                     deleteCell.appendChild(deleteButton);
@@ -108,7 +109,7 @@
                     exportButton.textContent = 'Export';
                     exportButton.addEventListener('click', async () => {
                         const response = await window.electron.invoke('export-assessment', assessment.file);
-                        alert(response.message);
+                        showMessage(response.message, response.success ? 'success' : 'error');
                     });
                     exportCell.appendChild(exportButton);
                     row.appendChild(exportCell);
@@ -127,6 +128,26 @@
             } catch (error) {
                 console.error('Failed to load assessments', error);
             }
+        }
+
+        let messageTimeout;
+
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('message-container');
+            messageContainer.textContent = message;
+            messageContainer.className = `message-container ${type}`;
+            messageContainer.style.display = 'block';
+
+            // Clear any existing timeout
+            if (messageTimeout) {
+                clearTimeout(messageTimeout);
+            }
+
+            // Set a timeout to hide the message after 2 seconds
+            messageTimeout = setTimeout(() => {
+                messageContainer.className = 'message-container';
+                messageContainer.style.display = 'none';
+            }, 2000);
         }
     </script>
 </body>
