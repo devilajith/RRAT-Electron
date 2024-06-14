@@ -1,19 +1,31 @@
+*,
+*::before,
+*::after{
+    box-sizing: border-box;
+}
+
 html, body {
+  background-color: #194264;
+  color: white;
   margin: 0;
   padding: 0;
-  width: 100%;
-  height: 100%;
+  display: flex;
+  justify-content: center;
+  width: 100vw; /* Use full viewport width */
+  height: 100vh;
   overflow: hidden;
-  box-sizing: border-box;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .macbook-air {
-  display: flex;
-  flex-direction: column;
   background-color: #eaf6ff;
-  color: #333;
-  height: 100%;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    width: 100%; /* Use full width */
+    height: 100%; /* Use full height */
+    display: flex;
+    flex-direction: column;
 }
 .header {
   background-color: #194264;
@@ -33,7 +45,6 @@ html, body {
 }
 
 .logo .rrat {
-
   height: 70px;
   margin-left: 20px; /* Ensure no extra margin */
 }
@@ -86,7 +97,7 @@ html, body {
 
 .content {
   display: flex;
-  height: calc(100% - 160px);
+  height: calc(100% - 190px);
 }
 
 .main-content {
