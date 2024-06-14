@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recommendations</title>
+  <link rel="stylesheet" href="css/recommendations.css" />
+  <script src="js/recommendations.js" defer></script>
+</head>
+<body>
+  <div class="header">
+    <img src="images/group-4-1.png" alt="Logo" class="logo" id="dashboard-logo">
+  </div>
+  <div class="tabs">
+    <div class="tab" onclick="window.location.href='analytics.html'">Domain overview</div>
+    <div class="tab active" onclick="window.location.href='recommendations.html'">Recommendations</div>
+    <button class="export-button" onclick="alert('exported')">
+      <img src="images/Group 9.svg" class="exportimg" alt="export">
+    </button>
+  </div>
+  <div class="content" id="recommendations-container"></div>
+  <script>
+    // Add event listener to the logo to navigate to dashboard.html
+    document.getElementById('dashboard-logo').addEventListener('click', () => {
+        window.location.href = './dashboard.html';
+    });
+  </script>
+</body>
+</html>

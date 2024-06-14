@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics and Recommendations</title>
+  <link rel="stylesheet" href="css/analytics.css">
+  <script src="js/analytics.js" defer></script>
+</head>
+<body class="macbook-air">
+  <div class="header">
+    <img src="images/group-4-1.png" alt="Logo" class="logo" id="dashboard-logo">
+  </div>
+  <div class="tabs">
+    <div class="tab active" id="tab-analytics">Domain overview</div>
+    <div class="tab" id="tab-recommendations">Recommendations</div>
+    <button class="export-button" onclick="alert('exported')">
+      <img src="images/Group 9.svg" class="exportimg" alt="export">
+    </button>
+  </div>
+  <div class="content">
+    <div id="analytics-container" class="domains-container"></div>
+    <div class="overall-score">
+      <div class="circle">
+        <svg class="progress-circle" width="200" height="200">
+          <circle cx="100" cy="100" r="90" stroke-width="20" stroke="#e0e0e0" fill="none"></circle>
+          <circle id="progressCircle" cx="100" cy="100" r="90" stroke-width="20" stroke="#76c7c0" fill="none" stroke-dasharray="565.48" stroke-dashoffset="565.48"></circle>
+        </svg>
+        <div class="percentage" id="overall-percentage">0%</div>
+      </div>
+      <div>Overall score</div>
+    </div>
+    <div id="recommendations-container" class="recommendations-container" style="display: none;"></div>
+  </div>
+  <script>
+    // Add event listener to the logo to navigate to dashboard.html
+    document.getElementById('dashboard-logo').addEventListener('click', () => {
+        window.location.href = './dashboard.html';
+    });
+
+    // Add event listeners for tabs
+    document.getElementById('tab-analytics').addEventListener('click', () => {
+        showAnalytics();
+    });
+    document.getElementById('tab-recommendations').addEventListener('click', () => {
+        showRecommendationsTab();
+    });
+  </script>
+</body>
+</html>

@@ -206,3 +206,17 @@ ipcMain.handle('export-assessment', async (event, fileName) => {
     return { success: false, message: 'Failed to export assessment.' };
   }
 });
+
+// Register the 'read-json-file' handler only if it hasn't been registered yet
+if (!ipcMain.eventNames().includes('read-json-file')) {
+  ipcMain.handle('read-json-file', async (event, fileName) => {
+    const filePath = path.join(__dirname, 'My Assessments', fileName);
+    try {
+      const data = fs.readFileSync(filePath, 'utf-8');
+      return JSON.parse(data);
+    } catch (error) {
+      console.error('Error reading JSON file:', error);
+      throw error;
+    }
+  });
+}

@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="css/dashboard.css">
+    <style>
+        .message {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -24,8 +30,8 @@
         <div class="content">
             <h2>Assessment Name<span class="required">*</span></h2>
             <input type="text" id="assessment-name" class="input-field" placeholder="Enter assessment name">
-
             <button id="start-button" class="start-button">Start</button>
+            <div id="message" class="message"></div>
             <div class="disclaimer">
                 <h3>Disclaimer</h3>
                 <p>
@@ -42,23 +48,25 @@
             window.location.href = 'myassessment.html';
         });
 
+        document.getElementById('assessment-name').addEventListener('input', function(event) {
+            const input = event.target;
+            input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
+        });
+
         document.getElementById('start-button').addEventListener('click', function() {
             const assessmentName = document.getElementById('assessment-name').value;
+            const messageElement = document.getElementById('message');
+
             if (assessmentName.trim() === '') {
-                alert('Please enter the assessment name.');
-            } else if (!/^[a-zA-Z\s]+$/.test(assessmentName)) {
-                alert('Only characters and spaces are allowed in the assessment name.');
+                messageElement.textContent = 'Please enter the assessment name.';
+                messageElement.style.color = 'red';
+                // Hide the message after 3 seconds
+                setTimeout(() => {
+                    messageElement.textContent = '';
+                }, 3000);
             } else {
                 localStorage.setItem('assessmentName', assessmentName); // Store the assessment name
                 window.location.href = 'quiz/quiz.html'; // navigate to quiz.html
-            }
-        });
-
-        document.getElementById('assessment-name').addEventListener('input', function(e) {
-            const input = e.target.value;
-            const sanitizedInput = input.replace(/[^a-zA-Z\s]/g, '');
-            if (input !== sanitizedInput) {
-                e.target.value = sanitizedInput;
             }
         });
 

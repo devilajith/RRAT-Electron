@@ -117,8 +117,7 @@
                     const resultsButton = document.createElement('button');
                     resultsButton.textContent = 'Results';
                     resultsButton.addEventListener('click', () => {
-                        // Handle results action
-                        console.log('Results', assessment.name);
+                        window.location.href = `analytics.html?file=${encodeURIComponent(assessment.file)}`;
                     });
                     resultsCell.appendChild(resultsButton);
                     row.appendChild(resultsCell);
