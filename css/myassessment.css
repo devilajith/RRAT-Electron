@@ -27,31 +27,27 @@ body {
     display: flex;
     flex-direction: column;
 }
-
 .header {
     background-color: #194264;
     display: flex;
     align-items: center;
     justify-content: space-between; /* Ensure space is distributed */
-    padding: 10px;
+    padding: 20px 10px;
     width: 100%; /* Use full width */
-    height: 100px;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    height: 120px;
+    box-shadow: 0 8px 4px rgba(0, 0, 0, 0.2);
     z-index: 1;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    margin-left: 0; /* Move to the left side */
-    padding: 0; /* Remove any padding */
 }
 
 .logo .rrat {
-    width: 200px;
+
     height: 70px;
     margin-left: 20px; /* Ensure no extra margin */
-    cursor: pointer;
 }
 
 .tabs {
