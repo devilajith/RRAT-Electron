@@ -27,7 +27,7 @@
             <button class="tab active" id="new-assessment">New assessment</button>
             <button class="tab" id="my-assessments">My assessments</button>
         </div>
-        <div class="content">
+        <div id="new-assessment-content" class="content">
             <h2>Assessment Name<span class="required">*</span></h2>
             <input type="text" id="assessment-name" class="input-field" placeholder="Enter assessment name">
             <button id="start-button" class="start-button">Start</button>
@@ -39,13 +39,46 @@
                 </p>
             </div>
         </div>
+        <div id="my-assessments-content" class="content" style="display: none;">
+            <div id="message-container" class="message-container"></div> <!-- Message container -->
+            <table class="assessment-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Assessment Name</th>
+                        <th>Delete</th>
+                        <th>Export</th>
+                        <th>Results</th>
+                    </tr>
+                </thead>
+                <tbody id="assessment-body">
+                    <!-- Assessment rows will be dynamically added here -->
+                </tbody>
+            </table>
+        </div>
     </div>
     <script>
         document.getElementById('profile').addEventListener('click', function() {
             window.location.href = 'profile.html';
         });
+
+        document.getElementById('new-assessment').addEventListener('click', function() {
+            document.getElementById('new-assessment-content').style.display = 'block';
+            document.getElementById('my-assessments-content').style.display = 'none';
+            this.classList.add('active');
+            document.getElementById('my-assessments').classList.remove('active');
+        });
+
         document.getElementById('my-assessments').addEventListener('click', function() {
-            window.location.href = 'myassessment.html';
+            document.getElementById('new-assessment-content').style.display = 'none';
+            document.getElementById('my-assessments-content').style.display = 'block';
+            this.classList.add('active');
+            document.getElementById('new-assessment').classList.remove('active');
+        });
+
+        document.getElementById('dashboard-link').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
         });
 
         document.getElementById('assessment-name').addEventListener('input', function(event) {
@@ -82,7 +115,110 @@
                     }
                 });
             }
+
+            // Load assessments data and populate the table
+            loadAssessments();
         });
+
+        async function loadAssessments() {
+            try {
+                const assessments = await window.electron.invoke('load-assessments');
+                const tbody = document.getElementById('assessment-body');
+                assessments.forEach(assessment => {
+                    const row = document.createElement('tr');
+
+                    const dateCell = document.createElement('td');
+                    dateCell.textContent = assessment.date;
+                    row.appendChild(dateCell);
+
+                    const timeCell = document.createElement('td');
+                    timeCell.textContent = assessment.time;
+                    row.appendChild(timeCell);
+
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = assessment.name;
+                    row.appendChild(nameCell);
+
+                    const deleteCell = document.createElement('td');
+                    const deleteButton = document.createElement('button');
+                    const deleteImage = document.createElement('img');
+                    deleteImage.src = './images/delete.svg'; // Set the path to your delete image
+                    deleteImage.alt = 'Delete'; // Optionally, set alt text for the image
+                    deleteImage.classList.add('delete-image'); // Optionally, add a class for styling
+
+                    deleteButton.appendChild(deleteImage); // Append the image to the button
+                    deleteButton.classList.add('delete-button'); 
+                    
+                    deleteButton.addEventListener('click', async () => {
+                        const response = await window.electron.invoke('delete-assessment', assessment.file);
+                        if (response.success) {
+                            row.remove();
+                            showMessage(response.message, 'success');
+                        } else {
+                            showMessage(response.message, 'error');
+                        }
+                    });
+                    deleteCell.appendChild(deleteButton);
+                    row.appendChild(deleteCell);
+                    
+
+                    const exportCell = document.createElement('td');
+                    const exportButton = document.createElement('button');
+                    const exportImage = document.createElement('img');
+                    exportImage.src = './images/export.svg'; // Set the path to your export image
+                    exportImage.alt = 'Export'; // Optionally, set alt text for the image
+                    exportImage.classList.add('export-image'); // Optionally, add a class for styling
+
+                    exportButton.appendChild(exportImage); // Append the image to the button
+                    exportButton.classList.add('export-button');
+                    exportButton.addEventListener('click', async () => {
+                        const response = await window.electron.invoke('export-assessment', assessment.file);
+                        showMessage(response.message, response.success ? 'success' : 'error');
+                    });
+                    exportCell.appendChild(exportButton);
+                    row.appendChild(exportCell);
+
+                    const resultsCell = document.createElement('td');
+                    const resultsButton = document.createElement('button');
+                    const resultsImage = document.createElement('img');
+                    resultsImage.src = './images/results.svg'; // Set the path to your results image
+                    resultsImage.alt = 'Results'; // Optionally, set alt text for the image
+                    resultsImage.classList.add('results-image'); // Optionally, add a class for styling
+
+                    resultsButton.appendChild(resultsImage); // Append the image to the button
+                    resultsButton.classList.add('results-button');
+                    resultsButton.addEventListener('click', () => {
+                        window.location.href = `analytics.html?file=${encodeURIComponent(assessment.file)}`;
+                    });
+                    resultsCell.appendChild(resultsButton);
+                    row.appendChild(resultsCell);
+
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Failed to load assessments', error);
+            }
+        }
+
+        let messageTimeout;
+
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('message-container');
+            messageContainer.textContent = message;
+            messageContainer.className = `message-container ${type}`;
+            messageContainer.style.display = 'block';
+
+            // Clear any existing timeout
+            if (messageTimeout) {
+                clearTimeout(messageTimeout);
+            }
+
+            // Set a timeout to hide the message after 2 seconds
+            messageTimeout = setTimeout(() => {
+                messageContainer.className = 'message-container';
+                messageContainer.style.display = 'none';
+            }, 2000);
+        }
     </script>
 </body>
 </html>
