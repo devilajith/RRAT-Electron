@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const questionText = document.createElement('h2');
             questionText.classList.add('question-text');
-            questionText.innerText = questionData.question;
+            questionText.innerText = `${index + 1}. ${questionData.question}`;
             questionRow.appendChild(questionText);
 
             questionDiv.appendChild(questionRow);
