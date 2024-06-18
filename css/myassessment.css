@@ -146,10 +146,12 @@ html, body {
 }
 
 .assessment-table th {
-    background-color: #eaf6ff;
-    color: #194264;
+    background-color: #194264;
+    color: #eaf6ff;
 }
-
+.assessment-table td{
+    background-color: #b9dbf5;
+}
 .assessment-table td button {
     background-color: #194264;
     color: #eaf6ff;
@@ -157,6 +159,8 @@ html, body {
     padding: 5px 10px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
+    border-radius: 20px;
+    
 }
 
 .assessment-table td button:hover {
