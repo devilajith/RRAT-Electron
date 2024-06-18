@@ -10,11 +10,11 @@
     },
     {
       "question": "Is sensitive data encrypted both at rest and in transit?",
-      "answer": "no"
+      "answer": "partial"
     },
     {
       "question": "Are all operating systems, applications and browser plugins regularly updated?",
-      "answer": "no"
+      "answer": "yes"
     },
     {
       "question": "Does your organization employ mechanisms to detect rogue hardware and software on the network?",
@@ -22,15 +22,15 @@
     },
     {
       "question": "Does the organization utilize standard baseline images to maintain control over hardware and software configurations?",
-      "answer": "no"
+      "answer": "partial"
     },
     {
       "question": "Are documented and approved secure configurations utilized to manage the organization’s hardware and software assets?",
-      "answer": "no"
+      "answer": "yes"
     },
     {
       "question": "Does the organization adhere to security hardening guides to manage system configurations?",
-      "answer": "no"
+      "answer": "yes"
     },
     {
       "question": "Does the organization maintain a Blocklist of known malicious software and an Allowlist of approved software, organized by publisher, to restrict unauthorized software from running on organizational systems?",
@@ -44,11 +44,11 @@
     },
     {
       "question": "Has your organization conducted phishing simulation tests to assess employee’s susceptibility to phishing attacks and evaluate the effectiveness of security awareness training?",
-      "answer": "yes"
+      "answer": "no"
     },
     {
       "question": "Does your organization provide role based security training to employees?",
-      "answer": "yes"
+      "answer": "partial"
     }
   ],
   "Email Security": [
@@ -90,7 +90,7 @@
     },
     {
       "question": "Are tabletop exercises conducted regularly to test the incident response plan's efficacy in handling ransomware attacks?",
-      "answer": "yes"
+      "answer": "no"
     },
     {
       "question": "Is there an Incident Response Policy in place to define procedures for detecting, reporting, and responding to security incidents, including roles and responsibilities, communication protocols, and escalation procedures?",
@@ -98,7 +98,7 @@
     },
     {
       "question": "Does your organization have a process in place for reporting cyber security incidents to stakeholders?",
-      "answer": "yes"
+      "answer": "no"
     },
     {
       "question": "Does your organization have a comprehensive disaster recovery plan in place to ensure business continuity in the event of a major disruption or disaster?",
@@ -112,11 +112,11 @@
     },
     {
       "question": "Do you have a Security Information and Event Management (SIEM) system or any Monitoring Mechanisms in place for continuous monitoring and alerting of suspicious activities?",
-      "answer": "yes"
+      "answer": "no"
     },
     {
       "question": "Is there a Network Security Policy in place to outline measures for securing the organization's network infrastructure, including configuration standards, access controls, and monitoring procedures?",
-      "answer": "no"
+      "answer": "yes"
     },
     {
       "question": "Do you secure all wireless networks with strong encryption and access controls?",
@@ -124,7 +124,7 @@
     },
     {
       "question": "Has the company set up a baseline for network traffic that is used to spot unusual activity?",
-      "answer": "no"
+      "answer": "yes"
     },
     {
       "question": "Does your organization implement measures to restrict network access to only authorized devices?",
@@ -146,7 +146,7 @@
     },
     {
       "question": "Does your organization enforce Multi Factor Authentication (MFA) for all users?",
-      "answer": "no"
+      "answer": "yes"
     }
   ],
   "Third Party Risk Management": [
@@ -156,7 +156,7 @@
     },
     {
       "question": "Has your organization established a Vendor Management Policy to govern the selection, onboarding, and ongoing oversight of third party vendors, ensuring they meet security and compliance standards?",
-      "answer": "yes"
+      "answer": "no"
     }
   ],
   "Security Infrastructure": [
@@ -166,7 +166,7 @@
     },
     {
       "question": "Are EDR (Endpoint Detection and Response) systems deployed to monitor and respond to endpoint threats?",
-      "answer": "yes"
+      "answer": "partial"
     },
     {
       "question": "Are IDS/IPS (Intrusion Detection/Prevention Systems) solutions in place to detect and prevent intrusions on your network?",
@@ -186,21 +186,21 @@
     },
     {
       "question": "Does your organization utilize a DMZ or separate hosting infrastructure to prevent ransomware from spreading through exploited web applications?",
-      "answer": "no"
+      "answer": "yes"
     }
   ],
   "Security Policy": [
     {
       "question": "Is there a Password Policy established to enforce strong password requirements and regular password changes?",
-      "answer": "no"
+      "answer": "yes"
     },
     {
       "question": "Does your organization have a Removable Media Policy to govern the use of external storage devices and mitigate the risk of data leakage or malware infection?",
-      "answer": "no"
+      "answer": "yes"
     },
     {
       "question": "Has your organization implemented an Acceptable Use Policy to define acceptable behavior and guidelines for the use of company resources, including internet usage and communication channels?",
-      "answer": "yes"
+      "answer": "no"
     }
   ],
   "Access Control": [
@@ -210,7 +210,7 @@
     },
     {
       "question": "Are access controls in place to enforce the principle of least privilege and are they reviewed regularly?",
-      "answer": "yes"
+      "answer": "no"
     },
     {
       "question": "Do you have measures in place to detect and prevent insider threats?",
@@ -228,7 +228,7 @@
     },
     {
       "question": "Do you monitor the use of RDP across your network?",
-      "answer": "yes"
+      "answer": "no"
     },
     {
       "question": "Does your organization have a Remote Access Policy to regulate remote connections to the corporate network, including requirements for authentication, encryption, and access controls?",
@@ -242,11 +242,11 @@
     },
     {
       "question": "Does your organization regularly review and update risk assessments to address emerging threats and changes in the business environment?",
-      "answer": "yes"
+      "answer": "no"
     },
     {
       "question": "Has your organization established risk tolerance levels to guide decision making and resource allocation for managing cybersecurity risks?",
-      "answer": "yes"
+      "answer": "no"
     }
   ]
 }
