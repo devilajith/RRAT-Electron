@@ -194,23 +194,25 @@ h2 {
 }
 
 .assessment-table td {
-    background-color: #bbdffb;
+    background-color: #d8eeff;
 }
 
 .assessment-table td button {
-    background-color: #194264;
+    background-color: #d8eeff;
     color: #eaf6ff;
     border: none;
     padding: 5px 10px;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
     border-radius: 20px;
+    width: 70px;
+    height: 30px;
 }
 
 .assessment-table td button:hover {
-    background-color: #eaf6ff;
-    color: #194264;
+    transform: scale(1.25);
 }
+
 
 .message-container {
     padding: 10px;

@@ -141,7 +141,14 @@
 
                     const deleteCell = document.createElement('td');
                     const deleteButton = document.createElement('button');
-                    deleteButton.textContent = 'Delete';
+                    const deleteImage = document.createElement('img');
+                    deleteImage.src = './images/delete.svg'; // Set the path to your delete image
+                    deleteImage.alt = 'Delete'; // Optionally, set alt text for the image
+                    deleteImage.classList.add('delete-image'); // Optionally, add a class for styling
+
+                    deleteButton.appendChild(deleteImage); // Append the image to the button
+                    deleteButton.classList.add('delete-button'); 
+                    
                     deleteButton.addEventListener('click', async () => {
                         const response = await window.electron.invoke('delete-assessment', assessment.file);
                         if (response.success) {
@@ -153,10 +160,17 @@
                     });
                     deleteCell.appendChild(deleteButton);
                     row.appendChild(deleteCell);
+                    
 
                     const exportCell = document.createElement('td');
                     const exportButton = document.createElement('button');
-                    exportButton.textContent = 'Export';
+                    const exportImage = document.createElement('img');
+                    exportImage.src = './images/export.svg'; // Set the path to your export image
+                    exportImage.alt = 'Export'; // Optionally, set alt text for the image
+                    exportImage.classList.add('export-image'); // Optionally, add a class for styling
+
+                    exportButton.appendChild(exportImage); // Append the image to the button
+                    exportButton.classList.add('export-button');
                     exportButton.addEventListener('click', async () => {
                         const response = await window.electron.invoke('export-assessment', assessment.file);
                         showMessage(response.message, response.success ? 'success' : 'error');
@@ -166,7 +180,13 @@
 
                     const resultsCell = document.createElement('td');
                     const resultsButton = document.createElement('button');
-                    resultsButton.textContent = 'Results';
+                    const resultsImage = document.createElement('img');
+                    resultsImage.src = './images/results.svg'; // Set the path to your results image
+                    resultsImage.alt = 'Results'; // Optionally, set alt text for the image
+                    resultsImage.classList.add('results-image'); // Optionally, add a class for styling
+
+                    resultsButton.appendChild(resultsImage); // Append the image to the button
+                    resultsButton.classList.add('results-button');
                     resultsButton.addEventListener('click', () => {
                         window.location.href = `analytics.html?file=${encodeURIComponent(assessment.file)}`;
                     });
