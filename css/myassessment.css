@@ -4,7 +4,7 @@
     box-sizing: border-box;
 }
 
-body {
+html, body {
     background-color: #194264;
     color: white;
     font-family: Arial, sans-serif;
@@ -111,8 +111,7 @@ body {
     text-align: center;
     padding: 40px 20px;
     background-color: #EAF6FF;
-    width: 100%; /* Use full width */
-    height: 100%; /* Use full height */
+    height: calc(100% - 190px);
     overflow-y: auto;
 }
 .content::-webkit-scrollbar {
