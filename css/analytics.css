@@ -1,7 +1,7 @@
 *,
 *::before,
-*::after{
-    box-sizing: border-box;
+*::after {
+  box-sizing: border-box;
 }
 
 html, body {
@@ -11,7 +11,7 @@ html, body {
   padding: 0;
   display: flex;
   justify-content: center;
-  width: 100vw; /* Use full viewport width */
+  width: 100vw;
   height: 100vh;
   overflow: hidden;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -19,21 +19,22 @@ html, body {
 
 .macbook-air {
   background-color: #eaf6ff;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    width: 100%; /* Use full width */
-    height: 100%; /* Use full height */
-    display: flex;
-    flex-direction: column;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
+
 .header {
   background-color: #194264;
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Ensure space is distributed */
+  justify-content: space-between;
   padding: 20px 10px;
-  width: 100%; /* Use full width */
+  width: 100%;
   height: 120px;
   box-shadow: 0 8px 4px rgba(0, 0, 0, 0.2);
   z-index: 1;
@@ -46,7 +47,7 @@ html, body {
 
 .logo .rrat {
   height: 70px;
-  margin-left: 20px; /* Ensure no extra margin */
+  margin-left: 20px;
 }
 
 .export-button {
@@ -58,15 +59,13 @@ html, body {
   margin-left: 700px;
 }
 
-
 .tabs {
   background-color: #194264;
   align-items: center;
   padding: 1px 0 0 0;
-  width: 100%; /* Use full width */
+  width: 100%;
   height: 70px;
   display: flex;
-  background-color: #194264;
   color: #eaf6ff;
   position: relative;
 }
@@ -110,7 +109,8 @@ html, body {
 .domains-container {
   flex: 1;
   overflow-y: scroll;
-  padding-right: 5px;
+  padding-right: 30px; /* Increased right padding */
+  padding-left: 30px;  /* Increased left padding */
   max-height: 100%;
 }
 
@@ -121,17 +121,30 @@ html, body {
   overflow-y: scroll;
 }
 
-.domain {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin: 50px 10px;
+.domain-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px 0;
+  padding: 20px;
+  color: #333;
 }
 
 .domain-name {
-  margin-bottom: 5px;
-  font-weight: 500;
-  font-size: 20px;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #194264;
+}
+
+.recommendations-list {
+  list-style-type: disc;
+  padding-left: 20px;
+}
+
+.recommendation-item {
+  margin: 10px 0;
+  font-size: 1.2em;
+  color: #194264;
 }
 
 .circle {
@@ -164,6 +177,7 @@ html, body {
   width: 70%;
   background-color: #ffffff;
   border-radius: 20px;
+  margin: 20px 0; /* Increased margin between domains */
 }
 
 .progress-bar {
@@ -173,6 +187,19 @@ html, body {
   line-height: 20px;
   color: #eaf6ff;
   transition: width 1s ease;
+}
+
+.progress-bar.high-score {
+  background-color: #16a085;
+}
+
+.progress-bar.medium-score {
+  background-color: #fef160;
+  color: black;
+}
+
+.progress-bar.low-score {
+  background-color: #f22613;
 }
 
 .overall-score {

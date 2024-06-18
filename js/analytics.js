@@ -48,12 +48,11 @@ function updateProgressBars(scores) {
       progressBar.style.width = `${percentageScore}%`;
       progressBar.textContent = `${percentageScore.toFixed(0)}%`;
       if (percentageScore >= 75) {
-        progressBar.style.backgroundColor = '#16a085';
+        progressBar.classList.add('high-score');
       } else if (percentageScore >= 50) {
-        progressBar.style.backgroundColor = '#fef160';
-        progressBar.style.color = 'black';
+        progressBar.classList.add('medium-score');
       } else if (percentageScore > 0) {
-        progressBar.style.backgroundColor = '#f22613';
+        progressBar.classList.add('low-score');
       } else {
         progressBar.style.backgroundColor = '#e0e0e0'; // Color for 0% score
       }
@@ -103,49 +102,77 @@ function displayRecommendations(scoresData, questionsData) {
     const domainScores = scoresData[domainName];
     let hasRecommendations = false;
     const domainElement = document.createElement('div');
-    domainElement.className = 'domain';
+    domainElement.className = 'domain-card';
 
     const domainNameElement = document.createElement('h2');
     domainNameElement.textContent = domainName;
 
     if (domainScores) {
+      const recommendationsList = document.createElement('ul');
+      recommendationsList.className = 'recommendations-list';
+
       domainScores.forEach((score, index) => {
         const answer = score.answer.toLowerCase();
         if (answer === 'no' || answer === 'partial') {
           hasRecommendations = true;
           const question = domain.questions[index];
 
-          const questionElement = document.createElement('div');
-          questionElement.className = 'question';
+          const recommendationItem = document.createElement('li');
+          recommendationItem.className = 'recommendation-item';
 
-          const questionText = document.createElement('p');
-          questionText.innerHTML = `<strong>${question.question}</strong>`;
-          questionElement.appendChild(questionText);
+          const recommendationText = document.createElement('span');
+          recommendationText.innerText = `${question.Recommendation}`;
 
-          const recommendationText = document.createElement('p');
-          recommendationText.textContent = `Recommendation: ${question.Recommendation}`;
-          questionElement.appendChild(recommendationText);
-
-          domainElement.appendChild(questionElement);
+          recommendationItem.appendChild(recommendationText);
+          recommendationsList.appendChild(recommendationItem);
         }
       });
+
+      if (hasRecommendations) {
+        domainElement.appendChild(domainNameElement);
+        domainElement.appendChild(recommendationsList);
+        container.appendChild(domainElement);
+      }
     } else {
       console.error(`No scores found for domain ${domainName}`);
     }
-
-    if (hasRecommendations) {
-      domainElement.insertBefore(domainNameElement, domainElement.firstChild);
-      container.appendChild(domainElement);
-    }
   });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const fileName = urlParams.get('file');
+  if (fileName) {
+    window.electron.invoke('read-json-file', fileName)
+      .then(data => {
+        window.scoresData = data;
+        updateProgressBars(data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  } else {
+    console.error('No file specified in the URL.');
+  }
+
+  document.getElementById('dashboard-logo').addEventListener('click', () => {
+    window.location.href = './dashboard.html';
+  });
+
+  document.getElementById('tab-analytics').addEventListener('click', () => {
+    showAnalytics();
+  });
+  document.getElementById('tab-recommendations').addEventListener('click', () => {
+    showRecommendationsTab();
+  });
+
+  document.getElementById('export-button').addEventListener('click', captureAndExportPDF);
+});
 
 function showAnalytics() {
   document.getElementById('analytics-container').style.display = 'block';
   document.getElementById('recommendations-container').style.display = 'none';
   document.getElementById('tab-analytics').classList.add('active');
   document.getElementById('tab-recommendations').classList.remove('active');
-  document.getElementById('overall-score-section').style.display = 'flex'; // Ensure the overall score layout is correctly displayed
+  document.getElementById('overall-score-section').style.display = 'flex';
 }
 
 function showRecommendationsTab() {
@@ -154,30 +181,32 @@ function showRecommendationsTab() {
   document.getElementById('tab-analytics').classList.remove('active');
   document.getElementById('tab-recommendations').classList.add('active');
   document.getElementById('overall-score-section').style.display = 'none';
-  showRecommendations(); // Ensure recommendations are fetched and displayed when tab is clicked
+  showRecommendations();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const fileName = urlParams.get('file');
-  console.log('Fetching file:', fileName); // Log the file name
-  if (fileName) {
-    window.electron.invoke('read-json-file', fileName)
-      .then(data => {
-        console.log('Data fetched successfully:', data); // Log the fetched data
-        window.scoresData = data;  // Store data globally
-        updateProgressBars(data);
-      })
-      .catch(error => console.error('Error fetching data:', error));
-  } else {
-    console.error('No file specified in the URL.');
-  }
+function captureAndExportPDF() {
+  const exportButton = document.getElementById('export-button');
+  exportButton.style.display = 'none'; // Hide the export button during the capture
+  const recommendationsContainer = document.getElementById('recommendations-container');
+  const analyticsContainer = document.getElementById('analytics-container');
 
-  // Add event listener to the logo
-  const logo = document.getElementById('dashboard-logo');
-  if (logo) {
-    logo.addEventListener('click', () => {
-      window.location.href = './dashboard.html';
+  html2canvas(analyticsContainer, { scale: 2 }).then(canvas => {
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+
+    html2canvas(recommendationsContainer, { scale: 2 }).then(canvas2 => {
+      const imgData2 = canvas2.toDataURL('image/png');
+      const imgProps2 = pdf.getImageProperties(imgData2);
+      const pdfWidth2 = pdf.internal.pageSize.getWidth();
+      const pdfHeight2 = (imgProps2.height * pdfWidth2) / imgProps2.width;
+      pdf.addPage();
+      pdf.addImage(imgData2, 'PNG', 0, 0, pdfWidth2, pdfHeight2);
+      pdf.save('assessment_report.pdf');
+      exportButton.style.display = 'block'; // Show the export button after the capture
     });
-  }
-});
+  });
+}
