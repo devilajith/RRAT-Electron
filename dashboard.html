@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/notyf.min.css">
+    <script src="js/notyf.min.js"></script>
     <style>
         .message {
             color: red;
@@ -35,7 +37,7 @@
             <div class="disclaimer">
                 <h3>Disclaimer</h3>
                 <p>
-                    Please start the assessment only if you can finish it completely. Gather all details of your company and modus operandi before attending assessment for optimum results. Don’t close the window during the test or all unsaved progress will be lost. All details regarding time of the test and answers will be collected for smooth functioning and optimum results.
+                    Please start the assessment only if you can finish it completely. Gather all details of your company and modus operandi before attending assessment for optimum results. Don't close the window during the test or all unsaved progress will be lost. All details regarding time of the test and answers will be collected for smooth functioning and optimum results.
                 </p>
             </div>
         </div>
@@ -59,6 +61,9 @@
         </div>
     </div>
     <script>
+        // Initialize Notyf
+        const notyf = new Notyf();
+
         document.getElementById('profile').addEventListener('click', function() {
             window.location.href = 'profile.html';
         });
@@ -88,15 +93,9 @@
 
         document.getElementById('start-button').addEventListener('click', function() {
             const assessmentName = document.getElementById('assessment-name').value;
-            const messageElement = document.getElementById('message');
 
             if (assessmentName.trim() === '') {
-                messageElement.textContent = 'Please enter the assessment name.';
-                messageElement.style.color = 'red';
-                // Hide the message after 3 seconds
-                setTimeout(() => {
-                    messageElement.textContent = '';
-                }, 3000);
+                notyf.error('Please enter the assessment name.');
             } else {
                 localStorage.setItem('assessmentName', assessmentName); // Store the assessment name
                 window.location.href = 'quiz/quiz.html'; // navigate to quiz.html
@@ -111,7 +110,7 @@
                     if (response.success && response.data) {
                         document.getElementById('user-name').textContent = response.data.name;
                     } else {
-                        console.error('Failed to load profile data');
+                        notyf.error('Failed to load profile data');
                     }
                 });
             }
@@ -142,38 +141,41 @@
                     const deleteCell = document.createElement('td');
                     const deleteButton = document.createElement('button');
                     const deleteImage = document.createElement('img');
-                    deleteImage.src = './images/delete.svg'; // Set the path to your delete image
-                    deleteImage.alt = 'Delete'; // Optionally, set alt text for the image
-                    deleteImage.classList.add('delete-image'); // Optionally, add a class for styling
+                    deleteImage.src = './images/delete.svg';
+                    deleteImage.alt = 'Delete';
+                    deleteImage.classList.add('delete-image');
 
-                    deleteButton.appendChild(deleteImage); // Append the image to the button
-                    deleteButton.classList.add('delete-button'); 
-                    
+                    deleteButton.appendChild(deleteImage);
+                    deleteButton.classList.add('delete-button');
+
                     deleteButton.addEventListener('click', async () => {
                         const response = await window.electron.invoke('delete-assessment', assessment.file);
                         if (response.success) {
                             row.remove();
-                            showMessage(response.message, 'success');
+                            notyf.success('Assessment deleted successfully.');
                         } else {
-                            showMessage(response.message, 'error');
+                            notyf.error(response.message);
                         }
                     });
                     deleteCell.appendChild(deleteButton);
                     row.appendChild(deleteCell);
-                    
 
                     const exportCell = document.createElement('td');
                     const exportButton = document.createElement('button');
                     const exportImage = document.createElement('img');
-                    exportImage.src = './images/export.svg'; // Set the path to your export image
-                    exportImage.alt = 'Export'; // Optionally, set alt text for the image
-                    exportImage.classList.add('export-image'); // Optionally, add a class for styling
+                    exportImage.src = './images/export.svg';
+                    exportImage.alt = 'Export';
+                    exportImage.classList.add('export-image');
 
-                    exportButton.appendChild(exportImage); // Append the image to the button
+                    exportButton.appendChild(exportImage);
                     exportButton.classList.add('export-button');
                     exportButton.addEventListener('click', async () => {
                         const response = await window.electron.invoke('export-assessment', assessment.file);
-                        showMessage(response.message, response.success ? 'success' : 'error');
+                        if (response.success) {
+                            notyf.success('Assessment exported successfully.');
+                        } else {
+                            notyf.error(response.message);
+                        }
                     });
                     exportCell.appendChild(exportButton);
                     row.appendChild(exportCell);
@@ -181,11 +183,11 @@
                     const resultsCell = document.createElement('td');
                     const resultsButton = document.createElement('button');
                     const resultsImage = document.createElement('img');
-                    resultsImage.src = './images/results.svg'; // Set the path to your results image
-                    resultsImage.alt = 'Results'; // Optionally, set alt text for the image
-                    resultsImage.classList.add('results-image'); // Optionally, add a class for styling
+                    resultsImage.src = './images/results.svg';
+                    resultsImage.alt = 'Results';
+                    resultsImage.classList.add('results-image');
 
-                    resultsButton.appendChild(resultsImage); // Append the image to the button
+                    resultsButton.appendChild(resultsImage);
                     resultsButton.classList.add('results-button');
                     resultsButton.addEventListener('click', () => {
                         window.location.href = `analytics.html?file=${encodeURIComponent(assessment.file)}`;
@@ -196,28 +198,8 @@
                     tbody.appendChild(row);
                 });
             } catch (error) {
-                console.error('Failed to load assessments', error);
+                notyf.error('Failed to load assessments');
             }
-        }
-
-        let messageTimeout;
-
-        function showMessage(message, type) {
-            const messageContainer = document.getElementById('message-container');
-            messageContainer.textContent = message;
-            messageContainer.className = `message-container ${type}`;
-            messageContainer.style.display = 'block';
-
-            // Clear any existing timeout
-            if (messageTimeout) {
-                clearTimeout(messageTimeout);
-            }
-
-            // Set a timeout to hide the message after 2 seconds
-            messageTimeout = setTimeout(() => {
-                messageContainer.className = 'message-container';
-                messageContainer.style.display = 'none';
-            }, 2000);
         }
     </script>
 </body>
