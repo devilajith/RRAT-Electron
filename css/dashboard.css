@@ -43,7 +43,7 @@ html, body {
 }
 
 .logo .rrat {
-
+    width: 180px;
     height: 70px;
     margin-left: 20px; /* Ensure no extra margin */
 }
