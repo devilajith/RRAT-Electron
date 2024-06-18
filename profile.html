@@ -24,28 +24,44 @@
                 <form id="profileForm">
                     <div class="form-field">
                         <label for="email">Email</label>
-                        <input type="email" id="email" name="email" disabled>
-                    </div>
+                        <input type="email" id="email" name="email">
+                    </div>          
+                    
                     <div class="form-field">
-                        <label for="name">Name</label>
-                        <input type="text" id="name" name="name">
+                        <label for="designation">Designation</label>
+                        <input type="text" id="designation" name="designation">
                     </div>
                     <div class="form-field">
                         <label for="sector">Sector</label>
                         <input type="text" id="sector" name="sector">
                     </div>
+                    <div class="form-field">
+                        <label for="current-password">Current Password<span class="required">*</span></label>
+                        <input type="password" id="current-password" name="current-password" required>
+                    </div>
                 </form>
             </div>
             <div class="form-container-1">
-                <form id="updateProfileForm">
+                <form action="profileForm_1">
+                    <div class="form-field">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name">
+                    </div>
+                    
                     <div class="form-field">
                         <label for="organization">Organization Name</label>
                         <input type="text" id="organization" name="organization">
                     </div>
+                    
                     <div class="form-field">
-                        <label for="designation">Designation</label>
-                        <input type="text" id="designation" name="designation">
+                        <label for="new-password">New Password</label>
+                        <input type="password" id="new-password" name="new-password">
+                    </div >
+                    <div class="form-field">
+                        <label for="confirm-password">Confirm New Password</label>
+                        <input type="password" id="confirm-password" name="confirm-password">
                     </div>
+                    
                     <button type="submit" class="group-6" id="saveButton">
                         <div class="rectangle-15"></div>
                         <div class="submit">Save&nbsp;</div>
@@ -60,7 +76,9 @@
                     </button>
                     <div id="message" class="message"></div> <!-- Message area -->
                 </form>
+                
             </div>
+                
         </div>
     </div>
     <script src="js/profile-placeholder.js"></script>
@@ -70,12 +88,83 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const updateProfileForm = document.getElementById('updateProfileForm');
+            const updateProfileForm = document.getElementById('profileForm');
             const saveButton = document.getElementById('saveButton');
             const messageElement = document.getElementById('message'); // Get the message element
 
+            let originalProfileData = {};
+
+            function fetchProfileData() {
+                const userId = sessionStorage.getItem('userId');
+                if (userId) {
+                    window.electron.send('get-profile', userId);
+                    window.electron.receive('profile-data', (response) => {
+                        if (response.success && response.data) {
+                            document.getElementById('email').value = response.data.email;
+                            document.getElementById('name').value = response.data.name;
+                            document.getElementById('sector').value = response.data.sector;
+                            document.getElementById('organization').value = response.data.organization;
+                            document.getElementById('designation').value = response.data.designation;
+
+                            originalProfileData = {
+                                email: response.data.email,
+                                name: response.data.name,
+                                sector: response.data.sector,
+                                organization: response.data.organization,
+                                designation: response.data.designation
+                            };
+                        } else {
+                            console.error('Failed to load profile data');
+                        }
+                    });
+                }
+            }
+
+            function isProfileDataChanged() {
+                const currentProfileData = {
+                    email: document.getElementById('email').value,
+                    name: document.getElementById('name').value,
+                    sector: document.getElementById('sector').value,
+                    organization: document.getElementById('organization').value,
+                    designation: document.getElementById('designation').value
+                };
+
+                return JSON.stringify(currentProfileData) !== JSON.stringify(originalProfileData);
+            }
+
             saveButton.addEventListener('click', function(event) {
                 event.preventDefault(); // Prevent form submission
+
+                const currentPassword = document.getElementById('current-password').value;
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+
+                if (newPassword && newPassword !== confirmPassword) {
+                    messageElement.textContent = 'New password and confirm password do not match';
+                    messageElement.style.color = 'red';
+                    setTimeout(() => {
+                        messageElement.textContent = '';
+                    }, 2000);
+                    return;
+                }
+
+                if (!currentPassword) {
+                    messageElement.textContent = 'Current password is required';
+                    messageElement.style.color = 'red';
+                    setTimeout(() => {
+                        messageElement.textContent = '';
+                    }, 2000);
+                    return;
+                }
+
+                if (!isProfileDataChanged() && !newPassword) {
+                    messageElement.textContent = 'No changes made';
+                    messageElement.style.color = 'red';
+                    setTimeout(() => {
+                        messageElement.textContent = '';
+                    }, 2000);
+                    return;
+                }
 
                 // Retrieve updated profile data from the form
                 const updatedProfileData = {
@@ -83,7 +172,9 @@
                     name: document.getElementById('name').value,
                     sector: document.getElementById('sector').value,
                     organization: document.getElementById('organization').value,
-                    designation: document.getElementById('designation').value
+                    designation: document.getElementById('designation').value,
+                    currentPassword,
+                    newPassword
                 };
 
                 // Send updated profile data to the main process
@@ -95,38 +186,27 @@
                 if (data.success) {
                     messageElement.textContent = 'Profile updated successfully';
                     messageElement.style.color = 'green';
-                    // Optional: set background color to green
-                    // Hide the message after 2 seconds
+                    // Update originalProfileData to reflect changes
+                    originalProfileData = {
+                        email: document.getElementById('email').value,
+                        name: document.getElementById('name').value,
+                        sector: document.getElementById('sector').value,
+                        organization: document.getElementById('organization').value,
+                        designation: document.getElementById('designation').value
+                    };
                     setTimeout(() => {
                         messageElement.textContent = '';
-                        messageElement.style.backgroundColor = ''; // Clear the background color
                     }, 2000);
                 } else {
-                    messageElement.textContent = 'Failed to update profile';
+                    messageElement.textContent = data.message || 'Failed to update profile';
                     messageElement.style.color = 'red';
-                    // Hide the message after 2 seconds
                     setTimeout(() => {
                         messageElement.textContent = '';
                     }, 2000);
                 }
             });
 
-            // Fetch the profile data on page load
-            const userId = sessionStorage.getItem('userId');
-            if (userId) {
-                window.electron.send('get-profile', userId);
-                window.electron.receive('profile-data', (response) => {
-                    if (response.success && response.data) {
-                        document.getElementById('email').value = response.data.email;
-                        document.getElementById('name').value = response.data.name;
-                        document.getElementById('sector').value = response.data.sector;
-                        document.getElementById('organization').value = response.data.organization;
-                        document.getElementById('designation').value = response.data.designation;
-                    } else {
-                        console.error('Failed to load profile data');
-                    }
-                });
-            }
+            fetchProfileData();
         });
     </script>
 </body>

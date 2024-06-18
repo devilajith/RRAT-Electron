@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
+const bcrypt = require('bcrypt'); // Use bcrypt for password hashing
 
 let mainWindow;
 let db;
@@ -56,17 +57,23 @@ app.on('activate', function () {
   if (mainWindow === null) createWindow();
 });
 
-ipcMain.on('register', (event, data) => {
-  const stmt = db.prepare("INSERT INTO registrations (email, name, password, organization, designation, sector) VALUES (?, ?, ?, ?, ?, ?)");
-  stmt.run([data.email, data.name, data.password, data.organization, data.designation, data.sector], function(err) {
-    if (err) {
-      console.error(err.message);
-      event.reply('registration-success', { success: false });
-    } else {
-      event.reply('registration-success', { success: true, userId: this.lastID });
-    }
-  });
-  stmt.finalize();
+ipcMain.on('register', async (event, data) => {
+  try {
+    const hashedPassword = await bcrypt.hash(data.password, 10); // Hash the password before storing
+    const stmt = db.prepare("INSERT INTO registrations (email, name, password, organization, designation, sector) VALUES (?, ?, ?, ?, ?, ?)");
+    stmt.run([data.email, data.name, hashedPassword, data.organization, data.designation, data.sector], function(err) {
+      if (err) {
+        console.error(err.message);
+        event.reply('registration-success', { success: false });
+      } else {
+        event.reply('registration-success', { success: true, userId: this.lastID });
+      }
+    });
+    stmt.finalize();
+  } catch (error) {
+    console.error('Error during registration:', error.message);
+    event.reply('registration-success', { success: false });
+  }
 });
 
 ipcMain.on('get-profile', (event, userId) => {
@@ -80,21 +87,53 @@ ipcMain.on('get-profile', (event, userId) => {
   });
 });
 
-ipcMain.on('update-profile', (event, updatedProfileData) => {
-  const { email, name, sector, organization, designation } = updatedProfileData;
+ipcMain.on('update-profile', async (event, updatedProfileData) => {
+  const { email, name, sector, organization, designation, currentPassword, newEmail, newPassword } = updatedProfileData;
 
-  db.run(`UPDATE registrations 
-          SET name = ?, sector = ?, organization = ?, designation = ? 
-          WHERE email = ?`, [name, sector, organization, designation, email], (err) => {
-      if (err) {
-          console.error('Error updating profile:', err.message);
-          event.reply('profile-update', { success: false });
+  // First, verify the provided password
+  db.get("SELECT password FROM registrations WHERE email = ?", [email], async (err, row) => {
+    if (err) {
+      console.error('Error verifying password:', err.message);
+      event.reply('profile-update', { success: false, message: 'Failed to verify password' });
+    } else {
+      if (row && await bcrypt.compare(currentPassword, row.password)) {
+        // Password matches, proceed with the update
+
+        let updateFields = `name = ?, sector = ?, organization = ?, designation = ?`;
+        let updateParams = [name, sector, organization, designation];
+
+        // Handle email change
+        if (newEmail) {
+          updateFields += `, email = ?`;
+          updateParams.push(newEmail);
+        }
+
+        // Handle password change
+        if (newPassword) {
+          const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+          updateFields += `, password = ?`;
+          updateParams.push(hashedNewPassword);
+        }
+
+        updateParams.push(email);
+
+        db.run(`UPDATE registrations 
+                SET ${updateFields}
+                WHERE email = ?`, updateParams, (err) => {
+            if (err) {
+                console.error('Error updating profile:', err.message);
+                event.reply('profile-update', { success: false });
+            } else {
+                event.reply('profile-update', { success: true });
+            }
+        });
       } else {
-          event.reply('profile-update', { success: true });
+        // Password does not match
+        event.reply('profile-update', { success: false, message: 'Incorrect password' });
       }
+    }
   });
 });
-
 
 ipcMain.handle('load-quiz-data', async () => {
   const dataPath = path.join(__dirname, 'quiz/Qdata.json');
@@ -233,4 +272,4 @@ if (!ipcMain.eventNames().includes('read-json-file')) {
       throw error;
     }
   });
-}
+};
