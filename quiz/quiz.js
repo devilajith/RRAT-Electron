@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     displayQuestionsForCurrentDomain();
                     highlightCurrentDomainButton(domains[currentDomainIndex]);
                 } else {
-                    alert('Please answer all questions before proceeding.');
+                    notyf.error('Please answer all questions before proceeding.');
                 }
             });
         } else {
@@ -147,12 +147,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (areAllQuestionsAnswered(domain)) {
                     const unansweredDomains = getUnansweredDomains();
                     if (unansweredDomains.length > 0) {
-                        alert('Please complete all questions in the following domains: ' + unansweredDomains.join(', '));
+                        notyf.error('Please complete all questions in the following domains: ' + unansweredDomains.join(', '));
                     } else {
                         saveQuizData();
                     }
                 } else {
-                    alert('Please answer all questions before submitting.');
+                    notyf.error('Please answer all questions before submitting.');
                 }
             });
         }
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
             url.searchParams.append('file', fileName);
             window.location.href = url.href;
         } else {
-            alert('Failed to save quiz data.');
+            notyf.error('Failed to save quiz data.');
         }
     });
 

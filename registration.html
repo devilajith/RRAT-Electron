@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login and Registration</title>
-    <link rel="stylesheet" href="css/styles.css"> 
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/notyf.min.css">
+    <script src="js/notyf.min.js"></script> 
     <style>
         .red-star {
             color: red;
@@ -102,6 +104,7 @@
         </div>
     </div>
     <script>
+        const notyf = new Notyf();
         document.getElementById('registrationForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
@@ -122,7 +125,7 @@
                 sessionStorage.setItem('userId', 1); // Assuming user ID 1 for simplicity
                 window.location.href = 'dashboard.html';
             } else {
-                alert('Registration failed. Please try again.');
+                notyf.error('Registration failed. Please try again.');
             }
         });
 

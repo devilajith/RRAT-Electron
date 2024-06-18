@@ -1,0 +1,187 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    background-color: #194264;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw; /* Use full viewport width */
+    height: 100vh; /* Use full viewport height */
+}
+
+.container {
+    background-color: #194264;
+    color: white;
+    margin: 0;
+    padding: 0;
+    width: 100%; /* Use full width */
+    height: 100%; /* Use full height */
+    display: flex;
+    flex-direction: column;
+}
+.header {
+    background-color: #194264;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Ensure space is distributed */
+    padding: 20px 10px;
+    width: 100%; /* Use full width */
+    height: 120px;
+    box-shadow: 0 8px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo .rrat {
+    width: 180px;
+    height: 70px;
+    margin-left: 20px; /* Ensure no extra margin */
+}
+
+.tabs {
+    background-color: #194264;
+    align-items: center;
+    padding: 1px 0 0 0;
+    width: 100%; /* Use full width */
+    height: 70px;
+    display: flex;
+    background-color: #194264;
+    color: #eaf6ff;
+    position: relative;
+}
+
+.tab {
+    height: 100%;
+    font-size: 20px;
+    cursor: pointer;
+    text-align: center;
+    background-color: #194264;
+    border: none;
+    color: #eaf6ff;
+    font-weight: 600;
+    transition: background-color 0.3s, color 0.3s;
+    margin-bottom: 0px;
+}
+
+.tab.active {
+    font-size: 20px;
+    background-color: #eaf6ff;
+    color: #194264;
+    font-weight: 600;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    margin-top: 3px;
+    margin-bottom: 0px;
+}
+
+.profile-picture {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center;
+    margin-right: 40px; /* Move to the right side */
+    padding: 0; /* Remove any padding */
+}
+
+.profile-picture .profile {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-bottom: 5px; /* Space between picture and name */
+}
+
+.user-name {
+    color: white;
+    font-size: 14px;
+    text-align: center;
+}
+
+.content {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #EAF6FF;
+    height: calc(100% - 190px);
+    overflow-y: auto;
+}
+.content::-webkit-scrollbar {
+    width: 10px;
+}
+.content::-webkit-scrollbar-track {
+    background-color: rgba(128, 128, 128, 0.526);
+}
+
+.content::-webkit-scrollbar-thumb {
+    background: #194264;
+    /*border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;*/
+    border-radius: 10px;
+    min-height: 5px;
+    max-height: 10px;
+}
+
+.assessment-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    
+}
+
+.assessment-table th, .assessment-table td {
+    padding: 10px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    text-align: left;
+    color: #194264;
+}
+
+.assessment-table th {
+    background-color: #194264;
+    color: #eaf6ff;
+}
+.assessment-table td{
+    background-color: #bbdffb;
+}
+.assessment-table td button {
+    background-color: #194264;
+    color: #eaf6ff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+    border-radius: 20px;
+    
+}
+
+.assessment-table td button:hover {
+    background-color: #eaf6ff;
+    color: #194264;
+}
+.message-container {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    display: none;
+}
+
+.message-container.success {
+    background-color: #d4edda;
+    color: #155724;
+    display: block;
+}
+
+.message-container.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    display: block;
+}

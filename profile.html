@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PROFILE</title>
     <link rel="stylesheet" href="css/profile.css">
+    <link rel="stylesheet" href="css/notyf.min.css">
+    <script src="js/notyf.min.js"></script> 
 </head>
 <body>
     <div class="container">
@@ -83,6 +85,7 @@
     </div>
     <script src="js/profile-placeholder.js"></script>
     <script>
+        const notyf = new Notyf();
         function dashboard() {
             window.location.href = "dashboard.html";
         }
@@ -140,8 +143,7 @@
                 const confirmPassword = document.getElementById('confirm-password').value;
 
                 if (newPassword && newPassword !== confirmPassword) {
-                    messageElement.textContent = 'New password and confirm password do not match';
-                    messageElement.style.color = 'red';
+                    notyf.error('New password and confirm password do not match.');
                     setTimeout(() => {
                         messageElement.textContent = '';
                     }, 2000);
@@ -149,8 +151,7 @@
                 }
 
                 if (!currentPassword) {
-                    messageElement.textContent = 'Current password is required';
-                    messageElement.style.color = 'red';
+                    notyf.error('Current password is required');
                     setTimeout(() => {
                         messageElement.textContent = '';
                     }, 2000);
@@ -158,8 +159,7 @@
                 }
 
                 if (!isProfileDataChanged() && !newPassword) {
-                    messageElement.textContent = 'No changes made';
-                    messageElement.style.color = 'red';
+                    notyf.error('No Changes Made');
                     setTimeout(() => {
                         messageElement.textContent = '';
                     }, 2000);
@@ -184,8 +184,7 @@
             // Listen for profile update confirmation
             window.electron.receive('profile-update', (data) => {
                 if (data.success) {
-                    messageElement.textContent = 'Profile updated successfully';
-                    messageElement.style.color = 'green';
+                    notyf.error('Profile Updated Successfully');
                     // Update originalProfileData to reflect changes
                     originalProfileData = {
                         email: document.getElementById('email').value,
@@ -198,8 +197,7 @@
                         messageElement.textContent = '';
                     }, 2000);
                 } else {
-                    messageElement.textContent = data.message || 'Failed to update profile';
-                    messageElement.style.color = 'red';
+                    notyf.error('Failed to Update Profile');
                     setTimeout(() => {
                         messageElement.textContent = '';
                     }, 2000);
