@@ -63,7 +63,6 @@ ipcMain.on('register', (event, data) => {
       console.error(err.message);
       event.reply('registration-success', { success: false });
     } else {
-      console.log("Registration successfully added to the database");
       event.reply('registration-success', { success: true, userId: this.lastID });
     }
   });
@@ -91,11 +90,11 @@ ipcMain.on('update-profile', (event, updatedProfileData) => {
           console.error('Error updating profile:', err.message);
           event.reply('profile-update', { success: false });
       } else {
-          console.log('Profile updated successfully');
           event.reply('profile-update', { success: true });
       }
   });
 });
+
 
 ipcMain.handle('load-quiz-data', async () => {
   const dataPath = path.join(__dirname, 'quiz/Qdata.json');
