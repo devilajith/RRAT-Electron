@@ -37,7 +37,7 @@
             <div class="disclaimer">
                 <h3>Disclaimer</h3>
                 <p>
-                    Please start the assessment only if you can finish it completely. Gather all details of your company and modus operandi before attending assessment for optimum results. Don't close the window during the test or all unsaved progress will be lost. All details regarding time of the test and answers will be collected for smooth functioning and optimum results.
+                    Please do not close the application, as closing it will result in the loss of all unsaved progress. Gather all necessary organizational security details beforehand to speed up the assessment process. Collaborating on the assessment can make it faster. It's advisable to involve an experienced cybersecurity professional for best results.
                 </p>
             </div>
         </div>
@@ -80,10 +80,6 @@
             document.getElementById('my-assessments-content').style.display = 'block';
             this.classList.add('active');
             document.getElementById('new-assessment').classList.remove('active');
-        });
-
-        document.getElementById('dashboard-link').addEventListener('click', function() {
-            window.location.href = 'dashboard.html';
         });
 
         document.getElementById('assessment-name').addEventListener('input', function(event) {

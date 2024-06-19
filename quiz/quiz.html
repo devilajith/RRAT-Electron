@@ -24,12 +24,27 @@
             <!-- All questions will be appended here dynamically -->
         </div>
     </div>
+    <div id="customPopup" class="popup" style="display:none;">
+        <div class="popup-content">
+            <p>Do you really want to exit ? All progress will lost.</p>
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn">No</button>
+        </div>
+    </div>
     <script src="quiz.js"></script>
     <script>
         const notyf = new Notyf();
-        // Add event listener to the logo to navigate to dashboard.html
-        document.getElementById('logo').addEventListener('click', () => {
+        document.getElementById('logo').addEventListener('click', (event) => {
+            event.preventDefault(); // Prevent the default link behavior
+            document.getElementById('customPopup').style.display = 'flex';
+        });
+
+        document.getElementById('yesBtn').addEventListener('click', () => {
             window.location.href = '../dashboard.html';
+        });
+
+        document.getElementById('noBtn').addEventListener('click', () => {
+            document.getElementById('customPopup').style.display = 'none';
         });
     </script>
 </body>

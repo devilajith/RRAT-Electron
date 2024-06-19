@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     displayQuestionsForCurrentDomain();
                     highlightCurrentDomainButton(domains[currentDomainIndex]);
                 } else {
-                    notyf.error('Please answer all questions before proceeding.');
+                    notyf.error(`Please answer all questions in the ${domain} domain.`);
                 }
             });
         } else {
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         saveQuizData();
                     }
                 } else {
-                    notyf.error('Please answer all questions before submitting.');
+                    notyf.error(`Please answer all questions in the ${domain} domain.`);
                 }
             });
         }

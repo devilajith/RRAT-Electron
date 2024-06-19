@@ -7,6 +7,42 @@
     <link rel="stylesheet" href="css/profile.css">
     <link rel="stylesheet" href="css/notyf.min.css">
     <script src="js/notyf.min.js"></script> 
+    <style>
+        .red-star {
+            color: red;
+        }
+
+        .password-popup {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .password-popup ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .password-popup li {
+            margin-bottom: 5px;
+        }
+
+        .password-popup .valid {
+            color: green;
+        }
+
+        .password-popup .invalid {
+            color: red;
+        }
+
+        .highlight {
+            background-color: #e0f7fa;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -44,7 +80,7 @@
                 </form>
             </div>
             <div class="form-container-1">
-                <form action="profileForm_1">
+                <form id="profileForm_1">
                     <div class="form-field">
                         <label for="name">Name</label>
                         <input type="text" id="name" name="name">
@@ -58,6 +94,15 @@
                     <div class="form-field">
                         <label for="new-password">New Password</label>
                         <input type="password" id="new-password" name="new-password">
+                        <div id="passwordPopup" class="password-popup">
+                            <ul>
+                                <li id="length" class="invalid">At least 8 characters</li>
+                                <li id="uppercase" class="invalid">One uppercase letter</li>
+                                <li id="lowercase" class="invalid">One lowercase letter</li>
+                                <li id="number" class="invalid">One number</li>
+                                <li id="special" class="invalid">One special character</li>
+                            </ul>
+                        </div>
                     </div >
                     <div class="form-field">
                         <label for="confirm-password">Confirm New Password</label>
@@ -144,25 +189,24 @@
 
                 if (newPassword && newPassword !== confirmPassword) {
                     notyf.error('New password and confirm password do not match.');
-                    setTimeout(() => {
-                        messageElement.textContent = '';
-                    }, 2000);
                     return;
+                }
+
+                if (newPassword) {
+                    const criteria = validatePassword(newPassword);
+                    if (!criteria.length || !criteria.uppercase || !criteria.lowercase || !criteria.number || !criteria.special) {
+                        notyf.error('New password does not meet the required criteria.');
+                        return;
+                    }
                 }
 
                 if (!currentPassword) {
                     notyf.error('Current password is required');
-                    setTimeout(() => {
-                        messageElement.textContent = '';
-                    }, 2000);
                     return;
                 }
 
                 if (!isProfileDataChanged() && !newPassword) {
                     notyf.error('No Changes Made');
-                    setTimeout(() => {
-                        messageElement.textContent = '';
-                    }, 2000);
                     return;
                 }
 
@@ -184,7 +228,7 @@
             // Listen for profile update confirmation
             window.electron.receive('profile-update', (data) => {
                 if (data.success) {
-                    notyf.error('Profile Updated Successfully');
+                    notyf.success('Profile Updated Successfully');
                     // Update originalProfileData to reflect changes
                     originalProfileData = {
                         email: document.getElementById('email').value,
@@ -193,16 +237,81 @@
                         organization: document.getElementById('organization').value,
                         designation: document.getElementById('designation').value
                     };
-                    setTimeout(() => {
-                        messageElement.textContent = '';
-                    }, 2000);
                 } else {
-                    notyf.error('Failed to Update Profile');
-                    setTimeout(() => {
-                        messageElement.textContent = '';
-                    }, 2000);
+                    if (data.message === 'Incorrect password') {
+                        notyf.error('Wrong current password');
+                    } else {
+                        notyf.error('Failed to Update Profile');
+                    }
                 }
             });
+
+            // Password validation and highlight both fields
+            const newPasswordInput = document.getElementById('new-password');
+            const confirmPasswordInput = document.getElementById('confirm-password');
+            const passwordPopup = document.getElementById('passwordPopup');
+            const lengthCriteria = document.getElementById('length');
+            const uppercaseCriteria = document.getElementById('uppercase');
+            const lowercaseCriteria = document.getElementById('lowercase');
+            const numberCriteria = document.getElementById('number');
+            const specialCriteria = document.getElementById('special');
+
+            function validatePassword(password) {
+                return {
+                    length: password.length >= 8,
+                    uppercase: /[A-Z]/.test(password),
+                    lowercase: /[a-z]/.test(password),
+                    number: /\d/.test(password),
+                    special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+                };
+            }
+
+            function updateValidationCriteria(criteria) {
+                lengthCriteria.classList.toggle('valid', criteria.length);
+                lengthCriteria.classList.toggle('invalid', !criteria.length);
+
+                uppercaseCriteria.classList.toggle('valid', criteria.uppercase);
+                uppercaseCriteria.classList.toggle('invalid', !criteria.uppercase);
+
+                lowercaseCriteria.classList.toggle('valid', criteria.lowercase);
+                lowercaseCriteria.classList.toggle('invalid', !criteria.lowercase);
+
+                numberCriteria.classList.toggle('valid', criteria.number);
+                numberCriteria.classList.toggle('invalid', !criteria.number);
+
+                specialCriteria.classList.toggle('valid', criteria.special);
+                specialCriteria.classList.toggle('invalid', !criteria.special);
+            }
+
+            function toggleHighlight() {
+                if (newPasswordInput.value || confirmPasswordInput.value) {
+                    newPasswordInput.classList.add('highlight');
+                    confirmPasswordInput.classList.add('highlight');
+                } else {
+                    newPasswordInput.classList.remove('highlight');
+                    confirmPasswordInput.classList.remove('highlight');
+                }
+            }
+
+            newPasswordInput.addEventListener('focus', () => {
+                passwordPopup.style.display = 'block';
+                toggleHighlight();
+            });
+
+            newPasswordInput.addEventListener('blur', () => {
+                passwordPopup.style.display = 'none';
+                toggleHighlight();
+            });
+
+            newPasswordInput.addEventListener('input', () => {
+                const password = newPasswordInput.value;
+                const criteria = validatePassword(password);
+                updateValidationCriteria(criteria);
+                toggleHighlight();
+            });
+
+            confirmPasswordInput.addEventListener('focus', toggleHighlight);
+            confirmPasswordInput.addEventListener('input', toggleHighlight);
 
             fetchProfileData();
         });

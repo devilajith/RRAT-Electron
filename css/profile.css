@@ -248,6 +248,10 @@ body {
     overflow: visible;
 }
 
+.highlight {
+    background-color: #e0f7fa;
+}
+
 /* Media Queries */
 @media (max-width: 1280px) {
     .container {
