@@ -11,7 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => {
                 console.log('Quiz data loaded:', data);
                 quizData = data.domains.reduce((acc, domain) => {
-                    acc[domain.name] = domain.questions;
+                    acc[domain.name] = { 
+                        questions: domain.questions,
+                        description: domain.Description 
+                    };
                     return acc;
                 }, {});
                 domains = Object.keys(quizData);
@@ -53,18 +56,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
         quizContainer.scrollTop = 0;
 
-        const explanationDiv = document.createElement('div');
-        explanationDiv.classList.add('explanation-container');
-        explanationDiv.id = `${domain.replace(/\s+/g, '-')}-explanation`;
+        const descriptionButton = document.createElement('button');
+        descriptionButton.classList.add('collapsible-1');
+        descriptionButton.innerText = `${domain}`;
 
-        const explanationText = document.createElement('p');
-        explanationText.classList.add('explanation-text');
-        explanationText.innerText = `This is the explanation for ${domain}.`;
-        explanationDiv.appendChild(explanationText);
+        const descriptionContent = document.createElement('div');
+        descriptionContent.classList.add('collapsible-content');
+        descriptionContent.innerText = quizData[domain].description;
 
-        quizContainer.appendChild(explanationDiv);
+        descriptionButton.addEventListener('click', () => {
+            descriptionButton.classList.toggle('active');
+            if (descriptionContent.style.display === 'block') {
+                descriptionContent.style.display = 'none';
+            } else {
+                descriptionContent.style.display = 'block';
+            }
+        });
 
-        quizData[domain].forEach((questionData, index) => {
+        quizContainer.appendChild(descriptionButton);
+        quizContainer.appendChild(descriptionContent);
+
+        quizData[domain].questions.forEach((questionData, index) => {
             const questionDiv = document.createElement('div');
             questionDiv.classList.add('question-container');
             questionDiv.id = `${domain.replace(/\s+/g, '-')}-question-${index}`;
@@ -138,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     displayQuestionsForCurrentDomain();
                     highlightCurrentDomainButton(domains[currentDomainIndex]);
                 } else {
-                    notyf.error(`Please answer all questions in the ${domain} domain.`);
+                    notyf.error(`Please answer all questions in the ${domain}.`);
                 }
             });
         } else {
@@ -152,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         saveQuizData();
                     }
                 } else {
-                    notyf.error(`Please answer all questions in the ${domain} domain.`);
+                    notyf.error(`Please answer all questions in the ${domain}.`);
                 }
             });
         }
@@ -180,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const quizAnswers = {};
         domains.forEach(domain => {
-            quizAnswers[domain] = quizData[domain].map((questionData, index) => {
+            quizAnswers[domain] = quizData[domain].questions.map((questionData, index) => {
                 return {
                     question: questionData.question,
                     answer: userAnswers[domain][index] || ""
@@ -210,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function areAllQuestionsAnswered(domain) {
-        return quizData[domain].every((_, index) => userAnswers[domain][index] !== undefined);
+        return quizData[domain].questions.every((_, index) => userAnswers[domain][index] !== undefined);
     }
 
     function getUnansweredDomains() {

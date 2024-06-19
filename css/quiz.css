@@ -1,8 +1,9 @@
 *,
 *::before,
-*::after{
+*::after {
     box-sizing: border-box;
 }
+
 body {
     background-color: #194264;
     color: white;
@@ -12,16 +13,17 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100vw; /* Use full viewport width */
-    height: 100vh; /* Use full viewport height */
+    width: 100vw;
+    height: 100vh;
 }
+
 .container {
     background-color: #194264;
     color: white;
     margin: 0;
     padding: 0;
-    width: 100%; /* Use full width */
-    height: 100%; /* Use full height */
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -30,9 +32,9 @@ body {
     background-color: #194264;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* Ensure space is distributed */
+    justify-content: space-between;
     padding: 20px 10px;
-    width: 100%; /* Use full width */
+    width: 100%;
     height: 120px;
     box-shadow: 0 8px 4px rgba(0, 0, 0, 0.2);
     z-index: 1;
@@ -44,11 +46,9 @@ body {
 }
 
 .logo .rrat {
-
     height: 70px;
-    margin-left: 20px; /* Ensure no extra margin */
+    margin-left: 20px;
 }
-
 
 .sidebar {
     display: flex;
@@ -58,9 +58,9 @@ body {
     margin-top: 20px;
     padding-bottom: 30px;
     width: 220px;
-    height: calc(100% - 100px); /* Adjusted to align with header height */
+    height: calc(100% - 100px);
     position: fixed;
-    top: 100px; /* Align with the bottom of the header */
+    top: 100px;
     left: 0;
     overflow-y: auto;
     scroll-behavior: smooth;
@@ -73,7 +73,7 @@ body {
     padding: 15px;
     font-size: 14px;
     color: #0c3c60;
-    text-align:left;
+    text-align: left;
     cursor: pointer;
     flex-shrink: 0;
     width: 100%;
@@ -121,8 +121,8 @@ body {
     height: calc(100% - 120px);
     margin-left: 250px;
     padding: 20px;
-    transition: height 0.3s ease; /* Smooth height transitions */
-    height: 85vh; /* Adjust the height as needed */
+    transition: height 0.3s ease;
+    height: 85vh;
     overflow-y: auto;
     padding: 10px;
 }
@@ -197,7 +197,6 @@ body {
     border-radius: 20px;
     margin-top: 10px;
     font-size: 14px;
-
 }
 
 .hint-button:hover {
@@ -212,7 +211,20 @@ body {
     padding: 10px;
     width: 100%;
     border: none;
-    text-align: left;
+    text-align: justify;
+    outline: none;
+    font-size: 14px;
+    margin-top: 10px;
+    border-radius: 20px;
+}
+.collapsible-1 {
+    background-color: #0c3c60;
+    color: #e0d4b3;
+    cursor: pointer;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    text-align: center;
     outline: none;
     font-size: 14px;
     margin-top: 10px;
@@ -227,13 +239,13 @@ body {
 .collapsible-content {
     padding: 18px;
     display: none;
-    overflow: hidden;
     background-color: #04253f;
     color: #e0d4b3;
     border-radius: 20px;
     margin-top: 10px;
     text-align: justify;
 }
+
 .toggle-container {
     display: flex;
     justify-content: flex-end;
@@ -284,6 +296,7 @@ body {
 .submit-button:hover {
     background-color: #e0d4b3;
 }
+
 .popup {
     position: fixed;
     left: 0;
@@ -297,7 +310,7 @@ body {
 }
 
 .popup-content {
-    color:#e0d4b3;
+    color: #e0d4b3;
     background: #194264;
     padding: 20px;
     border-radius: 5px;
@@ -307,18 +320,21 @@ body {
 #yesBtn {
     margin: 10px;
     padding: 5px 10px;
-    color:#e0d4b3;
+    color: #e0d4b3;
     background: #04253f;
     border: none;
     border-radius: 20px;
 }
-#noBtn{ margin: 10px;
+
+#noBtn {
+    margin: 10px;
     padding: 5px 10px;
-    color:#e0d4b3;
+    color: #e0d4b3;
     background: #04253f;
     border: none;
     border-radius: 20px;
 }
+
 /* Media Queries for Responsiveness */
 @media only screen and (max-width: 768px) {
     .container {
