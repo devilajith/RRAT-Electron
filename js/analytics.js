@@ -5,7 +5,10 @@ function updateProgressBars(scores) {
   let totalScoreSum = 0;
   let totalScoreCount = 0;
 
-  Object.keys(scores).forEach(domain => {
+  // Skip non-domain keys
+  const domainKeys = Object.keys(scores).filter(key => !['Assessment Name', 'Date', 'Time'].includes(key));
+
+  domainKeys.forEach(domain => {
     const values = scores[domain];
     const score = values.reduce((acc, curr) => {
       if (curr.answer.toLowerCase() === 'yes') {
@@ -97,8 +100,10 @@ function displayRecommendations(scoresData, questionsData) {
     return;
   }
 
-  questionsData.domains.forEach(domain => {
-    const domainName = domain.name;
+  const domainKeys = Object.keys(scoresData).filter(key => !['Assessment Name', 'Date', 'Time'].includes(key));
+
+  domainKeys.forEach(domain => {
+    const domainName = domain;
     const domainScores = scoresData[domainName];
     let hasRecommendations = false;
     const domainElement = document.createElement('div');
@@ -115,7 +120,7 @@ function displayRecommendations(scoresData, questionsData) {
         const answer = score.answer.toLowerCase();
         if (answer === 'no' || answer === 'partial') {
           hasRecommendations = true;
-          const question = domain.questions[index];
+          const question = questionsData.domains.find(d => d.name === domainName).questions[index];
 
           const recommendationItem = document.createElement('li');
           recommendationItem.className = 'recommendation-item';

@@ -119,19 +119,20 @@
             try {
                 const assessments = await window.electron.invoke('load-assessments');
                 const tbody = document.getElementById('assessment-body');
-                assessments.forEach(assessment => {
+                for (const assessment of assessments) {
+                    const data = await window.electron.invoke('read-json-file', assessment.file);
                     const row = document.createElement('tr');
 
                     const dateCell = document.createElement('td');
-                    dateCell.textContent = assessment.date;
+                    dateCell.textContent = data.Date;
                     row.appendChild(dateCell);
 
                     const timeCell = document.createElement('td');
-                    timeCell.textContent = assessment.time;
+                    timeCell.textContent = data.Time;
                     row.appendChild(timeCell);
 
                     const nameCell = document.createElement('td');
-                    nameCell.textContent = assessment.name;
+                    nameCell.textContent = data['Assessment Name'];
                     row.appendChild(nameCell);
 
                     const deleteCell = document.createElement('td');
@@ -192,7 +193,7 @@
                     row.appendChild(resultsCell);
 
                     tbody.appendChild(row);
-                });
+                }
             } catch (error) {
                 notyf.error('Failed to load assessments');
             }

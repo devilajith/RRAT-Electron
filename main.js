@@ -15,7 +15,9 @@ function createWindow() {
       preload: path.join(__dirname, 'js/preload.js'), // Reference to preload.js
       contextIsolation: true, // Context isolation for security
       enableRemoteModule: false, // Disable remote module
-    }
+    },
+    resizable: false,
+    fullscreenable: false
   });
 
   mainWindow.loadFile('index.html'); // Load the new index.html
@@ -167,6 +169,17 @@ ipcMain.on('save-quiz-data', (event, quizAnswers) => {
   const fileName = `${assessmentName}-${timestamp}.json`;
   const savePath = path.join(__dirname, 'My Assessments');
 
+  // Structure the data
+  const structuredData = {
+    "Assessment Name": assessmentName,
+    "Date": new Date().toLocaleDateString(),
+    "Time": new Date().toLocaleTimeString(),
+  };
+
+  for (const domain in answers) {
+    structuredData[domain] = answers[domain];
+  }
+
   // Ensure the 'My Assessments' folder exists
   try {
     if (!fs.existsSync(savePath)) {
@@ -179,7 +192,7 @@ ipcMain.on('save-quiz-data', (event, quizAnswers) => {
     const fullPath = path.join(savePath, fileName);
     console.log('Saving file to:', fullPath);
 
-    fs.writeFileSync(fullPath, JSON.stringify(answers, null, 2));
+    fs.writeFileSync(fullPath, JSON.stringify(structuredData, null, 2));
     console.log('Quiz data saved successfully to:', fullPath);
     event.reply('save-quiz-data-reply', { success: true, message: 'Quiz data saved successfully.', fileName: fileName });
   } catch (error) {

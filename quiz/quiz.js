@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function saveQuizData() {
         const assessmentName = localStorage.getItem('assessmentName') || 'Unnamed Assessment';
-
+    
         const quizAnswers = {};
         domains.forEach(domain => {
             quizAnswers[domain] = quizData[domain].questions.map((questionData, index) => {
@@ -199,15 +199,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 };
             });
         });
-
+    
         const dataToSave = {
             assessmentName,
             answers: quizAnswers
         };
-
+    
         console.log('Sending quiz data to save:', JSON.stringify(dataToSave, null, 2));
         window.electron.send('save-quiz-data', dataToSave);
     }
+    
 
     window.electron.receive('save-quiz-data-reply', (response) => {
         console.log('Received reply from main process:', response.message);
