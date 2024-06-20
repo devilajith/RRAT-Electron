@@ -12,6 +12,27 @@
             color: red;
             margin-top: 10px;
         }
+        .sortable {
+            cursor: pointer;
+            position: relative;
+            padding-right: 20px; /* Adjust as needed to make space for the icon */
+        }
+        .sortable::after {
+            content: ""; /* Default to no icon */
+            position: absolute;
+            right: 5px;
+            color: white; /* Icon color, can be adjusted as needed */
+            font-size: 12px; /* Icon size, adjust as needed */
+        }
+        .sort-asc::after {
+            content: "▲"; /* Ascending sort icon */
+        }
+        .sort-desc::after {
+            content: "▼"; /* Descending sort icon */
+        }
+        .no-sort::after {
+            content: ""; /* No icon for unsorted columns */
+        }
     </style>
 </head>
 <body>
@@ -46,9 +67,9 @@
             <table class="assessment-table">
                 <thead>
                     <tr>
-                        <th>Date</th>
+                        <th data-sort="name" class="sortable">Assessment Name</th>
+                        <th data-sort="date" class="sortable">Date</th>
                         <th>Time</th>
-                        <th>Assessment Name</th>
                         <th>Delete</th>
                         <th>Export</th>
                         <th>Results</th>
@@ -113,6 +134,15 @@
 
             // Load assessments data and populate the table
             loadAssessments();
+
+            // Attach sorting functionality to table headers
+            const sortableHeaders = document.querySelectorAll('.sortable');
+            sortableHeaders.forEach((header, index) => {
+                header.addEventListener('click', () => sortTable(index));
+            });
+
+            // Set initial sorting state for "Assessment Name" column
+            sortTable(0, true);
         });
 
         async function loadAssessments() {
@@ -123,6 +153,10 @@
                     const data = await window.electron.invoke('read-json-file', assessment.file);
                     const row = document.createElement('tr');
 
+                    const nameCell = document.createElement('td');
+                    nameCell.textContent = data['Assessment Name'];
+                    row.appendChild(nameCell);
+
                     const dateCell = document.createElement('td');
                     dateCell.textContent = data.Date;
                     row.appendChild(dateCell);
@@ -130,10 +164,6 @@
                     const timeCell = document.createElement('td');
                     timeCell.textContent = data.Time;
                     row.appendChild(timeCell);
-
-                    const nameCell = document.createElement('td');
-                    nameCell.textContent = data['Assessment Name'];
-                    row.appendChild(nameCell);
 
                     const deleteCell = document.createElement('td');
                     const deleteButton = document.createElement('button');
@@ -197,6 +227,66 @@
             } catch (error) {
                 notyf.error('Failed to load assessments');
             }
+        }
+
+        let lastSortedColumn = 0; // Initial sorted column (Assessment Name)
+        let sortDirection = 'ascending'; // Default sort direction
+
+        function sortTable(column, initial = false) {
+            const table = document.getElementById('assessment-body');
+            const rows = Array.from(table.rows);
+
+            // Update icons
+            updateSortIcons(column);
+
+            // Sorting logic
+            rows.sort((a, b) => {
+                let x = a.getElementsByTagName("td")[column].textContent;
+                let y = b.getElementsByTagName("td")[column].textContent;
+
+                if (column === 1) { // Date column
+                    const dateX = parseDate(x);
+                    const dateY = parseDate(y);
+                    if (sortDirection === 'ascending') {
+                        return dateX - dateY;
+                    } else {
+                        return dateY - dateX;
+                    }
+                } else { // Other columns (Assessment Name)
+                    if (sortDirection === 'ascending') {
+                        return x.toLowerCase() > y.toLowerCase() ? 1 : -1;
+                    } else {
+                        return x.toLowerCase() < y.toLowerCase() ? 1 : -1;
+                    }
+                }
+            });
+
+            // Append sorted rows back to the table
+            rows.forEach(row => table.appendChild(row));
+
+            // Toggle sort direction for next click
+            if (!initial) {
+                sortDirection = (column === lastSortedColumn && sortDirection === 'ascending') ? 'descending' : 'ascending';
+                lastSortedColumn = column;
+            }
+        }
+
+        function parseDate(dateString) {
+            // Assuming date format is "DD/MM/YYYY"
+            const [day, month, year] = dateString.split('/');
+            return new Date(`${year}-${month}-${day}`);
+        }
+
+        function updateSortIcons(column) {
+            const headers = document.querySelectorAll('.sortable');
+            headers.forEach((header, idx) => {
+                header.classList.remove('sort-asc', 'sort-desc', 'no-sort');
+                if (idx === column) {
+                    header.classList.add(sortDirection === 'ascending' ? 'sort-asc' : 'sort-desc');
+                } else {
+                    header.classList.add('no-sort'); // Hide icon for unsorted columns
+                }
+            });
         }
     </script>
 </body>
