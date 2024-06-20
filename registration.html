@@ -6,7 +6,7 @@
     <title>Login and Registration</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/notyf.min.css">
-    <script src="js/notyf.min.js"></script> 
+    <script src="js/notyf.min.js"></script>
     <style>
         .red-star {
             color: red;
@@ -38,6 +38,67 @@
         .password-popup .invalid {
             color: red;
         }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid #194265;
+            background-color: #194264;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,5);
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .popup-header {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .popup-body {
+            margin-bottom: 10px;
+        }
+        .popup-button{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #submit {
+            background-color: #04253f;
+            color: #f4ecd8;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        #submit:hover{
+            background-color: #0c3c60;
+            color: #f4ecd8;
+        }
+        #answer{
+            border-radius: 20px;
+            border: none;
+        }
+        #question{
+            background-color: #0c3c60;
+            color: #f4ecd8;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
     </style>
 </head>
 <body>
@@ -50,7 +111,7 @@
         </div>
         <div class="main-content">
             <div class="field">
-                <img src="images/group-40.svg" alt="rrat" class="rrat">                
+                <img src="images/group-40.svg" alt="rrat" class="rrat">
             </div>
             <div class="form-container">
                 <h1>Register</h1>
@@ -93,6 +154,9 @@
                         <label for="sector">Sector<span class="red-star">*</span></label>
                         <input type="text" id="sector" name="sector" required>
                     </div>
+                    <div class="form-field">
+                        <p id="security-questions" style="cursor: pointer;">Security Questions<span class="red-star">*</span></p>
+                    </div>
                     <button type="submit" class="group-6">
                         <div class="rectangle-15"></div>
                         <div class="submit">Submit</div>
@@ -101,6 +165,25 @@
                     </button>
                 </form>
             </div>
+        </div>
+    </div>
+    <div id="overlay" class="overlay"></div>
+    <div id="popup" class="popup">
+        <div class="popup-header">Security Question<span class="red-star">*</span></div>
+        <div class="popup-body">
+            <label for="question">Select a question:</label>
+            <select id="question">
+                <option value="mother-maiden-name">What is your mother's maiden name?</option>
+                <option value="first-pet">What was the name of your first pet?</option>
+                <option value="favorite-teacher">Who was your favorite teacher?</option>
+            </select>
+        </div>
+        <div class="popup-body">
+            <label for="answer">Your answer:</label>
+            <input type="text" id="answer">
+        </div>
+        <div class="popup-button">
+            <button class="popup-button" id="submit">Submit</button>
         </div>
     </div>
     <script>
@@ -183,6 +266,28 @@
                 numberCriteria.classList.remove('valid');
                 numberCriteria.classList.add('invalid');
             }
+        });
+
+        // Security Questions Pop-up
+        document.getElementById('security-questions').addEventListener('click', function () {
+            const overlay = document.getElementById('overlay');
+            const popup = document.getElementById('popup');
+
+            overlay.style.display = 'block';
+            popup.style.display = 'block';
+
+            overlay.addEventListener('click', function () {
+                popup.style.display = 'none';
+                overlay.style.display = 'none';
+            });
+
+            document.getElementById('submit').addEventListener('click', function () {
+                const question = document.getElementById('question').value;
+                const answer = document.getElementById('answer').value;
+                console.log(`Question: ${question}, Answer: ${answer}`);
+                popup.style.display = 'none';
+                overlay.style.display = 'none';
+            });
         });
     </script>
 </body>
