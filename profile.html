@@ -6,7 +6,7 @@
     <title>PROFILE</title>
     <link rel="stylesheet" href="css/profile.css">
     <link rel="stylesheet" href="css/notyf.min.css">
-    <script src="js/notyf.min.js"></script> 
+    <script src="js/notyf.min.js"></script>
     <style>
         .red-star {
             color: red;
@@ -42,6 +42,98 @@
         .highlight {
             background-color: #e0f7fa;
         }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid #194265;
+            background-color: #194264;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,5);
+            padding: 20px;
+            z-index: 1000;
+            width: 50%; /* Adjust width as needed */
+        }
+
+        .popup-header {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #f4ecd8; /* White text color */
+        }
+
+        .popup-body {
+            margin-bottom: 10px;
+        }
+
+        .popup-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .popup-row label {
+            color: #f4ecd8; /* White text color */
+            width: 40%; /* Adjust based on preference */
+        }
+
+        .popup-row input, .popup-row select {
+            width: 58%; /* Adjust based on preference */
+            padding: 8px;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .popup-button {
+            display: flex;
+            justify-content: center;
+        }
+
+        #submit {
+            background-color: #04253f;
+            color: #f4ecd8;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 20px;
+        }
+        #submit:hover{
+            background-color: #0c3c60;
+            color: #f4ecd8;
+        }
+        #answer{
+            border-radius: 20px;
+            border: none;
+        }
+        #new-password-popup{
+            border-radius: 20px;
+            border: none;
+        }
+        #confirm-password-popup{
+            border-radius: 20px;
+            border: none;
+        }
+        #question{
+            background-color:  #04253f;
+            color: #f4ecd8;
+        }
+        #submit:hover{
+            background-color: #0c3c60;
+            color: #f4ecd8;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
     </style>
 </head>
 <body>
@@ -63,8 +155,8 @@
                     <div class="form-field">
                         <label for="email">Email</label>
                         <input type="email" id="email" name="email">
-                    </div>          
-                    
+                    </div>
+
                     <div class="form-field">
                         <label for="designation">Designation</label>
                         <input type="text" id="designation" name="designation">
@@ -77,6 +169,9 @@
                         <label for="current-password">Current Password<span class="required">*</span></label>
                         <input type="password" id="current-password" name="current-password" required>
                     </div>
+                    <div class="form-field">
+                        <p id="Forgot Password" style="color: rgb(119, 206, 247); cursor: pointer;">Forgot Password?</p>
+                    </div>
                 </form>
             </div>
             <div class="form-container-1">
@@ -85,12 +180,12 @@
                         <label for="name">Name</label>
                         <input type="text" id="name" name="name">
                     </div>
-                    
+
                     <div class="form-field">
                         <label for="organization">Organization Name</label>
                         <input type="text" id="organization" name="organization">
                     </div>
-                    
+
                     <div class="form-field">
                         <label for="new-password">New Password</label>
                         <input type="password" id="new-password" name="new-password">
@@ -103,12 +198,12 @@
                                 <li id="special" class="invalid">One special character</li>
                             </ul>
                         </div>
-                    </div >
+                    </div>
                     <div class="form-field">
                         <label for="confirm-password">Confirm New Password</label>
                         <input type="password" id="confirm-password" name="confirm-password">
                     </div>
-                    
+
                     <button type="submit" class="group-6" id="saveButton">
                         <div class="rectangle-15"></div>
                         <div class="submit">Save&nbsp;</div>
@@ -123,12 +218,38 @@
                     </button>
                     <div id="message" class="message"></div> <!-- Message area -->
                 </form>
-                
             </div>
-                
         </div>
     </div>
-    <script src="js/profile-placeholder.js"></script>
+    <div id="overlay" class="overlay"></div>
+    <div id="popup" class="popup">
+        <div class="popup-header">Forgot Password</div>
+        <div class="popup-body">
+            <div class="popup-row">
+                <label for="question">Select a question:</label>
+                <select id="question">
+                    <option value="mother-maiden-name">What is your mother's maiden name?</option>
+                    <option value="first-pet">What was the name of your first pet?</option>
+                    <option value="favorite-teacher">Who was your favorite teacher?</option>
+                </select>
+            </div>
+            <div class="popup-row">
+                <label for="answer">Your answer:</label>
+                <input type="text" id="answer">
+            </div>
+            <div class="popup-row">
+                <label for="new-password-popup">New Password:</label>
+                <input type="password" id="new-password-popup">
+            </div>
+            <div class="popup-row">
+                <label for="confirm-password-popup">Confirm New Password:</label>
+                <input type="password" id="confirm-password-popup">
+            </div>
+        </div>
+        <div class="popup-button">
+            <button id="submit">Submit</button>
+        </div>
+    </div>
     <script>
         const notyf = new Notyf();
         function dashboard() {
@@ -314,6 +435,28 @@
             confirmPasswordInput.addEventListener('input', toggleHighlight);
 
             fetchProfileData();
+        });
+
+        // forgot_password Pop-up
+        document.getElementById('Forgot Password').addEventListener('click', function () {
+            const overlay = document.getElementById('overlay');
+            const popup = document.getElementById('popup');
+
+            overlay.style.display = 'block';
+            popup.style.display = 'block';
+
+            overlay.addEventListener('click', function () {
+                popup.style.display = 'none';
+                overlay.style.display = 'none';
+            });
+
+            document.getElementById('submit').addEventListener('click', function () {
+                const question = document.getElementById('question').value;
+                const answer = document.getElementById('answer').value;
+                console.log(`Question: ${question}, Answer: ${answer}`);
+                popup.style.display = 'none';
+                overlay.style.display = 'none';
+            });
         });
     </script>
 </body>
