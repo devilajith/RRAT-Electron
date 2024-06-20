@@ -50,6 +50,7 @@
             box-shadow: 0px 0px 10px 0px rgba(0,0,0,5);
             padding: 20px;
             z-index: 1000;
+            width: 40%;
         }
 
         .popup-header {
@@ -62,8 +63,23 @@
         }
         .popup-button{
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+        }
+        .popup-row {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
+            margin-bottom: 10px;
+        }
+        .popup-row label, .popup-row select{
+            color: #fff;
+            width: 40%;
+        }
+        .popup input{
+            width: 58%;
+            padding: 8px;
+            border-radius: 20px;
+            border: none;
         }
 
         #submit {
@@ -83,10 +99,13 @@
         #answer{
             border-radius: 20px;
             border: none;
+            width: 50%;
         }
         #question{
             background-color: #0c3c60;
             color: #f4ecd8;
+            height: 32px;
+            width: 50%;
         }
 
         .overlay {
@@ -171,16 +190,18 @@
     <div id="popup" class="popup">
         <div class="popup-header">Security Question<span class="red-star">*</span></div>
         <div class="popup-body">
-            <label for="question">Select a question:</label>
-            <select id="question">
-                <option value="mother-maiden-name">What is your mother's maiden name?</option>
-                <option value="first-pet">What was the name of your first pet?</option>
-                <option value="favorite-teacher">Who was your favorite teacher?</option>
-            </select>
-        </div>
-        <div class="popup-body">
-            <label for="answer">Your answer:</label>
-            <input type="text" id="answer">
+            <div class="popup-row">
+                <label for="question">Select a question:</label>
+                <select id="question">
+                    <option value="mother-maiden-name">What is your mother's maiden name?</option>
+                    <option value="first-pet">What was the name of your first pet?</option>
+                    <option value="favorite-teacher">Who was your favorite teacher?</option>
+                </select>
+            </div>
+            <div class="popup-row">
+                <label for="answer">Your answer:</label>
+                <input type="text" id="answer">
+            </div>
         </div>
         <div class="popup-button">
             <button class="popup-button" id="submit">Submit</button>
