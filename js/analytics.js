@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
     showRecommendationsTab();
   });
 
-  document.getElementById('export-button').addEventListener('click', captureAndExportPDF);
+  document.getElementById('export-button').addEventListener('click', exportAnalyticsAsHTML);
 });
 
 function showAnalytics() {
@@ -187,31 +187,4 @@ function showRecommendationsTab() {
   document.getElementById('tab-recommendations').classList.add('active');
   document.getElementById('overall-score-section').style.display = 'none';
   showRecommendations();
-}
-
-function captureAndExportPDF() {
-  const exportButton = document.getElementById('export-button');
-  exportButton.style.display = 'none'; // Hide the export button during the capture
-  const recommendationsContainer = document.getElementById('recommendations-container');
-  const analyticsContainer = document.getElementById('analytics-container');
-
-  html2canvas(analyticsContainer, { scale: 2 }).then(canvas => {
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-
-    html2canvas(recommendationsContainer, { scale: 2 }).then(canvas2 => {
-      const imgData2 = canvas2.toDataURL('image/png');
-      const imgProps2 = pdf.getImageProperties(imgData2);
-      const pdfWidth2 = pdf.internal.pageSize.getWidth();
-      const pdfHeight2 = (imgProps2.height * pdfWidth2) / imgProps2.width;
-      pdf.addPage();
-      pdf.addImage(imgData2, 'PNG', 0, 0, pdfWidth2, pdfHeight2);
-      pdf.save('assessment_report.pdf');
-      exportButton.style.display = 'block'; // Show the export button after the capture
-    });
-  });
 }

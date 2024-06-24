@@ -5,9 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Analytics and Recommendations</title>
   <link rel="stylesheet" href="css/analytics.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
   <script src="js/analytics.js" defer></script>
+  <script src="js/export.js" defer></script>
 </head>
 <body class="macbook-air">
   <div class="header">
@@ -34,43 +33,9 @@
         </svg>
         <div class="percentage" id="overall-percentage">0%</div>
       </div>
-      <div>Overall score</div>
+      <div>RRAT Overall Score</div>
     </div>
     <div id="recommendations-container" class="recommendations-container" style="display: none;"></div>
   </div>
-  <script>
-    document.getElementById('dashboard-logo').addEventListener('click', () => {
-      window.location.href = './dashboard.html';
-    });
-
-    document.getElementById('tab-analytics').addEventListener('click', () => {
-      showAnalytics();
-    });
-    document.getElementById('tab-recommendations').addEventListener('click', () => {
-      showRecommendationsTab();
-    });
-
-    document.getElementById('export-button').addEventListener('click', captureAndExportPDF);
-
-    function showAnalytics() {
-      document.getElementById('analytics-container').style.display = 'block';
-      document.getElementById('recommendations-container').style.display = 'none';
-      document.getElementById('tab-analytics').classList.add('active');
-      document.getElementById('tab-recommendations').classList.remove('active');
-      document.getElementById('overall-score-section').style.display = 'flex';
-      // Assuming updateAnalyticsView is your function to update the analytics view
-      updateAnalyticsView();
-    }
-
-    function showRecommendationsTab() {
-      document.getElementById('analytics-container').style.display = 'none';
-      document.getElementById('recommendations-container').style.display = 'block';
-      document.getElementById('tab-analytics').classList.remove('active');
-      document.getElementById('tab-recommendations').classList.add('active');
-      document.getElementById('overall-score-section').style.display = 'none';
-      // Assuming showRecommendations is your function to show recommendations
-      showRecommendations();
-    }
-  </script>
 </body>
 </html>
