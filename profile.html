@@ -118,6 +118,7 @@
         #question{
             background-color:  #04253f;
             color: #f4ecd8;
+            border-radius: 50px;
         }
         #submit:hover{
             background-color: #0c3c60;
@@ -133,6 +134,10 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
             z-index: 999;
+        }
+
+        body {
+            overflow: hidden; /* Remove scroll bar */
         }
     </style>
 </head>
@@ -170,7 +175,7 @@
                         <input type="password" id="current-password" name="current-password" required>
                     </div>
                     <div class="form-field">
-                        <p id="Forgot Password" style="color: rgb(119, 206, 247); cursor: pointer;">Forgot Password?</p>
+                        <p id="ForgotPasswordButton" style="color: rgb(119, 206, 247); cursor: pointer;">Forgot Password?</p>
                     </div>
                 </form>
             </div>
@@ -226,12 +231,8 @@
         <div class="popup-header">Forgot Password</div>
         <div class="popup-body">
             <div class="popup-row">
-                <label for="question">Select a question:</label>
-                <select id="question">
-                    <option value="mother-maiden-name">What is your mother's maiden name?</option>
-                    <option value="first-pet">What was the name of your first pet?</option>
-                    <option value="favorite-teacher">Who was your favorite teacher?</option>
-                </select>
+                <label for="question">Security Question:</label>
+                <span id="selected-question"></span>
             </div>
             <div class="popup-row">
                 <label for="answer">Your answer:</label>
@@ -274,14 +275,7 @@
                             document.getElementById('sector').value = response.data.sector;
                             document.getElementById('organization').value = response.data.organization;
                             document.getElementById('designation').value = response.data.designation;
-
-                            originalProfileData = {
-                                email: response.data.email,
-                                name: response.data.name,
-                                sector: response.data.sector,
-                                organization: response.data.organization,
-                                designation: response.data.designation
-                            };
+                            document.getElementById('selected-question').innerText = response.data.securityquestion; // Assuming 'question' is part of the profile data
                         } else {
                             console.error('Failed to load profile data');
                         }
@@ -435,29 +429,81 @@
             confirmPasswordInput.addEventListener('input', toggleHighlight);
 
             fetchProfileData();
-        });
 
-        // forgot_password Pop-up
-        document.getElementById('Forgot Password').addEventListener('click', function () {
-            const overlay = document.getElementById('overlay');
-            const popup = document.getElementById('popup');
+            function fetchSelectedQuestion() {
+                const userId = sessionStorage.getItem('userId');
+                if (userId) {
+                    window.electron.send('get-selected-question', userId);
+                    window.electron.receive('selected-question-data', (response) => {
+                        if (response.success && response.data) {
+                            document.getElementById('selected-question').innerText = response.data.securityquestion; // Ensure this matches the actual response structure
+                        } else {
+                            console.error('Failed to load selected question');
+                            document.getElementById('selected-question').innerText = "Failed to load question";
+                        }
+                    });
+                } else {
+                    console.error('No user ID found in sessionStorage');
+                    document.getElementById('selected-question').innerText = "No user ID found";
+                }
+            }
 
-            overlay.style.display = 'block';
-            popup.style.display = 'block';
+            // Call fetchProfileData and fetchSelectedQuestion when the document is ready
+            fetchProfileData();
+            fetchSelectedQuestion();
 
-            overlay.addEventListener('click', function () {
-                popup.style.display = 'none';
-                overlay.style.display = 'none';
-            });
+            // forgot_password Pop-up
+            document.getElementById('ForgotPasswordButton').addEventListener('click', function () {
+                fetchSelectedQuestion();  // Fetch the question when the popup is about to be shown
+                const userId = sessionStorage.getItem('userId'); // Ensure you have the user's ID stored in sessionStorage
+                window.electron.send('get-selected-question', userId);
+                const overlay = document.getElementById('overlay');
+                const popup = document.getElementById('popup');
 
-            document.getElementById('submit').addEventListener('click', function () {
-                const question = document.getElementById('question').value;
-                const answer = document.getElementById('answer').value;
-                console.log(`Question: ${question}, Answer: ${answer}`);
-                popup.style.display = 'none';
-                overlay.style.display = 'none';
+                overlay.style.display = 'block';
+                popup.style.display = 'block';
+
+                overlay.addEventListener('click', function () {
+                    popup.style.display = 'none';
+                    overlay.style.display = 'none';
+                });
+
+                document.getElementById('submit').addEventListener('click', function () {
+        const answer = document.getElementById('answer').value;
+        const newPassword = document.getElementById('new-password-popup').value;
+        const confirmPassword = document.getElementById('confirm-password-popup').value;
+
+        if (newPassword !== confirmPassword) {
+            notyf.error('New password and confirm password do not match.');
+            return;
+        }
+
+        const criteria = validatePassword(newPassword);
+        if (!criteria.length || !criteria.uppercase || !criteria.lowercase || !criteria.number || !criteria.special) {
+            notyf.error('New password does not meet the required criteria.');
+            return;
+        }
+
+        const userId = sessionStorage.getItem('userId');
+        window.electron.send('validate-answer-and-reset-password', { userId, answer, newPassword });
+    });
+
+    window.electron.receive('reset-password-response', (response) => {
+        if (response.success) {
+            notyf.success('Password updated successfully.');
+            // Close the popup and overlay
+            document.getElementById('popup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        } else {
+            notyf.error(response.message);
+        }
+    });
             });
         });
     </script>
 </body>
 </html>
+
+
+
+

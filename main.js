@@ -40,7 +40,9 @@ function createDatabase() {
         password TEXT,
         organization TEXT,
         designation TEXT,
-        sector TEXT
+        sector TEXT,
+        securityquestion TEXT,
+        Answer TEXT
       )`);
     }
   });
@@ -62,8 +64,9 @@ app.on('activate', function () {
 ipcMain.on('register', async (event, data) => {
   try {
     const hashedPassword = await bcrypt.hash(data.password, 10); // Hash the password before storing
-    const stmt = db.prepare("INSERT INTO registrations (email, name, password, organization, designation, sector) VALUES (?, ?, ?, ?, ?, ?)");
-    stmt.run([data.email, data.name, hashedPassword, data.organization, data.designation, data.sector], function(err) {
+    const hashedAnswer = await bcrypt.hash(data.answer, 10); // Hash the answer before storing
+    const stmt = db.prepare("INSERT INTO registrations (email, name, password, organization, designation, sector, securityquestion, Answer) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    stmt.run([data.email, data.name, hashedPassword, data.organization, data.designation, data.sector, data.question, hashedAnswer], function(err) {
       if (err) {
         console.error(err.message);
         event.reply('registration-success', { success: false });
@@ -286,3 +289,43 @@ if (!ipcMain.eventNames().includes('read-json-file')) {
     }
   });
 };
+
+ipcMain.on('get-selected-question', (event, userId) => {
+    const query = "SELECT securityquestion FROM registrations WHERE email = ?";
+    db.get(query, [userId], (err, row) => {
+        console.log("Query Result:", row); // Log the row to see what is being returned
+        if (err) {
+            console.error('Failed to fetch security question:', err);
+            event.reply('selected-question-data', { success: false });
+        } else if (row) {
+            event.reply('selected-question-data', { success: true, question: row.securityquestion });
+        } else {
+            event.reply('selected-question-data', { success: false });
+        }
+    });
+});
+
+ipcMain.on('validate-answer-and-reset-password', async (event, data) => {
+    const { userId, answer, newPassword } = data;
+
+    db.get("SELECT encryptedAnswer, password FROM registrations WHERE rowid = ?", [userId], async (err, row) => {
+        if (err) {
+            console.error('Error fetching user data:', err.message);
+            event.reply('reset-password-response', { success: false, message: 'Database error.' });
+        } else if (row && await bcrypt.compare(answer, row.encryptedAnswer)) {
+            // Answer is correct, proceed to reset the password
+            const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+            db.run("UPDATE registrations SET password = ? WHERE rowid = ?", [hashedNewPassword, userId], function(err) {
+                if (err) {
+                    console.error('Error updating password:', err.message);
+                    event.reply('reset-password-response', { success: false, message: 'Failed to update password.' });
+                } else {
+                    event.reply('reset-password-response', { success: true, message: 'Password updated successfully.' });
+                }
+            });
+        } else {
+            // Answer is incorrect
+            event.reply('reset-password-response', { success: false, message: 'Incorrect answer.' });
+        }
+    });
+});

@@ -83,7 +83,7 @@ body {
     border-radius: 50%;
     overflow: hidden;
     margin-top: 137px;
-    background: #FFFFFF;
+    background: transparent;
 }
 .profile-picture {
     width: 100%;

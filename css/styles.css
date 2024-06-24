@@ -223,3 +223,38 @@ body {
         max-width: 100%;
     }
 }
+
+.styled-select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 1px solid white; /* Set the border color to white */
+    border-radius: 50px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+    background-color: #04253f; /* Set the background color to match the input field */
+    color: #f4ecd8; /* Set the text color to a light color */
+    font-size: 14px;
+    height: 40px; /* Set the height to 40px */
+    appearance: none; /* Remove default dropdown arrow */
+    -webkit-appearance: none; /* Remove default dropdown arrow for Safari */
+    -moz-appearance: none; /* Remove default dropdown arrow for Firefox */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23f4ecd8" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); /* Custom dropdown arrow */
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 12px;
+}
+
+.styled-select option {
+    color: #000; /* Set the text color of the options to black */
+}
+
+.styled-select option[disabled] {
+    color: #f4ecd8; /* Set the text color of the disabled option to match the input text color */
+}
+
+.styled-select:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+    border: 1px solid rgba(81, 203, 238, 1); /* Change border color on focus */
+}

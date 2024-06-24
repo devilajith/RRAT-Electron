@@ -39,6 +39,17 @@
             color: red;
         }
 
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
         .popup {
             display: none;
             position: fixed;
@@ -56,30 +67,50 @@
         .popup-header {
             font-size: 1.2em;
             margin-bottom: 10px;
+            color: #fff;
         }
 
         .popup-body {
             margin-bottom: 10px;
         }
-        .popup-button{
+
+        .popup-button {
             display: flex;
             justify-content: center;
         }
+
         .popup-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: inline;
+            flex-direction: column;
             margin-bottom: 10px;
         }
-        .popup-row label, .popup-row select{
+
+        .popup-row label, .popup-row input {
             color: #fff;
-            width: 40%;
+            width: 100%;
+            margin: centre;
         }
-        .popup input{
-            width: 58%;
+
+        .popup-row input {
             padding: 8px;
             border-radius: 20px;
             border: none;
+        }
+
+        .popup-button button {
+            background-color: #04253f;
+            color: #f4ecd8;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .popup-button button:hover {
+            background-color: #0c3c60;
+            color: #f4ecd8;
         }
 
         #submit {
@@ -101,22 +132,47 @@
             border: none;
             width: 50%;
         }
+        input#answer{
+            color: black;
+        }
         #question{
             background-color: #0c3c60;
             color: #f4ecd8;
-            height: 32px;
-            width: 50%;
+            margin-top: -3px;
         }
 
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
+        .form-field {
+            margin-bottom: 15px;
+        }
+
+        .question-label {
+            display: block;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .styled-select {
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid white;
+            border-radius: 50px;
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+            background-color: #04253f;
+            color: #f4ecd8;
+            font-size: 14px;
+            height: 40px;
+        }
+
+        .styled-select option {
+            color: #f2eaea;
+        }
+
+        .styled-select:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+            border: 1px solid rgba(81, 203, 238, 1);
         }
     </style>
 </head>
@@ -174,7 +230,13 @@
                         <input type="text" id="sector" name="sector" required>
                     </div>
                     <div class="form-field">
-                        <p id="security-questions" style="cursor: pointer;">Security Questions<span class="red-star">*</span></p>
+                        <label for="question" class="question-label">Select a question<span class="red-star">*</span></label>
+                        <select id="question" name="question" class="styled-select" required>
+                            <option value="" disabled selected>Choose a question</option>
+                            <option value="favorite-book">What is your favorite book?</option>
+                            <option value="first-pet">What was the name of your first pet?</option>
+                            <option value="favorite-teacher">Who was your favorite teacher?</option>
+                        </select>
                     </div>
                     <button type="submit" class="group-6">
                         <div class="rectangle-15"></div>
@@ -191,20 +253,12 @@
         <div class="popup-header">Security Question<span class="red-star">*</span></div>
         <div class="popup-body">
             <div class="popup-row">
-                <label for="question">Select a question:</label>
-                <select id="question">
-                    <option value="mother-maiden-name">What is your mother's maiden name?</option>
-                    <option value="first-pet">What was the name of your first pet?</option>
-                    <option value="favorite-teacher">Who was your favorite teacher?</option>
-                </select>
-            </div>
-            <div class="popup-row">
                 <label for="answer">Your answer:</label>
-                <input type="text" id="answer">
+                <input type="text" id="answer" name="answer">
             </div>
-        </div>
-        <div class="popup-button">
-            <button class="popup-button" id="submit">Submit</button>
+            <div class="popup-button">
+                <button class="popup-button" id="submitAnswer">Submit</button>
+            </div>
         </div>
     </div>
     <script>
@@ -212,13 +266,19 @@
         document.getElementById('registrationForm').addEventListener('submit', function(event) {
             event.preventDefault();
 
+            // Get the selected option text
+            const questionSelect = document.getElementById('question');
+            const selectedOptionText = questionSelect.options[questionSelect.selectedIndex].text;
+
             const formData = {
                 email: document.getElementById('email').value,
                 name: document.getElementById('name').value,
                 password: document.getElementById('password').value,
                 organization: document.getElementById('organization').value,
                 designation: document.getElementById('designation').value,
-                sector: document.getElementById('sector').value
+                sector: document.getElementById('sector').value,
+                question: selectedOptionText,  // Correctly capturing the question text
+                answer: document.getElementById('answer').value
             };
 
             window.electron.send('register', formData);
@@ -290,7 +350,7 @@
         });
 
         // Security Questions Pop-up
-        document.getElementById('security-questions').addEventListener('click', function () {
+        document.getElementById('question').addEventListener('change', function () {
             const overlay = document.getElementById('overlay');
             const popup = document.getElementById('popup');
 
@@ -302,7 +362,7 @@
                 overlay.style.display = 'none';
             });
 
-            document.getElementById('submit').addEventListener('click', function () {
+            document.getElementById('submitAnswer').addEventListener('click', function () {
                 const question = document.getElementById('question').value;
                 const answer = document.getElementById('answer').value;
                 console.log(`Question: ${question}, Answer: ${answer}`);

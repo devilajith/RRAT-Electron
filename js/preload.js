@@ -3,13 +3,13 @@ const { contextBridge, ipcRenderer } = require('electron');
 contextBridge.exposeInMainWorld('electron', {
     checkUserExistence: (userId) => ipcRenderer.invoke('check-user-existence', userId),
     send: (channel, data) => {
-        let validChannels = ['get-profile', 'register', 'save-quiz-data', 'update-profile'];
+        let validChannels = ['get-profile', 'register', 'save-quiz-data', 'update-profile', 'validate-answer-and-reset-password'];
         if (validChannels.includes(channel)) {
             ipcRenderer.send(channel, data);
         }
     },
     receive: (channel, func) => {
-        let validChannels = ['profile-data', 'registration-success', 'save-quiz-data-reply', 'profile-update'];
+        let validChannels = ['profile-data', 'registration-success', 'save-quiz-data-reply', 'profile-update', 'reset-password-response'];
         if (validChannels.includes(channel)) {
             ipcRenderer.on(channel, (event, ...args) => func(...args));
         }
