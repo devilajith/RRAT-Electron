@@ -172,7 +172,19 @@ ipcMain.on('save-quiz-data', (event, quizAnswers) => {
   const fileName = `${assessmentName}-${timestamp}.json`;
   const savePath = path.join(__dirname, 'My Assessments');
 
-  // Structure the data
+  // Load quiz data
+  const dataPath = path.join(__dirname, 'quiz/Qdata.json');
+  let quizData;
+  try {
+    const data = fs.readFileSync(dataPath, 'utf-8');
+    quizData = JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading quiz data:', error);
+    event.reply('save-quiz-data-reply', { success: false, message: 'Failed to load quiz data.' });
+    return;
+  }
+
+  // Structure the data with recommendations
   const structuredData = {
     "Assessment Name": assessmentName,
     "Date": new Date().toLocaleDateString(),
@@ -180,7 +192,17 @@ ipcMain.on('save-quiz-data', (event, quizAnswers) => {
   };
 
   for (const domain in answers) {
-    structuredData[domain] = answers[domain];
+    structuredData[domain] = answers[domain].map((answer, index) => {
+      const questionData = quizData.domains.find(d => d.name === domain).questions[index];
+      const result = {
+        question: questionData.question,
+        answer: answer.answer
+      };
+      if (answer.answer === 'no' || answer.answer === 'partial') {
+        result.recommendation = questionData.Recommendation;
+      }
+      return result;
+    });
   }
 
   // Ensure the 'My Assessments' folder exists
