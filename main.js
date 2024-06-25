@@ -7,6 +7,7 @@ const crypto = require('crypto');
 
 let mainWindow;
 let db;
+let secretKey;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -49,7 +50,39 @@ function createDatabase() {
   });
 }
 
+function getSecretKey() {
+  const keyPath = path.join(__dirname, 'quiz', '.secret_key');
+  if (!fs.existsSync(keyPath)) {
+    const newKey = crypto.randomBytes(32).toString('hex');
+    fs.writeFileSync(keyPath, newKey, { mode: 0o600 });
+  }
+  return fs.readFileSync(keyPath, 'utf-8');
+}
+
+function encrypt(text) {
+  const algorithm = 'aes-256-cbc';
+  const key = crypto.scryptSync(secretKey, 'salt', 32);
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv(algorithm, key, iv);
+  let encrypted = cipher.update(text, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return iv.toString('hex') + ':' + encrypted;
+}
+
+function decrypt(text) {
+  const algorithm = 'aes-256-cbc';
+  const key = crypto.scryptSync(secretKey, 'salt', 32);
+  const textParts = text.split(':');
+  const iv = Buffer.from(textParts.shift(), 'hex');
+  const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+  const decipher = crypto.createDecipheriv(algorithm, key, iv);
+  let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+  decrypted += decipher.final('utf8');
+  return decrypted;
+}
+
 app.on('ready', () => {
+  secretKey = getSecretKey();
   createWindow();
   createDatabase();
 });
@@ -167,16 +200,6 @@ function getISTTimestamp() {
   return `${year}-${month}-${day}T${hours}-${minutes}-${seconds}`;
 }
 
-function encrypt(text) {
-  const algorithm = 'aes-256-cbc';
-  const key = crypto.scryptSync('your-secret-key', 'salt', 32); // Replace 'your-secret-key' with your actual secret key
-  const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv(algorithm, key, iv);
-  let encrypted = cipher.update(text, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
-  return iv.toString('hex') + ':' + encrypted;
-}
-
 ipcMain.on('save-quiz-data', (event, quizAnswers) => {
   const { assessmentName, answers } = quizAnswers;
   const timestamp = getISTTimestamp();
@@ -228,18 +251,6 @@ ipcMain.on('save-quiz-data', (event, quizAnswers) => {
     event.reply('save-quiz-data-reply', { success: false, message: 'Failed to save quiz data.' });
   }
 });
-
-function decrypt(text) {
-  const algorithm = 'aes-256-cbc';
-  const key = crypto.scryptSync('your-secret-key', 'salt', 32); // Replace 'your-secret-key' with your actual secret key
-  const textParts = text.split(':');
-  const iv = Buffer.from(textParts.shift(), 'hex');
-  const encryptedText = Buffer.from(textParts.join(':'), 'hex');
-  const decipher = crypto.createDecipheriv(algorithm, key, iv);
-  let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
-  decrypted += decipher.final('utf8');
-  return decrypted;
-}
 
 ipcMain.handle('read-json-file', async (event, fileName) => {
   const filePath = path.join(__dirname, 'My Assessments', fileName);
