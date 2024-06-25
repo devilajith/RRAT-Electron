@@ -57,6 +57,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             border: 1px solid #194265;
+            border-radius: 20px;
             background-color: #194264;
             box-shadow: 0px 0px 10px 0px rgba(0,0,0,5);
             padding: 20px;
@@ -68,6 +69,7 @@
             font-size: 1.2em;
             margin-bottom: 10px;
             color: #fff;
+            text-align: center;
         }
 
         .popup-body {
@@ -83,12 +85,25 @@
             display: inline;
             flex-direction: column;
             margin-bottom: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        .popup-row label, .popup-row input {
+        .popup-row label {
             color: #fff;
             width: 100%;
-            margin: centre;
+            margin: center;
+            display: block; /* Ensure the label takes the full width */
+            margin-bottom: 10px; /* Add space between the label and the input field */
+            display: flex;
+            justify-content: center;
+        }
+        .popup-row input {
+             padding: 8px;
+             border-radius: 20px;
+             border: none;
+             width: 100%; /* Adjust width if needed */
         }
 
         .popup-row input {
@@ -101,7 +116,7 @@
             background-color: #04253f;
             color: #f4ecd8;
             border: none;
-            padding: 5px;
+            padding: 10px 50px; 
             cursor: pointer;
             border-radius: 20px;
             margin-top: 10px;
@@ -130,7 +145,8 @@
         #answer{
             border-radius: 20px;
             border: none;
-            width: 50%;
+            width: 75%;
+            text-align: center;
         }
         input#answer{
             color: black;
@@ -180,7 +196,7 @@
     <div class="container">
         <div class="header">
             <div class="logo">
-                <img src="images/Nciipc_Logo.png" alt="logo" class="logo">
+                <img src="images/Nciipc_Logo.svg" alt="logo" class="logo">
             </div>
             <h1>National Critical Information Infrastructure Protection Center (NCIIPC)</h1>
         </div>
@@ -230,7 +246,7 @@
                         <input type="text" id="sector" name="sector" required>
                     </div>
                     <div class="form-field">
-                        <label for="question" class="question-label">Select a question<span class="red-star">*</span></label>
+                        <label for="question" class="question-label">Select Security question<span class="red-star">*</span></label>
                         <select id="question" name="question" class="styled-select" required>
                             <option value="" disabled selected>Choose a question</option>
                             <option value="favorite-book">What is your favorite book?</option>
@@ -250,10 +266,10 @@
     </div>
     <div id="overlay" class="overlay"></div>
     <div id="popup" class="popup">
-        <div class="popup-header">Security Question<span class="red-star">*</span></div>
+        <div class="popup-header">Your Answer:<span class="red-star">*</span></div>
         <div class="popup-body">
             <div class="popup-row">
-                <label for="answer">Your answer:</label>
+                <label for="answer"> Hard to Guess, Easy to Remember </label>
                 <input type="text" id="answer" name="answer">
             </div>
             <div class="popup-button">
