@@ -1,11 +1,9 @@
-/* Universal box-sizing rule */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-/* Page layout */
 html, body {
   background-color: #194264;
   color: white;
@@ -19,7 +17,6 @@ html, body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Specific class for macbook-air */
 .macbook-air {
   background-color: #eaf6ff;
   color: #333;
@@ -31,7 +28,6 @@ html, body {
   flex-direction: column;
 }
 
-/* Header styling */
 .header {
   background-color: #194264;
   display: flex;
@@ -55,7 +51,6 @@ html, body {
   margin-left: 20px;
 }
 
-/* Export button styling */
 .export-button {
   width: auto;
   align-items: flex-start;
@@ -65,7 +60,6 @@ html, body {
   margin-left: 700px;
 }
 
-/* Tabs styling */
 .tabs {
   background-color: #194264;
   align-items: center;
@@ -100,7 +94,6 @@ html, body {
   margin-bottom: 0px;
 }
 
-/* Content layout */
 .content {
   display: flex;
   height: calc(100% - 190px);
@@ -114,7 +107,6 @@ html, body {
   box-sizing: border-box;
 }
 
-/* Containers */
 .domains-container {
   flex: 1;
   overflow-y: scroll;
@@ -156,7 +148,6 @@ html, body {
   color: #194264;
 }
 
-/* Overall score circle */
 .circle {
   width: 200px;
   height: 200px;
@@ -183,7 +174,6 @@ html, body {
   stroke-linecap: round;
 }
 
-/* Progress bar styling */
 .progress-bar-container {
   width: 70%;
   background-color: #ffffff;
@@ -213,7 +203,6 @@ html, body {
   background-color: #f22613;
 }
 
-/* Overall score section */
 .overall-score {
   width: 500px;
   display: flex;
@@ -240,7 +229,6 @@ html, body {
   color: #194264;
 }
 
-/* Custom scrollbars */
 .domains-container::-webkit-scrollbar {
   width: 15px;
 }
@@ -268,7 +256,6 @@ html, body {
   border: 2px solid #eaf6ff;
 }
 
-/* Question styling */
 .question {
   margin-bottom: 10px;
 }
