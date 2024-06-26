@@ -46,17 +46,45 @@ function createDatabase() {
         securityquestion TEXT,
         Answer TEXT
       )`);
+      db.run(`CREATE TABLE IF NOT EXISTS secret_keys (
+        id INTEGER PRIMARY KEY,
+        key TEXT
+      )`, (err) => {
+        if (err) {
+          console.error('Error creating secret_keys table: ', err);
+        } else {
+          getSecretKey().then(key => {
+            secretKey = key;
+            createWindow();
+          }).catch(err => {
+            console.error(err);
+            app.quit();
+          });
+        }
+      });
     }
   });
 }
 
 function getSecretKey() {
-  const keyPath = path.join(__dirname, 'quiz', '.secret_key');
-  if (!fs.existsSync(keyPath)) {
-    const newKey = crypto.randomBytes(32).toString('hex');
-    fs.writeFileSync(keyPath, newKey, { mode: 0o600 });
-  }
-  return fs.readFileSync(keyPath, 'utf-8');
+  return new Promise((resolve, reject) => {
+    db.get("SELECT key FROM secret_keys WHERE id = 1", (err, row) => {
+      if (err) {
+        reject('Error fetching secret key from database: ' + err);
+      } else if (row) {
+        resolve(row.key);
+      } else {
+        const newKey = crypto.randomBytes(32).toString('hex');
+        db.run("INSERT INTO secret_keys (id, key) VALUES (1, ?)", [newKey], (err) => {
+          if (err) {
+            reject('Error storing new secret key in database: ' + err);
+          } else {
+            resolve(newKey);
+          }
+        });
+      }
+    });
+  });
 }
 
 function encrypt(text) {
@@ -76,14 +104,17 @@ function decrypt(text) {
   const iv = Buffer.from(textParts.shift(), 'hex');
   const encryptedText = Buffer.from(textParts.join(':'), 'hex');
   const decipher = crypto.createDecipheriv(algorithm, key, iv);
-  let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
-  decrypted += decipher.final('utf8');
+  let decrypted;
+  try {
+    decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+  } catch (error) {
+    throw new Error('decryption failed');
+  }
   return decrypted;
 }
 
 app.on('ready', () => {
-  secretKey = getSecretKey();
-  createWindow();
   createDatabase();
 });
 
@@ -259,8 +290,12 @@ ipcMain.handle('read-json-file', async (event, fileName) => {
     const decryptedData = decrypt(data);
     return JSON.parse(decryptedData);
   } catch (error) {
-    console.error('Error reading JSON file:', error);
-    throw error;
+    console.error('Error reading or decrypting JSON file:', error);
+    if (error.message.includes('decryption')) {
+      throw new Error('Invalid signature key');
+    } else {
+      throw new Error('Failed to read JSON file');
+    }
   }
 });
 
@@ -282,7 +317,13 @@ ipcMain.handle('check-user-existence', async () => {
 ipcMain.handle('load-assessments', async () => {
   const assessmentsPath = path.join(__dirname, 'My Assessments');
   try {
+    if (!fs.existsSync(assessmentsPath)) {
+      return []; // Return an empty array if the folder does not exist
+    }
     const files = fs.readdirSync(assessmentsPath);
+    if (files.length === 0) {
+      return []; // Return an empty array if the folder is empty
+    }
     const assessments = files.map(file => {
       const fileName = file.replace('.json', '');
       const [name, dateTime] = fileName.split(/-(.+)/); // Split only at the first hyphen
@@ -297,10 +338,23 @@ ipcMain.handle('load-assessments', async () => {
         file: file // Include file name for reference in delete/export actions
       };
     });
-    return assessments;
+
+    // Filter assessments by checking if they can be decrypted with the correct key
+    const validAssessments = [];
+    for (const assessment of assessments) {
+      try {
+        const data = fs.readFileSync(path.join(assessmentsPath, assessment.file), 'utf-8');
+        decrypt(data); // Attempt to decrypt the data
+        validAssessments.push(assessment); // If decryption is successful, add to valid assessments
+      } catch (error) {
+        console.error(`Invalid signature key for file: ${assessment.file}`);
+      }
+    }
+
+    return validAssessments;
   } catch (error) {
     console.error('Error reading assessments:', error);
-    throw error;
+    throw new Error('Failed to load assessments');
   }
 });
 

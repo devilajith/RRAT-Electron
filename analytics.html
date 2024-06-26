@@ -37,5 +37,27 @@
     </div>
     <div id="recommendations-container" class="recommendations-container" style="display: none;"></div>
   </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const fileName = urlParams.get('file');
+      if (fileName) {
+        window.electron.invoke('read-json-file', fileName)
+          .then(data => {
+            window.scoresData = data;
+            updateProgressBars(data);
+          })
+          .catch(error => {
+            if (error.message === 'Invalid signature key') {
+              notyf.error('Invalid signature key for the selected file.');
+            } else {
+              notyf.error(error.message); // Display the error message from the backend
+            }
+          });
+      } else {
+        notyf.error('No file specified in the URL.');
+      }
+    });
+  </script>
 </body>
 </html>
