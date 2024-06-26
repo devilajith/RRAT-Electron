@@ -124,7 +124,7 @@ function exportAnalyticsAsHTML() {
                   /* Containers */
                   .domains-container, .recommendations-container {
                       flex: 1; /* Take up equal space */
-                      margin: 10px; /* Spacing for readability */
+                      margin: 10px 30px; /* Spacing for readability */
                   }
 
                   .domain-card {
@@ -140,6 +140,8 @@ function exportAnalyticsAsHTML() {
                       font-size: 1.5em;
                       margin-bottom: 10px;
                       color: #194264;
+                      flex: 1;
+                      font-weight: bold;
                   }
 
                   .recommendations-list {
@@ -243,11 +245,12 @@ function exportAnalyticsAsHTML() {
                   }
 
                   /* Domain and progress bar styling */
-                  .domain {
-                      display: flex;
-                      align-items: center;
-                      margin-bottom: 10px; /* Space between domain entries */
-                  }
+                    .domain {
+                        display: flex;
+                        align-items: center;
+                        margin-bottom: 10px;
+                        justify-content: space-between;
+                    }
 
                   .domain-name {
                       font-size: 16px;
@@ -256,12 +259,14 @@ function exportAnalyticsAsHTML() {
                   }
 
                   .progress-bar-container {
-                      flex-grow: 1;
-                      background-color: #e0e0e0;
-                      height: 20px;
-                      border-radius: 10px;
-                      overflow: hidden;
-                  }
+                        display: flex;
+                        flex-grow: 1;
+                        background-color: #e0e0e0;
+                        height: 20px;
+                        border-radius: 10px;
+                        overflow: hidden;
+                        align-items: center;
+                    }
 
                   .progress-bar {
                       height: 100%;
@@ -351,7 +356,9 @@ function exportAnalyticsAsHTML() {
                     </div>
                     <div>RRAT Overall Score</div>
                 </div>
+                <b style="margin-left:20px; font-size: 25px">Domain Overview:</b>
                 <div id="analytics-container" class="domains-container"></div>
+                <b style="margin-left:20px; font-size: 25px">Recomendation Overview:</b>
                 <div id="recommendations-container" class="recommendations-container"></div>
               </div>
               <script>
