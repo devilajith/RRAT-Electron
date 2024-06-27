@@ -258,3 +258,8 @@ body {
     box-shadow: 0 0 5px rgba(81, 203, 238, 1);
     border: 1px solid rgba(81, 203, 238, 1); /* Change border color on focus */
 }
+#sector{
+    background-color: #0c3c60;
+    color: #f4ecd8;
+    margin-top: 5px;
+}
