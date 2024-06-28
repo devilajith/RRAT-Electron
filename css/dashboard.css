@@ -91,6 +91,7 @@ html, body {
     align-items: center;
     margin-right: 40px;
     padding: 0;
+    cursor: pointer; /* Added cursor: pointer; to profile-picture */
 }
 
 .profile-picture .profile {
@@ -228,4 +229,8 @@ h2 {
     background-color: #f8d7da;
     color: #721c24;
     display: block;
+}
+
+button {
+  cursor: pointer;
 }

@@ -39,6 +39,7 @@ body {
 .header .logo {
     width: 139px;
     height: 139px;
+    cursor: pointer; /* Added cursor pointer for logo image */
 }
 .header h1 {
     color: white;
@@ -125,7 +126,7 @@ body {
     border: none;
     background: none;
     padding: 0;
-    cursor: pointer;
+    cursor: pointer; /* Added cursor pointer for button */
 }
 .rectangle-15 {
     background: #28a8ea;
@@ -152,6 +153,7 @@ body {
     bottom: 13.95%;
     top: 11.63%;
     height: 74.42%;
+    cursor: pointer; /* Added cursor pointer for button */
 }
 .ellipse-2 {
     background: #eaf6ff;
@@ -243,6 +245,7 @@ body {
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 12px;
+    cursor: pointer; /* Added cursor pointer for dropdown */
 }
 
 .styled-select option {

@@ -410,12 +410,23 @@ ipcMain.on('get-selected-question', (event, userId) => {
 ipcMain.on('validate-answer-and-reset-password', async (event, data) => {
     const { userId, answer, newPassword } = data;
 
-    db.get("SELECT encryptedAnswer, password FROM registrations WHERE rowid = ?", [userId], async (err, row) => {
+    // Ensure that the newPassword meets your criteria before proceeding
+    if (!newPassword || newPassword.length < 8) {
+        event.reply('reset-password-response', { success: false, message: 'Password does not meet criteria.' });
+        return;
+    }
+
+    db.get("SELECT Answer, password FROM registrations WHERE rowid = ?", [userId], async (err, row) => {
         if (err) {
             console.error('Error fetching user data:', err.message);
             event.reply('reset-password-response', { success: false, message: 'Database error.' });
-        } else if (row && await bcrypt.compare(answer, row.encryptedAnswer)) {
-            // Answer is correct, proceed to reset the password
+            return;
+        }
+        if (!row) {
+            event.reply('reset-password-response', { success: false, message: 'User not found.' });
+            return;
+        }
+        if (await bcrypt.compare(answer, row.Answer)) {
             const hashedNewPassword = await bcrypt.hash(newPassword, 10);
             db.run("UPDATE registrations SET password = ? WHERE rowid = ?", [hashedNewPassword, userId], function(err) {
                 if (err) {
@@ -426,7 +437,6 @@ ipcMain.on('validate-answer-and-reset-password', async (event, data) => {
                 }
             });
         } else {
-            // Answer is incorrect
             event.reply('reset-password-response', { success: false, message: 'Incorrect answer.' });
         }
     });

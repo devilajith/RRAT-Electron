@@ -48,6 +48,7 @@ body {
     width: 180px;
     height: 70px;
     margin-left: 20px; /* Ensure no extra margin */
+    cursor: pointer; /* Added cursor: pointer; */
 }
 
 .main-content {
@@ -91,6 +92,7 @@ body {
     object-fit: cover;
     border-radius: 50%;
     margin-right: 0px;
+    cursor: pointer; /* Added cursor: pointer; */
 }
 .form-container {
     display: flex;
@@ -174,7 +176,7 @@ body {
     background: none;
     padding: 0;
     margin-top: 26px;
-    cursor: pointer;
+    cursor: pointer; /* Added cursor: pointer; */
     margin-bottom: 9px;
 }
 .group-7,
@@ -193,7 +195,7 @@ body {
     padding: 0;
     margin-top: -51px;
     margin-left: 161px;
-    cursor: pointer;
+    cursor: pointer; /* Added cursor: pointer; */
     margin-bottom: 9px;
 }
 .rectangle-15 {
@@ -221,6 +223,7 @@ body {
     bottom: 13.95%;
     top: 11.63%;
     height: 74.42%;
+    cursor: pointer; /* Added cursor: pointer; */
 }
 .submit1 {
     color: #ffffff;
@@ -236,6 +239,7 @@ body {
     bottom: 13.95%;
     top: 11.63%;
     height: 74.42%;
+    cursor: pointer; /* Added cursor: pointer; */
 }
 .ellipse-2 {
     background: #eaf6ff;

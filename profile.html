@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="css/notyf.min.css">
     <script src="js/notyf.min.js"></script>
     <style>
+        #logo {
+            cursor: pointer;
+        }
         .red-star {
             color: red;
         }
@@ -91,6 +94,7 @@
         .popup-button {
             display: flex;
             justify-content: center;
+            cursor: pointer;
         }
 
         #submit {
@@ -104,6 +108,7 @@
         #submit:hover{
             background-color: #0c3c60;
             color: #f4ecd8;
+            cursor: pointer;
         }
         #answer{
             border-radius: 20px;
@@ -144,13 +149,16 @@
         span#selected-question {
             padding-right: 70px;
         }
+        button {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="logo">
-                <img src="images/group-40.svg" alt="logo" class="rrat">
+                <img src="images/group-40.svg" alt="logo" class="rrat" id="logo">
             </div>
         </div>
         <div class="main-content" style="padding-left: 0px">
@@ -295,10 +303,16 @@
     <script>
         const notyf = new Notyf();
         let originalPassword = ''; // Variable to store the original password
+        let retryCount = 0; // Variable to track retry count
+        const MAX_RETRY = 3; // Maximum retry attempts
+        let retryTimeout; // Timeout variable for retry limit
 
         function dashboard() {
             window.location.href = "dashboard.html";
         }
+        document.getElementById('logo').addEventListener('click', () => {
+            window.location.href = 'dashboard.html';
+        });
 
         document.addEventListener('DOMContentLoaded', () => {
             const updateProfileForm = document.getElementById('profileForm');
@@ -339,58 +353,7 @@
                 return JSON.stringify(currentProfileData) !== JSON.stringify(originalProfileData);
             }
 
-            saveButton.addEventListener('click', function(event) {
-                event.preventDefault(); // Prevent form submission
-
-                const currentPassword = document.getElementById('current-password').value;
-                const newPassword = document.getElementById('new-password').value;
-                const confirmPassword = document.getElementById('confirm-password').value;
-
-                if (!currentPassword) {
-                    notyf.error('Current password is required');
-                    return;
-                }
-
-                if (newPassword) {
-                    if (newPassword === originalPassword) {
-                        notyf.error('New password cannot be the same as the old password.');
-                        return;
-                    }
-
-                    if (newPassword !== confirmPassword) {
-                        notyf.error('New password and confirm password do not match.');
-                        return;
-                    }
-
-                    const criteria = validatePassword(newPassword);
-                    if (!criteria.length || !criteria.uppercase || !criteria.lowercase || !criteria.number || !criteria.special) {
-                        notyf.error('New password does not meet the required criteria.');
-                        return;
-                    }
-                }
-
-                if (!isProfileDataChanged() && !newPassword) {
-                    notyf.error('No Changes Made');
-                    return;
-                }
-
-                // Retrieve updated profile data from the form
-                const updatedProfileData = {
-                    email: document.getElementById('email').value,
-                    name: document.getElementById('name').value,
-                    sector: document.getElementById('sector').value,
-                    organization: document.getElementById('organization').value,
-                    designation: document.getElementById('designation').value,
-                    currentPassword,
-                    newPassword
-                };
-
-                // Send updated profile data to the main process
-                window.electron.send('update-profile', updatedProfileData);
-            });
-
-            // Listen for profile update confirmation
-            window.electron.receive('profile-update', (data) => {
+            function handleProfileUpdate(data) {
                 if (data.success) {
                     notyf.success('Profile Updated Successfully');
                     // Update originalProfileData to reflect changes
@@ -409,17 +372,7 @@
                         notyf.error('Failed to Update Profile');
                     }
                 }
-            });
-
-            // Password validation and highlight both fields
-            const newPasswordInput = document.getElementById('new-password');
-            const confirmPasswordInput = document.getElementById('confirm-password');
-            const passwordPopup = document.getElementById('passwordPopup');
-            const lengthCriteria = document.getElementById('length');
-            const uppercaseCriteria = document.getElementById('uppercase');
-            const lowercaseCriteria = document.getElementById('lowercase');
-            const numberCriteria = document.getElementById('number');
-            const specialCriteria = document.getElementById('special');
+            }
 
             function validatePassword(password) {
                 return {
@@ -431,54 +384,109 @@
                 };
             }
 
-            function updateValidationCriteria(criteria) {
-                lengthCriteria.classList.toggle('valid', criteria.length);
-                lengthCriteria.classList.toggle('invalid', !criteria.length);
+            function updateValidationCriteria(criteria, elements) {
+                elements.length.classList.toggle('valid', criteria.length);
+                elements.length.classList.toggle('invalid', !criteria.length);
 
-                uppercaseCriteria.classList.toggle('valid', criteria.uppercase);
-                uppercaseCriteria.classList.toggle('invalid', !criteria.uppercase);
+                elements.uppercase.classList.toggle('valid', criteria.uppercase);
+                elements.uppercase.classList.toggle('invalid', !criteria.uppercase);
 
-                lowercaseCriteria.classList.toggle('valid', criteria.lowercase);
-                lowercaseCriteria.classList.toggle('invalid', !criteria.lowercase);
+                elements.lowercase.classList.toggle('valid', criteria.lowercase);
+                elements.lowercase.classList.toggle('invalid', !criteria.lowercase);
 
-                numberCriteria.classList.toggle('valid', criteria.number);
-                numberCriteria.classList.toggle('invalid', !criteria.number);
+                elements.number.classList.toggle('valid', criteria.number);
+                elements.number.classList.toggle('invalid', !criteria.number);
 
-                specialCriteria.classList.toggle('valid', criteria.special);
-                specialCriteria.classList.toggle('invalid', !criteria.special);
+                elements.special.classList.toggle('valid', criteria.special);
+                elements.special.classList.toggle('invalid', !criteria.special);
             }
 
-            function toggleHighlight() {
-                if (newPasswordInput.value || confirmPasswordInput.value) {
-                    newPasswordInput.classList.add('highlight');
-                    confirmPasswordInput.classList.add('highlight');
+            function toggleHighlight(input1, input2) {
+                if (input1.value || input2.value) {
+                    input1.classList.add('highlight');
+                    input2.classList.add('highlight');
                 } else {
-                    newPasswordInput.classList.remove('highlight');
-                    confirmPasswordInput.classList.remove('highlight');
+                    input1.classList.remove('highlight');
+                    input2.classList.remove('highlight');
                 }
             }
 
-            newPasswordInput.addEventListener('focus', () => {
-                passwordPopup.style.display = 'block';
-                toggleHighlight();
-            });
+            function addPasswordValidationListeners(input, elements) {
+                input.addEventListener('focus', () => {
+                    elements.popup.style.display = 'block';
+                    toggleHighlight(input, elements.confirmInput);
+                });
 
-            newPasswordInput.addEventListener('blur', () => {
-                passwordPopup.style.display = 'none';
-                toggleHighlight();
-            });
+                input.addEventListener('blur', () => {
+                    elements.popup.style.display = 'none';
+                    toggleHighlight(input, elements.confirmInput);
+                });
 
-            newPasswordInput.addEventListener('input', () => {
-                const password = newPasswordInput.value;
-                const criteria = validatePassword(password);
-                updateValidationCriteria(criteria);
-                toggleHighlight();
-            });
+                input.addEventListener('input', () => {
+                    const criteria = validatePassword(input.value);
+                    updateValidationCriteria(criteria, elements);
+                    toggleHighlight(input, elements.confirmInput);
+                });
 
-            confirmPasswordInput.addEventListener('focus', toggleHighlight);
-            confirmPasswordInput.addEventListener('input', toggleHighlight);
+                elements.confirmInput.addEventListener('focus', () => toggleHighlight(input, elements.confirmInput));
+                elements.confirmInput.addEventListener('input', () => toggleHighlight(input, elements.confirmInput));
+            }
 
-            fetchProfileData();
+            function addEventListeners() {
+                saveButton.addEventListener('click', function(event) {
+                    event.preventDefault(); // Prevent form submission
+
+                    const currentPassword = document.getElementById('current-password').value;
+                    const newPassword = document.getElementById('new-password').value;
+                    const confirmPassword = document.getElementById('confirm-password').value;
+
+                    if (!currentPassword) {
+                        notyf.error('Current password is required');
+                        return;
+                    }
+
+                    if (newPassword) {
+                        if (newPassword === originalPassword) {
+                            notyf.error('New password cannot be the same as the old password.');
+                            return;
+                        }
+
+                        if (newPassword !== confirmPassword) {
+                            notyf.error('New password and confirm password do not match.');
+                            return;
+                        }
+
+                        const criteria = validatePassword(newPassword);
+                        if (!criteria.length || !criteria.uppercase || !criteria.lowercase || !criteria.number || !criteria.special) {
+                            notyf.error('New password does not meet the required criteria.');
+                            return;
+                        }
+                    }
+
+                    if (!isProfileDataChanged() && !newPassword) {
+                        notyf.error('No Changes Made');
+                        return;
+                    }
+
+                    // Retrieve updated profile data from the form
+                    const updatedProfileData = {
+                        email: document.getElementById('email').value,
+                        name: document.getElementById('name').value,
+                        sector: document.getElementById('sector').value,
+                        organization: document.getElementById('organization').value,
+                        designation: document.getElementById('designation').value,
+                        currentPassword,
+                        newPassword
+                    };
+
+                    // Send updated profile data to the main process
+                    window.electron.send('update-profile', updatedProfileData);
+                });
+
+                window.electron.receive('profile-update', handleProfileUpdate);
+
+                document.getElementById('ForgotPasswordButton').addEventListener('click', handleForgotPasswordClick);
+            }
 
             function fetchSelectedQuestion() {
                 const userId = sessionStorage.getItem('userId');
@@ -498,12 +506,39 @@
                 }
             }
 
-            // Call fetchProfileData and fetchSelectedQuestion when the document is ready
-            fetchProfileData();
-            fetchSelectedQuestion();
+            function handleSubmit() {
+                const answer = document.getElementById('answer').value;
+                const newPassword = document.getElementById('new-password-popup').value;
+                const confirmPassword = document.getElementById('confirm-password-popup').value;
 
-            // forgot_password Pop-up
-            document.getElementById('ForgotPasswordButton').addEventListener('click', function () {
+                if (newPassword === originalPassword) {
+                    notyf.error('New password cannot be the same as the old password.');
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    notyf.error('New password and confirm password do not match.');
+                    return;
+                }
+
+                const criteria = validatePassword(newPassword);
+                if (!criteria.length || !criteria.uppercase || !criteria.lowercase || !criteria.number || !criteria.special) {
+                    notyf.error('New password does not meet the required criteria.');
+                    return;
+                }
+
+                // Validate the answer and password only if retries are within the limit
+                if (retryCount < MAX_RETRY) {
+                    const userId = sessionStorage.getItem('userId');
+                    window.electron.send('validate-answer-and-reset-password', { userId, answer, newPassword });
+                } else {
+                    notyf.error('Maximum retry limit reached. Please try again later.');
+                    document.getElementById('popup').style.display = 'none';
+                    document.getElementById('overlay').style.display = 'none';
+                }
+            }
+
+            function handleForgotPasswordClick() {
                 fetchSelectedQuestion();  // Fetch the question when the popup is about to be shown
                 const userId = sessionStorage.getItem('userId'); // Ensure you have the user's ID stored in sessionStorage
                 window.electron.send('get-selected-question', userId);
@@ -518,7 +553,7 @@
                 document.getElementById('new-password-popup').value = '';
                 document.getElementById('confirm-password-popup').value = '';
 
-                // Display password requirements popup when new password input is focused
+                // Password validation elements
                 const newPasswordPopupInput = document.getElementById('new-password-popup');
                 const confirmPasswordPopupInput = document.getElementById('confirm-password-popup');
                 const passwordPopupPopup = document.getElementById('passwordPopupPopup');
@@ -528,95 +563,54 @@
                 const numberCriteriaPopup = document.getElementById('number-popup');
                 const specialCriteriaPopup = document.getElementById('special-popup');
 
-                function updateValidationCriteriaPopup(criteria) {
-                    lengthCriteriaPopup.classList.toggle('valid', criteria.length);
-                    lengthCriteriaPopup.classList.toggle('invalid', !criteria.length);
+                const elements = {
+                    popup: passwordPopupPopup,
+                    length: lengthCriteriaPopup,
+                    uppercase: uppercaseCriteriaPopup,
+                    lowercase: lowercaseCriteriaPopup,
+                    number: numberCriteriaPopup,
+                    special: specialCriteriaPopup,
+                    confirmInput: confirmPasswordPopupInput
+                };
 
-                    uppercaseCriteriaPopup.classList.toggle('valid', criteria.uppercase);
-                    uppercaseCriteriaPopup.classList.toggle('invalid', !criteria.uppercase);
-
-                    lowercaseCriteriaPopup.classList.toggle('valid', criteria.lowercase);
-                    lowercaseCriteriaPopup.classList.toggle('invalid', !criteria.lowercase);
-
-                    numberCriteriaPopup.classList.toggle('valid', criteria.number);
-                    numberCriteriaPopup.classList.toggle('invalid', !criteria.number);
-
-                    specialCriteriaPopup.classList.toggle('valid', criteria.special);
-                    specialCriteriaPopup.classList.toggle('invalid', !criteria.special);
-                }
-
-                function toggleHighlightPopup() {
-                    if (newPasswordPopupInput.value || confirmPasswordPopupInput.value) {
-                        newPasswordPopupInput.classList.add('highlight');
-                        confirmPasswordPopupInput.classList.add('highlight');
-                    } else {
-                        newPasswordPopupInput.classList.remove('highlight');
-                        confirmPasswordPopupInput.classList.remove('highlight');
-                    }
-                }
-
-                newPasswordPopupInput.addEventListener('focus', () => {
-                    passwordPopupPopup.style.display = 'block';
-                    toggleHighlightPopup();
-                });
-
-                newPasswordPopupInput.addEventListener('blur', () => {
-                    passwordPopupPopup.style.display = 'none';
-                    toggleHighlightPopup();
-                });
-
-                newPasswordPopupInput.addEventListener('input', () => {
-                    const password = newPasswordPopupInput.value;
-                    const criteria = validatePassword(password);
-                    updateValidationCriteriaPopup(criteria);
-                    toggleHighlightPopup();
-                });
-
-                confirmPasswordPopupInput.addEventListener('focus', toggleHighlightPopup);
-                confirmPasswordPopupInput.addEventListener('input', toggleHighlightPopup);
+                addPasswordValidationListeners(newPasswordPopupInput, elements);
 
                 overlay.addEventListener('click', function () {
                     popup.style.display = 'none';
                     overlay.style.display = 'none';
                 });
 
-                document.getElementById('submit').addEventListener('click', function handleSubmit() {
-                    const answer = document.getElementById('answer').value;
-                    const newPassword = document.getElementById('new-password-popup').value;
-                    const confirmPassword = document.getElementById('confirm-password-popup').value;
+                document.getElementById('submit').removeEventListener('click', handleSubmit);
+                document.getElementById('submit').addEventListener('click', handleSubmit);
 
-                    if (newPassword === originalPassword) {
-                        notyf.error('New password cannot be the same as the old password.');
-                        return;
-                    }
+                window.electron.receive('reset-password-response', handleResetPasswordResponse);
+            }
 
-                    if (newPassword !== confirmPassword) {
-                        notyf.error('New password and confirm password do not match.');
-                        return;
-                    }
-
-                    const criteria = validatePassword(newPassword);
-                    if (!criteria.length || !criteria.uppercase || !criteria.lowercase || !criteria.number || !criteria.special) {
-                        notyf.error('New password does not meet the required criteria.');
-                        return;
-                    }
-
-                    const userId = sessionStorage.getItem('userId');
-                    window.electron.send('validate-answer-and-reset-password', { userId, answer, newPassword });
-                }, { once: true });  // Add the event listener only once
-            });
-
-            window.electron.receive('reset-password-response', (response) => {
+            function handleResetPasswordResponse(response) {
                 if (response.success) {
                     notyf.success('Password updated successfully.');
                     // Close the popup and overlay
                     document.getElementById('popup').style.display = 'none';
                     document.getElementById('overlay').style.display = 'none';
                     originalPassword = document.getElementById('new-password-popup').value; // Update the original password after a successful reset
+                    retryCount = 0; // Reset retry count
                 } else {
                     notyf.error(response.message);
+                    retryCount++;
+                    if (retryCount >= MAX_RETRY) {
+                        notyf.error('Maximum retry limit reached. Please try again later.');
+                        document.getElementById('popup').style.display = 'none';
+                        document.getElementById('overlay').style.display = 'none';
+                        retryTimeout = setTimeout(() => {
+                            retryCount = 0;
+                        }, 60000); // Retry limit reset after 1 minute
+                    }
                 }
-            });
+            }
+
+            fetchProfileData();
+            fetchSelectedQuestion();
+            addEventListeners();
         });
     </script>
 </body>

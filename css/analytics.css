@@ -53,6 +53,7 @@ html, body {
   height: 70px;
   width: 180px;
   margin-left: 20px;
+  cursor: pointer; /* Added cursor pointer */
 }
 
 /* Export button styling */
@@ -63,6 +64,7 @@ html, body {
   border-color: #194264;
   border-width: 0;
   margin-left: 700px;
+  cursor: pointer; /* Added cursor pointer */
 }
 
 /* Tabs styling */
@@ -80,7 +82,7 @@ html, body {
 .tab {
   height: 100%;
   font-size: 20px;
-  cursor: pointer;
+  cursor: pointer; /* Added cursor pointer */
   text-align: center;
   background-color: #194264;
   border: none;
@@ -284,4 +286,8 @@ html, body {
 
 .question p:last-child {
   font-size: 16px;
+}
+
+button {
+  cursor: pointer; /* Added cursor pointer */
 }
