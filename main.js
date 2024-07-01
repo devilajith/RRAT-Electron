@@ -14,15 +14,15 @@ function createWindow() {
     width: 1280,
     height: 820,
     webPreferences: {
-      preload: path.join(__dirname, 'js/preload.js'), // Reference to preload.js
-      contextIsolation: true, // Context isolation for security
-      enableRemoteModule: false, // Disable remote module
+      preload: path.join(__dirname, 'js/preload.js'), // Ensure correct path
+      contextIsolation: true,
+      enableRemoteModule: false,
     },
     resizable: false,
     fullscreenable: false
   });
 
-  mainWindow.loadFile('index.html'); // Load the new index.html
+  mainWindow.loadFile('index.html');
 
   mainWindow.on('closed', function () {
     mainWindow = null;
@@ -440,4 +440,29 @@ ipcMain.on('validate-answer-and-reset-password', async (event, data) => {
             event.reply('reset-password-response', { success: false, message: 'Incorrect answer.' });
         }
     });
+});
+
+ipcMain.on('save-quiz-state', (event, quizState) => {
+  const statePath = path.join(app.getPath('userData'), 'quizState.json');
+  fs.writeFileSync(statePath, JSON.stringify(quizState));
+});
+
+ipcMain.handle('load-quiz-state', async () => {
+  const statePath = path.join(app.getPath('userData'), 'quizState.json');
+  if (fs.existsSync(statePath)) {
+      const stateData = fs.readFileSync(statePath, 'utf-8');
+      return JSON.parse(stateData);
+  }
+  return null;
+});
+
+ipcMain.handle('clear-quiz-state', async () => {
+  const statePath = path.join(app.getPath('userData'), 'quizState.json');
+  if (fs.existsSync(statePath)) {
+      fs.unlinkSync(statePath);
+  }
+});
+
+ipcMain.on('close-app', () => {
+    app.quit();
 });

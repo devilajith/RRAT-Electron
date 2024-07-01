@@ -31,26 +31,54 @@
     </div>
     <div id="customPopup" class="popup" style="display:none;">
         <div class="popup-content">
-            <p>Do you really want to exit ? All progress will lost.</p>
-            <button id="yesBtn">Yes</button>
-            <button id="noBtn">No</button>
+            <p>Do you really want to exit? All progress will be lost.</p>
+            <button id="yesBtn">Exit</button>
+            <button id="pauseBtn">Close & Pause</button>
+            <button id="noBtn">Back</button>
         </div>
     </div>
     <script src="quiz.js"></script>
     <script>
         const notyf = new Notyf();
+
         document.getElementById('logo').addEventListener('click', (event) => {
             event.preventDefault(); // Prevent the default link behavior
             document.getElementById('customPopup').style.display = 'flex';
         });
 
+        document.getElementById('pauseBtn').addEventListener('click', () => {
+            saveQuizStateAndClose();
+        });
+
         document.getElementById('yesBtn').addEventListener('click', () => {
-            window.location.href = '../dashboard.html';
+            clearQuizStateAndExit();
         });
 
         document.getElementById('noBtn').addEventListener('click', () => {
             document.getElementById('customPopup').style.display = 'none';
         });
+
+        function saveQuizStateAndClose() {
+            saveQuizState();
+            window.electron.send('close-app');
+        }
+
+        function clearQuizStateAndExit() {
+            window.electron.invoke('clear-quiz-state').then(() => {
+                window.location.href = '../dashboard.html';
+            }).catch(error => {
+                console.error('Error clearing quiz state:', error);
+                window.location.href = '../dashboard.html';
+            });
+        }
+
+        function saveQuizState() {
+            const quizState = {
+                currentDomainIndex: window.currentDomainIndex,
+                userAnswers: window.userAnswers
+            };
+            window.electron.send('save-quiz-state', quizState);
+        }
     </script>
 </body>
 </html>

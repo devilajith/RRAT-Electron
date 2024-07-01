@@ -137,11 +137,20 @@
         window.onload = function() {
             setTimeout(function() {
                 console.log('Checking user existence...');
-                window.electron.checkUserExistence(1).then(exists => {
+                window.electron.invoke('check-user-existence', 1).then(exists => {
                     console.log('User existence check result:', exists);
                     if (exists) {
                         sessionStorage.setItem('userId', 1);
-                        window.location.href = 'dashboard.html';
+                        window.electron.invoke('load-quiz-state').then(state => {
+                            if (state) {
+                                window.location.href = 'quiz/quiz.html';
+                            } else {
+                                window.location.href = 'dashboard.html';
+                            }
+                        }).catch(error => {
+                            console.error('Error loading quiz state:', error);
+                            window.location.href = 'dashboard.html';
+                        });
                     } else {
                         window.location.href = 'registration.html';
                     }
