@@ -17,9 +17,11 @@
   "author": "NCIIPC",
   "license": "MIT",
   "devDependencies": {
+    "bcrypt": "^5.1.1",
     "electron": "^30.0.8",
     "electron-builder": "^24.13.3",
     "electron-packager": "^17.1.2",
+    "exceljs": "^4.4.0",
     "sqlite3": "^5.1.7"
   }
 }

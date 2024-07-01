@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Analytics and Recommendations</title>
   <link rel="stylesheet" href="css/analytics.css">
+  <link rel="stylesheet" href="css/notyf.min.css"> <!-- Add Notyf CSS -->
   <script src="js/analytics.js" defer></script>
   <script src="js/export.js" defer></script>
+  <script src="js/notyf.min.js"></script> <!-- Add Notyf JS -->
   <style>
     button {
       cursor: pointer;
@@ -23,7 +25,7 @@
     <button class="tab active" id="tab-analytics">Domain overview</button>
     <button class="tab" id="tab-recommendations">Recommendations</button>
     <div class="export-container">
-      <button class="export-button" id="export-button">
+      <button class="export-button1" id="export-button1">
         <img src="images/Group 9.svg" class="exportimg" alt="export">
       </button>
     </div>
@@ -61,6 +63,26 @@
           });
       } else {
         notyf.error('No file specified in the URL.');
+      }
+
+      // Initialize Notyf
+      const notyf = new Notyf();
+
+      // Add event listener for export button
+      const exportButton = document.getElementById('export-button1');
+      if (exportButton) {
+        exportButton.addEventListener('click', async () => {
+          try {
+            const response = await window.electron.invoke('export-assessment', fileName);
+            if (response.success) {
+              notyf.success('Assessment exported successfully.');
+            } else {
+              notyf.error(response.message);
+            }
+          } catch (error) {
+            notyf.error('Failed to export assessment.');
+          }
+        });
       }
     });
   </script>

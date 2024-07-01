@@ -202,7 +202,7 @@
                     exportButton.addEventListener('click', async () => {
                         const response = await window.electron.invoke('export-assessment', assessment.file);
                         if (response.success) {
-                            notyf.success('Assessment exported successfully.');
+                            notyf.success(`Assessment exported successfully. File saved at: ${response.filePath}`);
                         } else {
                             notyf.error(response.message);
                         }

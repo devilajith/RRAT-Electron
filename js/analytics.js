@@ -144,34 +144,6 @@ function displayRecommendations(scoresData, questionsData) {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const fileName = urlParams.get('file');
-  if (fileName) {
-    window.electron.invoke('read-json-file', fileName)
-      .then(data => {
-        window.scoresData = data;
-        updateProgressBars(data);
-      })
-      .catch(error => console.error('Error fetching data:', error));
-  } else {
-    console.error('No file specified in the URL.');
-  }
-
-  document.getElementById('dashboard-logo').addEventListener('click', () => {
-    window.location.href = './dashboard.html';
-  });
-
-  document.getElementById('tab-analytics').addEventListener('click', () => {
-    showAnalytics();
-  });
-  document.getElementById('tab-recommendations').addEventListener('click', () => {
-    showRecommendationsTab();
-  });
-
-  document.getElementById('export-button').addEventListener('click', exportAnalyticsAsHTML);
-});
-
 function showAnalytics() {
   document.getElementById('analytics-container').style.display = 'block';
   document.getElementById('recommendations-container').style.display = 'none';
@@ -192,4 +164,4 @@ function showRecommendationsTab() {
 // Added cursor: pointer; style to buttons
 document.getElementById('tab-analytics').style.cursor = 'pointer';
 document.getElementById('tab-recommendations').style.cursor = 'pointer';
-document.getElementById('export-button').style.cursor = 'pointer';
+document.getElementById('export-button1').style.cursor = 'pointer';

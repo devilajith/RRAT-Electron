@@ -4,6 +4,8 @@ const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt'); // Use bcrypt for password hashing
 const crypto = require('crypto');
+const ExcelJS = require('exceljs');
+
 
 let mainWindow;
 let db;
@@ -372,20 +374,50 @@ ipcMain.handle('delete-assessment', async (event, fileName) => {
 ipcMain.handle('export-assessment', async (event, fileName) => {
   const assessmentsPath = path.join(__dirname, 'My Assessments', fileName);
   try {
-    const result = await dialog.showSaveDialog(mainWindow, {
-      defaultPath: path.join(app.getPath('downloads'), fileName),
-      filters: [{ name: 'JSON Files', extensions: ['json'] }]
+    const encryptedData = fs.readFileSync(assessmentsPath, 'utf-8');
+    const decryptedData = decrypt(encryptedData);
+    const jsonData = JSON.parse(decryptedData);
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Assessment Results');
+
+    // Ensure columns are defined based on the structure of jsonData
+    worksheet.columns = [
+      { header: 'Domain', key: 'domain', width: 30 },
+      { header: 'Question', key: 'question', width: 30 },
+      { header: 'Answer', key: 'answer', width: 10 },
+      { header: 'Recommendation', key: 'recommendation', width: 50 }
+    ];
+
+    // Assuming jsonData is an object with domains as keys
+    Object.keys(jsonData).forEach(domain => {
+      if (domain !== 'Assessment Name' && domain !== 'Date' && domain !== 'Time') {
+        jsonData[domain].forEach(entry => {
+          worksheet.addRow({
+            domain: domain,
+            question: entry.question,
+            answer: entry.answer,
+            recommendation: entry.recommendation || ''
+          });
+        });
+      }
     });
 
-    if (result.canceled) {
-      return { success: false, message: 'Export canceled by user.' };
-    }
+    const { filePath } = await dialog.showSaveDialog({
+      title: 'Save Assessment',
+      defaultPath: path.join(app.getPath('downloads'), `${path.parse(fileName).name}.xlsx`),
+      buttonLabel: 'Save',
+      filters: [
+        { name: 'Excel Files', extensions: ['xlsx'] }
+      ]
+    });
 
-    const exportPath = result.filePath;
-    const data = fs.readFileSync(assessmentsPath, 'utf-8');
-    const decryptedData = decrypt(data);
-    fs.writeFileSync(exportPath, decryptedData);
-    return { success: true, message: 'Assessment exported successfully.' };
+    if (filePath) {
+      await workbook.xlsx.writeFile(filePath);
+      return { success: true, message: 'Assessment exported successfully.', filePath: filePath };
+    } else {
+      return { success: false, message: 'Export cancelled.' };
+    }
   } catch (error) {
     console.error('Error exporting assessment:', error);
     return { success: false, message: 'Failed to export assessment.' };
@@ -466,3 +498,4 @@ ipcMain.handle('clear-quiz-state', async () => {
 ipcMain.on('close-app', () => {
     app.quit();
 });
+
