@@ -58,6 +58,10 @@
             justify-content: center; /* Centers logos horizontally */
             align-items: center; /* Aligns logos vertically */
         }
+        .logo{
+            width: 15vw;
+            height: auto;
+        }
 
         .logo-container img {
             margin: 0 10px; /* Adds 10px margin to both sides of each logo */
@@ -110,6 +114,10 @@
             0% { opacity: 0; transform: scale(0.95); }
             100% { opacity: 1; transform: scale(1); }
         }
+
+        button {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -117,7 +125,7 @@
         <div class="main-content">
             <div class="logo-container">
                 <div style="overflow: hidden;">
-                    <img src="images/Nciipc_Logo.png" alt="Header Logo" class="logo">
+                    <img src="images/Nciipc_Logo.svg" alt="Header Logo" class="logo">
                 </div>
                 <div style="overflow: hidden;">
                     <img src="images/group-40.svg" alt="Logo 1" class="logo1">
@@ -125,16 +133,24 @@
             </div>
         </div>
     </div>
-
     <script>
         window.onload = function() {
             setTimeout(function() {
                 console.log('Checking user existence...');
-                window.electron.checkUserExistence(1).then(exists => {
+                window.electron.invoke('check-user-existence', 1).then(exists => {
                     console.log('User existence check result:', exists);
                     if (exists) {
                         sessionStorage.setItem('userId', 1);
-                        window.location.href = 'dashboard.html';
+                        window.electron.invoke('load-quiz-state').then(state => {
+                            if (state) {
+                                window.location.href = 'quiz/quiz.html';
+                            } else {
+                                window.location.href = 'dashboard.html';
+                            }
+                        }).catch(error => {
+                            console.error('Error loading quiz state:', error);
+                            window.location.href = 'dashboard.html';
+                        });
                     } else {
                         window.location.href = 'registration.html';
                     }

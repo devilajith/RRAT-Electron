@@ -3,24 +3,26 @@ const path = require('path');
 const fs = require('fs');
 const sqlite3 = require('sqlite3').verbose();
 const bcrypt = require('bcrypt'); // Use bcrypt for password hashing
+const crypto = require('crypto');
 
 let mainWindow;
 let db;
+let secretKey;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 820,
     webPreferences: {
-      preload: path.join(__dirname, 'js/preload.js'), // Reference to preload.js
-      contextIsolation: true, // Context isolation for security
-      enableRemoteModule: false, // Disable remote module
+      preload: path.join(__dirname, 'js/preload.js'), // Ensure correct path
+      contextIsolation: true,
+      enableRemoteModule: false,
     },
     resizable: false,
     fullscreenable: false
   });
 
-  mainWindow.loadFile('index.html'); // Load the new index.html
+  mainWindow.loadFile('index.html');
 
   mainWindow.on('closed', function () {
     mainWindow = null;
@@ -44,12 +46,75 @@ function createDatabase() {
         securityquestion TEXT,
         Answer TEXT
       )`);
+      db.run(`CREATE TABLE IF NOT EXISTS secret_keys (
+        id INTEGER PRIMARY KEY,
+        key TEXT
+      )`, (err) => {
+        if (err) {
+          console.error('Error creating secret_keys table: ', err);
+        } else {
+          getSecretKey().then(key => {
+            secretKey = key;
+            createWindow();
+          }).catch(err => {
+            console.error(err);
+            app.quit();
+          });
+        }
+      });
     }
   });
 }
 
+function getSecretKey() {
+  return new Promise((resolve, reject) => {
+    db.get("SELECT key FROM secret_keys WHERE id = 1", (err, row) => {
+      if (err) {
+        reject('Error fetching secret key from database: ' + err);
+      } else if (row) {
+        resolve(row.key);
+      } else {
+        const newKey = crypto.randomBytes(32).toString('hex');
+        db.run("INSERT INTO secret_keys (id, key) VALUES (1, ?)", [newKey], (err) => {
+          if (err) {
+            reject('Error storing new secret key in database: ' + err);
+          } else {
+            resolve(newKey);
+          }
+        });
+      }
+    });
+  });
+}
+
+function encrypt(text) {
+  const algorithm = 'aes-256-cbc';
+  const key = crypto.scryptSync(secretKey, 'salt', 32);
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv(algorithm, key, iv);
+  let encrypted = cipher.update(text, 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return iv.toString('hex') + ':' + encrypted;
+}
+
+function decrypt(text) {
+  const algorithm = 'aes-256-cbc';
+  const key = crypto.scryptSync(secretKey, 'salt', 32);
+  const textParts = text.split(':');
+  const iv = Buffer.from(textParts.shift(), 'hex');
+  const encryptedText = Buffer.from(textParts.join(':'), 'hex');
+  const decipher = crypto.createDecipheriv(algorithm, key, iv);
+  let decrypted;
+  try {
+    decrypted = decipher.update(encryptedText, 'hex', 'utf8');
+    decrypted += decipher.final('utf8');
+  } catch (error) {
+    throw new Error('decryption failed');
+  }
+  return decrypted;
+}
+
 app.on('ready', () => {
-  createWindow();
   createDatabase();
 });
 
@@ -168,11 +233,10 @@ function getISTTimestamp() {
 
 ipcMain.on('save-quiz-data', (event, quizAnswers) => {
   const { assessmentName, answers } = quizAnswers;
-  const timestamp = getISTTimestamp(); // Use the IST timestamp function
+  const timestamp = getISTTimestamp();
   const fileName = `${assessmentName}-${timestamp}.json`;
   const savePath = path.join(__dirname, 'My Assessments');
 
-  // Load quiz data
   const dataPath = path.join(__dirname, 'quiz/Qdata.json');
   let quizData;
   try {
@@ -184,7 +248,6 @@ ipcMain.on('save-quiz-data', (event, quizAnswers) => {
     return;
   }
 
-  // Structure the data with recommendations
   const structuredData = {
     "Assessment Name": assessmentName,
     "Date": new Date().toLocaleDateString(),
@@ -205,24 +268,34 @@ ipcMain.on('save-quiz-data', (event, quizAnswers) => {
     });
   }
 
-  // Ensure the 'My Assessments' folder exists
   try {
     if (!fs.existsSync(savePath)) {
-      console.log('Creating directory:', savePath);
       fs.mkdirSync(savePath);
-    } else {
-      console.log('Directory already exists:', savePath);
     }
 
     const fullPath = path.join(savePath, fileName);
-    console.log('Saving file to:', fullPath);
-
-    fs.writeFileSync(fullPath, JSON.stringify(structuredData, null, 2));
-    console.log('Quiz data saved successfully to:', fullPath);
+    const encryptedData = encrypt(JSON.stringify(structuredData));
+    fs.writeFileSync(fullPath, encryptedData);
     event.reply('save-quiz-data-reply', { success: true, message: 'Quiz data saved successfully.', fileName: fileName });
   } catch (error) {
     console.error('Error saving quiz data:', error);
     event.reply('save-quiz-data-reply', { success: false, message: 'Failed to save quiz data.' });
+  }
+});
+
+ipcMain.handle('read-json-file', async (event, fileName) => {
+  const filePath = path.join(__dirname, 'My Assessments', fileName);
+  try {
+    const data = fs.readFileSync(filePath, 'utf-8');
+    const decryptedData = decrypt(data);
+    return JSON.parse(decryptedData);
+  } catch (error) {
+    console.error('Error reading or decrypting JSON file:', error);
+    if (error.message.includes('decryption')) {
+      throw new Error('Invalid signature key');
+    } else {
+      throw new Error('Failed to read JSON file');
+    }
   }
 });
 
@@ -244,7 +317,13 @@ ipcMain.handle('check-user-existence', async () => {
 ipcMain.handle('load-assessments', async () => {
   const assessmentsPath = path.join(__dirname, 'My Assessments');
   try {
+    if (!fs.existsSync(assessmentsPath)) {
+      return []; // Return an empty array if the folder does not exist
+    }
     const files = fs.readdirSync(assessmentsPath);
+    if (files.length === 0) {
+      return []; // Return an empty array if the folder is empty
+    }
     const assessments = files.map(file => {
       const fileName = file.replace('.json', '');
       const [name, dateTime] = fileName.split(/-(.+)/); // Split only at the first hyphen
@@ -259,10 +338,23 @@ ipcMain.handle('load-assessments', async () => {
         file: file // Include file name for reference in delete/export actions
       };
     });
-    return assessments;
+
+    // Filter assessments by checking if they can be decrypted with the correct key
+    const validAssessments = [];
+    for (const assessment of assessments) {
+      try {
+        const data = fs.readFileSync(path.join(assessmentsPath, assessment.file), 'utf-8');
+        decrypt(data); // Attempt to decrypt the data
+        validAssessments.push(assessment); // If decryption is successful, add to valid assessments
+      } catch (error) {
+        console.error(`Invalid signature key for file: ${assessment.file}`);
+      }
+    }
+
+    return validAssessments;
   } catch (error) {
     console.error('Error reading assessments:', error);
-    throw error;
+    throw new Error('Failed to load assessments');
   }
 });
 
@@ -290,27 +382,15 @@ ipcMain.handle('export-assessment', async (event, fileName) => {
     }
 
     const exportPath = result.filePath;
-    fs.copyFileSync(assessmentsPath, exportPath);
+    const data = fs.readFileSync(assessmentsPath, 'utf-8');
+    const decryptedData = decrypt(data);
+    fs.writeFileSync(exportPath, decryptedData);
     return { success: true, message: 'Assessment exported successfully.' };
   } catch (error) {
     console.error('Error exporting assessment:', error);
     return { success: false, message: 'Failed to export assessment.' };
   }
 });
-
-// Register the 'read-json-file' handler only if it hasn't been registered yet
-if (!ipcMain.eventNames().includes('read-json-file')) {
-  ipcMain.handle('read-json-file', async (event, fileName) => {
-    const filePath = path.join(__dirname, 'My Assessments', fileName);
-    try {
-      const data = fs.readFileSync(filePath, 'utf-8');
-      return JSON.parse(data);
-    } catch (error) {
-      console.error('Error reading JSON file:', error);
-      throw error;
-    }
-  });
-};
 
 ipcMain.on('get-selected-question', (event, userId) => {
     const query = "SELECT securityquestion FROM registrations WHERE email = ?";
@@ -330,12 +410,23 @@ ipcMain.on('get-selected-question', (event, userId) => {
 ipcMain.on('validate-answer-and-reset-password', async (event, data) => {
     const { userId, answer, newPassword } = data;
 
-    db.get("SELECT encryptedAnswer, password FROM registrations WHERE rowid = ?", [userId], async (err, row) => {
+    // Ensure that the newPassword meets your criteria before proceeding
+    if (!newPassword || newPassword.length < 8) {
+        event.reply('reset-password-response', { success: false, message: 'Password does not meet criteria.' });
+        return;
+    }
+
+    db.get("SELECT Answer, password FROM registrations WHERE rowid = ?", [userId], async (err, row) => {
         if (err) {
             console.error('Error fetching user data:', err.message);
             event.reply('reset-password-response', { success: false, message: 'Database error.' });
-        } else if (row && await bcrypt.compare(answer, row.encryptedAnswer)) {
-            // Answer is correct, proceed to reset the password
+            return;
+        }
+        if (!row) {
+            event.reply('reset-password-response', { success: false, message: 'User not found.' });
+            return;
+        }
+        if (await bcrypt.compare(answer, row.Answer)) {
             const hashedNewPassword = await bcrypt.hash(newPassword, 10);
             db.run("UPDATE registrations SET password = ? WHERE rowid = ?", [hashedNewPassword, userId], function(err) {
                 if (err) {
@@ -346,8 +437,32 @@ ipcMain.on('validate-answer-and-reset-password', async (event, data) => {
                 }
             });
         } else {
-            // Answer is incorrect
             event.reply('reset-password-response', { success: false, message: 'Incorrect answer.' });
         }
     });
+});
+
+ipcMain.on('save-quiz-state', (event, quizState) => {
+  const statePath = path.join(app.getPath('userData'), 'quizState.json');
+  fs.writeFileSync(statePath, JSON.stringify(quizState));
+});
+
+ipcMain.handle('load-quiz-state', async () => {
+  const statePath = path.join(app.getPath('userData'), 'quizState.json');
+  if (fs.existsSync(statePath)) {
+      const stateData = fs.readFileSync(statePath, 'utf-8');
+      return JSON.parse(stateData);
+  }
+  return null;
+});
+
+ipcMain.handle('clear-quiz-state', async () => {
+  const statePath = path.join(app.getPath('userData'), 'quizState.json');
+  if (fs.existsSync(statePath)) {
+      fs.unlinkSync(statePath);
+  }
+});
+
+ipcMain.on('close-app', () => {
+    app.quit();
 });

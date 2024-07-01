@@ -2,9 +2,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let quizData = {};
     const quizContainer = document.getElementById('quiz-container');
     const setButtonsContainer = document.getElementById('set-buttons');
-    let currentDomainIndex = 0;
-    let domains = [];
-    let userAnswers = {};
+    window.currentDomainIndex = 0;
+    window.domains = [];
+    window.userAnswers = {};
 
     function loadQuizData() {
         window.electron.invoke('load-quiz-data')
@@ -17,14 +17,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     };
                     return acc;
                 }, {});
-                domains = Object.keys(quizData);
-                console.log('Domains:', domains);
-                domains.forEach(domain => {
-                    userAnswers[domain] = {};
+                window.domains = Object.keys(quizData);
+                console.log('Domains:', window.domains);
+                window.domains.forEach(domain => {
+                    window.userAnswers[domain] = {};
                 });
-                createDomainButtons();
-                displayQuestionsForCurrentDomain();
-                highlightCurrentDomainButton(domains[0]);
+                window.electron.invoke('load-quiz-state')
+                    .then(state => {
+                        if (state) {
+                            window.currentDomainIndex = state.currentDomainIndex;
+                            window.userAnswers = state.userAnswers;
+                        }
+                        createDomainButtons();
+                        displayQuestionsForCurrentDomain();
+                        highlightCurrentDomainButton(window.domains[window.currentDomainIndex]);
+                    })
+                    .catch(error => console.error('Error loading quiz state:', error));
             })
             .catch(error => console.error('Error loading quiz data:', error));
     }
@@ -32,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function createDomainButtons() {
         setButtonsContainer.innerHTML = '';
 
-        domains.forEach((domain, index) => {
+        window.domains.forEach((domain, index) => {
             const button = document.createElement('button');
             button.id = `${domain.replace(/\s+/g, '-')}-btn`;
             button.innerText = domain;
@@ -40,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.classList.add('active');
             }
             button.addEventListener('click', () => {
-                currentDomainIndex = index;
+                window.currentDomainIndex = index;
                 displayQuestionsForCurrentDomain();
                 highlightCurrentDomainButton(domain);
             });
@@ -50,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function displayQuestionsForCurrentDomain() {
         quizContainer.innerHTML = '';
-        const domain = domains[currentDomainIndex];
+        const domain = window.domains[window.currentDomainIndex];
 
         console.log('Displaying questions for domain:', domain);
 
@@ -102,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.addEventListener('click', () => {
                     toggleContainer.querySelectorAll('.toggle-button').forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active');
-                    userAnswers[domain][index] = option.toLowerCase();
+                    window.userAnswers[domain][index] = option.toLowerCase();
                 });
                 toggleContainer.appendChild(button);
             });
@@ -131,8 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             quizContainer.appendChild(questionDiv);
 
-            if (userAnswers[domain][index] !== undefined) {
-                const previousAnswer = userAnswers[domain][index];
+            if (window.userAnswers[domain][index] !== undefined) {
+                const previousAnswer = window.userAnswers[domain][index];
                 const button = Array.from(toggleContainer.querySelectorAll('.toggle-button')).find(btn => btn.innerText.toLowerCase() === previousAnswer);
                 if (button) {
                     button.classList.add('active');
@@ -142,13 +150,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const nextButton = document.createElement('button');
         nextButton.classList.add('submit-button');
-        if (currentDomainIndex < domains.length - 1) {
+        if (window.currentDomainIndex < window.domains.length - 1) {
             nextButton.innerText = 'Next';
             nextButton.addEventListener('click', () => {
                 if (areAllQuestionsAnswered(domain)) {
-                    currentDomainIndex++;
+                    window.currentDomainIndex++;
                     displayQuestionsForCurrentDomain();
-                    highlightCurrentDomainButton(domains[currentDomainIndex]);
+                    highlightCurrentDomainButton(window.domains[window.currentDomainIndex]);
                 } else {
                     notyf.error(`Please answer all questions in the ${domain}.`);
                 }
@@ -191,11 +199,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const assessmentName = localStorage.getItem('assessmentName') || 'Unnamed Assessment';
     
         const quizAnswers = {};
-        domains.forEach(domain => {
+        window.domains.forEach(domain => {
             quizAnswers[domain] = quizData[domain].questions.map((questionData, index) => {
                 return {
                     question: questionData.question,
-                    answer: userAnswers[domain][index] || ""
+                    answer: window.userAnswers[domain][index] || ""
                 };
             });
         });
@@ -223,11 +231,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function areAllQuestionsAnswered(domain) {
-        return quizData[domain].questions.every((_, index) => userAnswers[domain][index] !== undefined);
+        return quizData[domain].questions.every((_, index) => window.userAnswers[domain][index] !== undefined);
     }
 
     function getUnansweredDomains() {
-        return domains.filter(domain => !areAllQuestionsAnswered(domain));
+        return window.domains.filter(domain => !areAllQuestionsAnswered(domain));
     }
 
     loadQuizData();

@@ -188,3 +188,8 @@ function showRecommendationsTab() {
   document.getElementById('overall-score-section').style.display = 'none';
   showRecommendations();
 }
+
+// Added cursor: pointer; style to buttons
+document.getElementById('tab-analytics').style.cursor = 'pointer';
+document.getElementById('tab-recommendations').style.cursor = 'pointer';
+document.getElementById('export-button').style.cursor = 'pointer';
